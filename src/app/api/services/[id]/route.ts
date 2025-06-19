@@ -3,7 +3,10 @@ import { getService } from "@/data/services/getService";
 import { updateService } from "@/data/services/updateService";
 import { deleteService } from "@/data/services/deleteService";
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } },
+) {
   const service = await getService(Number(params.id));
   if (!service) {
     return NextResponse.json(
