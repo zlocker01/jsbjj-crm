@@ -1,11 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAboutSection } from "@/data/aboutSections/getAboutSection";
 import { updateAboutSection } from "@/data/aboutSections/updateAboutSection";
 import { deleteAboutSection } from "@/data/aboutSections/deleteAboutSection";
 
+type RouteParams = {
+  params: {
+    id: string;
+  };
+};
+
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: RouteParams
 ) {
   const { data: aboutSection, error } = await getAboutSection(params.id);
   if (error) {
@@ -21,8 +27,8 @@ export async function GET(
 }
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: RouteParams
 ) {
   const body = await req.json();
   const error = await updateAboutSection({ ...body, id: params.id });
@@ -35,8 +41,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: RouteParams
 ) {
   const error = await deleteAboutSection(params.id);
   if (error) {
