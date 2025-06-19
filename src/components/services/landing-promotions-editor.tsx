@@ -55,7 +55,7 @@ export function LandingPromotionsEditor({
     formState: { errors, isSubmitting },
     setValue,
   } = useForm<PromotionsFormData>({
-    resolver: zodResolver(promotionItemSchema),
+    resolver: zodResolver(promotionItemSchema) as any,
     defaultValues: promotionsContent,
     mode: "onBlur",
   });
