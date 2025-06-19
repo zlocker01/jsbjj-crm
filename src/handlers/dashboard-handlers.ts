@@ -21,7 +21,7 @@ export function handleChartTypeChange(
 // Función para obtener datos de ingresos según el rango de tiempo
 export function getRevenueDataByTimeRange(timeRange: string) {
   if (timeRange === "weekly") {
-    return getRevenueData("weekly");
+    return "weekly";
   }
-  return getRevenueData("monthly");
+  return "monthly";
 }
