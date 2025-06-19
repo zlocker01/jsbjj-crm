@@ -5,17 +5,17 @@ import { deleteAboutSection } from "@/data/aboutSections/deleteAboutSection";
 
 export async function GET(
   request: Request,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { data: aboutSection, error } = await getAboutSection(context.params.id);
+    const { data: aboutSection, error } = await getAboutSection(params.id);
     if (error) {
       return NextResponse.json({ error }, { status: 500 });
     }
     if (!aboutSection) {
       return NextResponse.json(
         { error: "Sección about no encontrada." },
-        { status: 404 },
+        { status: 404 }
       );
     }
     return NextResponse.json({ aboutSection });
@@ -27,11 +27,11 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const body = await request.json();
-    const error = await updateAboutSection({ ...body, id: context.params.id });
+    const error = await updateAboutSection({ ...body, id: params.id });
     if (error) {
       return NextResponse.json({ error }, { status: 500 });
     }
@@ -46,10 +46,10 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const error = await deleteAboutSection(context.params.id);
+    const error = await deleteAboutSection(params.id);
     if (error) {
       return NextResponse.json({ error }, { status: 500 });
     }
