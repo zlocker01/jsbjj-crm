@@ -1,6 +1,6 @@
 // Manejadores para acciones del dashboard
 
-// import { getRevenueData } from "@/data/dashboard-data";
+import { getRevenueData } from "@/data/dashboard-data";
 
 // Función para cambiar el rango de tiempo
 export function handleTimeRangeChange(
@@ -21,7 +21,7 @@ export function handleChartTypeChange(
 // Función para obtener datos de ingresos según el rango de tiempo
 export function getRevenueDataByTimeRange(timeRange: string) {
   if (timeRange === "weekly") {
-    return "weekly";
+    return getRevenueData("weekly");
   }
-  return "monthly";
+  return getRevenueData("monthly");
 }
