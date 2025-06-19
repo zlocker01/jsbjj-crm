@@ -9,7 +9,7 @@
     "lint": "biome check --apply",
     "format": "biome format --write .",
     "ts-lint": "tsc --noEmit --incremental",
-    "prepare": "husky install",
+    "prepare": "husky",
     "lint:staged": "lint-staged"
   },
   "dependencies": {
