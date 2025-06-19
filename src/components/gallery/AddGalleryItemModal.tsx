@@ -50,7 +50,7 @@ export default function AddGalleryItemModal({
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<GalleryFormData>({
-    resolver: zodResolver(galleryItemFormSchema),
+    resolver: zodResolver(galleryItemFormSchema) as any,
     defaultValues: {
       title: "",
       description: "",
