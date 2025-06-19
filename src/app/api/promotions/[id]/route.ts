@@ -1,0 +1,131 @@
+import { NextResponse } from "next/server";
+import { getPromotion } from "@/data/promotions/getPromotion";
+import { updatePromotion } from "@/data/promotions/updatePromotion";
+import { deletePromotion } from "@/data/promotions/deletePromotion";
+import type { Promotion } from "@/interfaces/promotions/Promotion";
+
+type RouteParams = {
+  params: {
+    id: string;
+  };
+};
+
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } },
+) {
+  try {
+    const promotionId = Number(params.id);
+
+    if (isNaN(promotionId)) {
+      return NextResponse.json(
+        { error: "ID de promoción no válido" },
+        { status: 400 },
+      );
+    }
+
+    const promotion = await getPromotion(promotionId);
+    if (!promotion) {
+      return NextResponse.json(
+        { error: "Promoción no encontrada." },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(promotion);
+  } catch (error) {
+    console.error("Error en GET /api/promotions/[id]:", error);
+    return NextResponse.json(
+      { error: "Error interno del servidor al obtener la promoción" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } },
+) {
+  try {
+    const promotionId = Number(params.id);
+
+    if (isNaN(promotionId)) {
+      return NextResponse.json(
+        { error: "ID de promoción no válido" },
+        { status: 400 },
+      );
+    }
+
+    const body: Promotion = await req.json();
+
+    const result = await updatePromotion(promotionId, {
+      title: body.title,
+      description: body.description,
+      price: body.price,
+      discount_price: body.discount_price,
+      valid_until: body.valid_until,
+      image: body.image,
+      category: body.category,
+      duration_minutes: body.duration_minutes,
+    });
+
+    if (typeof result === "string" && result.startsWith("Error")) {
+      return NextResponse.json({ error: result }, { status: 400 });
+    }
+
+    // Obtener la promoción actualizada para devolverla
+    const updatedPromotion = await getPromotion(promotionId);
+
+    if (!updatedPromotion) {
+      return NextResponse.json(
+        { error: "Promoción actualizada pero no se pudo recuperar" },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Promoción actualizada correctamente",
+      promotion: updatedPromotion,
+    });
+  } catch (error) {
+    console.error("Error en PUT /api/promotions/[id]:", error);
+    return NextResponse.json(
+      { error: "Error interno del servidor al actualizar la promoción" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } },
+) {
+  try {
+    const promotionId = Number(params.id);
+
+    if (isNaN(promotionId)) {
+      return NextResponse.json(
+        { error: "ID de promoción no válido" },
+        { status: 400 },
+      );
+    }
+
+    const result = await deletePromotion(promotionId);
+
+    if (typeof result === "string" && result.startsWith("Error")) {
+      return NextResponse.json({ error: result }, { status: 400 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Promoción eliminada correctamente",
+    });
+  } catch (error) {
+    console.error("Error en DELETE /api/promotions/[id]:", error);
+    return NextResponse.json(
+      { error: "Error interno del servidor al eliminar la promoción" },
+      { status: 500 },
+    );
+  }
+}
