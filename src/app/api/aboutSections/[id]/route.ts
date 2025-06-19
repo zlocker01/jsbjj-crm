@@ -3,8 +3,11 @@ import { getAboutSection } from "@/data/aboutSections/getAboutSection";
 import { updateAboutSection } from "@/data/aboutSections/updateAboutSection";
 import { deleteAboutSection } from "@/data/aboutSections/deleteAboutSection";
 
-export async function GET(_: Request, context: { params: { id: string } }) {
-  const { data: aboutSection, error } = await getAboutSection(context.params.id);
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { data: aboutSection, error } = await getAboutSection(params.id);
   if (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
@@ -19,10 +22,10 @@ export async function GET(_: Request, context: { params: { id: string } }) {
 
 export async function PUT(
   req: Request,
-  context: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
   const body = await req.json();
-  const error = await updateAboutSection({ ...body, id: context.params.id });
+  const error = await updateAboutSection({ ...body, id: params.id });
   if (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
@@ -32,10 +35,10 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _: Request,
-  context: { params: { id: string } },
+  request: Request,
+  { params }: { params: { id: string } }
 ) {
-  const error = await deleteAboutSection(context.params.id);
+  const error = await deleteAboutSection(params.id);
   if (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
