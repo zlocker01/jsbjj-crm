@@ -116,17 +116,17 @@ export default function NotFound() {
           <h3 className="mb-2 text-sm font-medium">Páginas populares</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/precios" className="text-primary hover:underline">
-                Precios
+              <Link href="/public/servicios" className="text-primary hover:underline">
+                Servicios
               </Link>
             </li>
             <li>
-              <Link href="/contacto" className="text-primary hover:underline">
+              <Link href="/public/contacto" className="text-primary hover:underline">
                 Contacto
               </Link>
             </li>
             <li>
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/public/login" className="text-primary hover:underline">
                 Iniciar sesión
               </Link>
             </li>
@@ -157,7 +157,7 @@ export default function NotFound() {
                       href="mailto:soporte@ejemplo.com"
                       className="text-primary hover:underline"
                     >
-                      soporte@ejemplo.com
+                      soporte@larochellestetica.com
                     </a>
                   </div>
                   <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export default function NotFound() {
                       href="tel:+123456789"
                       className="text-primary hover:underline"
                     >
-                      +12 345 6789
+                      +54 9 11 2222 3333
                     </a>
                   </div>
                 </div>
