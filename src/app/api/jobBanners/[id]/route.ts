@@ -3,7 +3,8 @@ import { getJobBannerSectionById } from "@/data/jobBannerSections/getJobBannerSe
 import { updateJobBannerSection } from "@/data/jobBannerSections/updateJobBannerSection";
 import { deleteJobBannerSection } from "@/data/jobBannerSections/deleteJobBannerSection";
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { data, error } = await getJobBannerSectionById(Number(params.id));
   if (error) {
     return NextResponse.json({ error }, { status: 500 });
@@ -17,10 +18,8 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   return NextResponse.json({ jobBannerSection: data });
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const body = await req.json();
   const error = await updateJobBannerSection({
     ...body,
@@ -34,10 +33,8 @@ export async function PUT(
   });
 }
 
-export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(_: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const error = await deleteJobBannerSection(Number(params.id));
   if (error) {
     return NextResponse.json({ error }, { status: 500 });

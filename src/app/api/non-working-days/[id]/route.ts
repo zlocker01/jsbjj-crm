@@ -3,10 +3,8 @@ import { NextResponse } from "next/server";
 import { getNonWorkingDays } from "@/data/schedule/getNonWorkingDays";
 import { deleteNonWorkingDay } from "@/data/schedule/deleteNonWorkingDay";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { id } = params;
     const numericId = Number(id);
@@ -37,10 +35,8 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   // Para implementar PUT, necesitarías una función `updateNonWorkingDay` en tu capa de datos (src/data/schedule/).
   // Esta función tomaría el `id` y los datos a actualizar.
   console.warn(
@@ -89,10 +85,8 @@ export async function PUT(
   */
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { id } = params;
     const numericId = Number(id);

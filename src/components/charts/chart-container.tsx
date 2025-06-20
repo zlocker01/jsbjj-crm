@@ -5,7 +5,7 @@ import { ResponsiveContainer } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChartContainerProps {
-  children?: ReactElement;
+  children?: ReactElement<any>;
   height?: number | string;
   width?: number | string;
   isLoading?: boolean;

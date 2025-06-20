@@ -4,10 +4,8 @@ import { updateHeroSection } from "@/data/heroSection/updateHeroSection";
 import { deleteHeroSection } from "@/data/heroSection/deleteHeroSection";
 import type { HeroSection } from "@/interfaces/heroSection/Interface";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } },
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params;
   const { data, error } = await getHeroSection(id);
 
@@ -28,10 +26,8 @@ export async function GET(
   return NextResponse.json({ data: data[0] });
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params;
   const body: HeroSection = await request.json();
   const error = await updateHeroSection(body);
@@ -48,10 +44,8 @@ export async function PUT(
   });
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params;
   const error = await deleteHeroSection(id);
 

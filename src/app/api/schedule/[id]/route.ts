@@ -3,10 +3,8 @@ import type { UpdateScheduleData } from "@/data/schedule/updateSchedule";
 import { updateSchedule } from "@/data/schedule/updateSchedule";
 import type { Schedule } from "@/interfaces/schedule/Schedule";
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const scheduleId = BigInt(params.id);
     const body = (await req.json()) as UpdateScheduleData;

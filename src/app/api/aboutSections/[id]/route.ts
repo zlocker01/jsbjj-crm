@@ -3,10 +3,8 @@ import { getAboutSection } from "@/data/aboutSections/getAboutSection";
 import { updateAboutSection } from "@/data/aboutSections/updateAboutSection";
 import { deleteAboutSection } from "@/data/aboutSections/deleteAboutSection";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { data: aboutSection, error } = await getAboutSection(params.id);
     if (error) {
@@ -25,10 +23,8 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const body = await request.json();
     const error = await updateAboutSection({ ...body, id: params.id });
@@ -44,10 +40,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const error = await deleteAboutSection(params.id);
     if (error) {

@@ -1,4 +1,3 @@
-// TailwindCSS configuration (compatible with Next.js 14+)
 const config = {
   darkMode: ["class"],
   content: [
@@ -18,6 +17,9 @@ const config = {
       },
     },
     extend: {
+      spacing: {
+        '8': '2rem', // Añadimos explícitamente el spacing-8
+      },
       backgroundImage: {
         "gold-gradient":
           "linear-gradient(135deg, rgba(198, 169, 97, 0.1) 0%, rgba(255, 255, 255, 0) 100%)",

@@ -3,7 +3,8 @@ import { getContactSectionById } from "@/data/contactSections/getContactSectionB
 import { updateContactSection } from "@/data/contactSections/updateContactSection";
 import { deleteContactSection } from "@/data/contactSections/deleteContactSection";
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const contactSection = await getContactSectionById(Number(params.id));
   if (!contactSection) {
     return NextResponse.json(
@@ -14,10 +15,8 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   return NextResponse.json({ contactSection });
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const body = await req.json();
   const error = await updateContactSection(Number(params.id), body);
   if (error) {
@@ -28,10 +27,8 @@ export async function PUT(
   });
 }
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(_: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const error = await deleteContactSection(params.id);
   if (error) {
     return NextResponse.json({ error }, { status: 500 });

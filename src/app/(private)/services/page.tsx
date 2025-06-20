@@ -1,0 +1,110 @@
+export const dynamic = 'force-dynamic';
+
+import { getLandingId } from "@/data/getLandingId";
+import { getServices } from "@/data/services/getServices";
+import { createClient } from "@/utils/supabase/server";
+import type { Service } from "@/interfaces/services/Service";
+import { ServiceCard } from "@/components/services/ServiceCard";
+import { AddServiceButton } from "@/components/services/AddServiceButton";
+import { AddPromotionButton } from "@/components/promotions/AddPromotionButton";
+import { getPromotions } from "@/data/promotions/getPromotion";
+import { PromotionCard } from "@/components/promotions/PromotionCard";
+import type { Promotion } from "@/interfaces/promotions/Promotion";
+
+export default async function ServicesPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-xl text-red-600">
+          Error: Debes iniciar sesión para ver esta página.
+        </p>
+      </div>
+    );
+  }
+
+  const landingId = await getLandingId();
+
+  if (!landingId) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-xl text-red-600">
+          Error: No se pudo cargar la página de servicios. No se encontró el ID
+          de la landing page.
+        </p>
+      </div>
+    );
+  }
+
+  const services: Service[] | null = await getServices(landingId);
+  const promotions: Promotion[] | null = await getPromotions();
+
+  if (!services) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-xl text-red-600">
+          Error: No se pudieron cargar los servicios. Inténtalo de nuevo más
+          tarde.
+        </p>
+      </div>
+    );
+  }
+
+  const userServices = services.filter(
+    (service) => service.user_id === user.id,
+  );
+  const userPromotions = promotions
+    ? promotions.filter((promotion) => promotion.user_id === user.id)
+    : [];
+
+  return (
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-3xl font-bold">Servicios</h2>
+          <p className="text-muted-foreground">
+            Administra los servicios de tu negocio
+          </p>
+        </div>
+        <AddServiceButton landingId={landingId} />
+      </div>
+
+      {userServices.length === 0 ? (
+        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+          <p className="text-muted-foreground mb-4">No hay servicios aún</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {userServices.map((service) => (
+            <ServiceCard key={service.id} service={service} />
+          ))}
+        </div>
+      )}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-3xl font-bold">Promociones</h2>
+          <p className="text-muted-foreground">
+            Administra las promociones de tu negocio
+          </p>
+        </div>
+        <AddPromotionButton landingId={landingId} />
+      </div>
+
+      {userPromotions.length === 0 ? (
+        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+          <p className="text-muted-foreground mb-4">No hay promociones aún</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {userPromotions.map((promotion) => (
+            <PromotionCard key={promotion.id} promotion={promotion} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

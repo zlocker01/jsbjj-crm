@@ -3,7 +3,8 @@ import { getEmployee } from "@/data/employees/getEmployee";
 import { updateEmployee } from "@/data/employees/updateEmployee";
 import { deleteEmployee } from "@/data/employees/deleteEmployee";
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const employee = await getEmployee(params.id);
   if (!employee) {
     return NextResponse.json(
@@ -14,10 +15,8 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   return NextResponse.json({ employee });
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const body = await req.json();
     const employeeId = params.id;
@@ -44,10 +43,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(_: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const success = await deleteEmployee(params.id);
   if (!success) {
     return NextResponse.json(

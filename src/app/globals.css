@@ -57,10 +57,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   html {
     font-family: var(--font-sans);
   }
@@ -128,4 +124,8 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.cell-size-8 {
+  --cell-size: var(--spacing-8);
 }

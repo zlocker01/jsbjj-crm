@@ -3,7 +3,8 @@ import { getFaqItemById } from "@/data/faqItems/getFaqItemById";
 import { updateFaqItem } from "@/data/faqItems/updateFaqItem";
 import { deleteFaqItem } from "@/data/faqItems/deleteFaqItem";
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const faqItem = await getFaqItemById(Number(params.id));
   if (!faqItem) {
     return NextResponse.json(
@@ -14,7 +15,7 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   return NextResponse.json({ faqItem });
 }
 
-export async function PUT(req: Request, context: { params: any }) {
+export async function PUT(req: Request, context: { params: Promise<any> }) {
   const { params } = context;
   const body = await req.json();
   const awaitedParams = await params;
@@ -28,10 +29,8 @@ export async function PUT(req: Request, context: { params: any }) {
   return NextResponse.json({ faqItem: updatedFaqItem });
 }
 
-export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(_: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const error = await deleteFaqItem(Number(params.id));
   if (error) {
     return NextResponse.json({ error }, { status: 500 });

@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function createRetryServerClient() {
-  const cookieStore = await cookies(); // Necesitamos await aquí
+  const cookieStore = await cookies(); 
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

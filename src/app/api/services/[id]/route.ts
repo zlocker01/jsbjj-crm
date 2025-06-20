@@ -3,10 +3,8 @@ import { getService } from "@/data/services/getService";
 import { updateService } from "@/data/services/updateService";
 import { deleteService } from "@/data/services/deleteService";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } },
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const service = await getService(Number(params.id));
   if (!service) {
     return NextResponse.json(
@@ -17,10 +15,8 @@ export async function GET(
   return NextResponse.json({ service });
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } },
-) {
+export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const body = await req.json();
     const serviceId = Number(params.id);
@@ -46,10 +42,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(_: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const error = await deleteService(Number(params.id));
   if (error) {
     return NextResponse.json({ error }, { status: 500 });

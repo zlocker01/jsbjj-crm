@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%; /* #1A1A1A - Texto principal */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 44 45% 57%; /* #C6A961 - Dorado principal */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 44 45% 57%; /* #C6A961 - Dorado principal */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 35%; /* #5A5A5A - Texto secundario */
+    --accent: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 44 45% 57%; /* #C6A961 - Dorado principal */
+    --radius: 0.5rem;
+
+    /* Sidebar variables */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 44 45% 57%; /* #C6A961 - Dorado principal */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 44 45% 57% / 0.1; /* Dorado con transparencia */
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
+  }
+
+  .dark {
+    --background: 0 0% 5%; /* #0E0E0E - Fondo oscuro */
+    --foreground: 0 0% 96%; /* #F5F5F5 - Texto principal modo oscuro */
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 44 45% 57%; /* #C6A961 - Dorado principal */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 44 45% 50%; /* Variante ligeramente más oscura para contraste */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 80%; /* #CCCCCC - Texto secundario modo oscuro */
+    --accent: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 44 45% 57%; /* #C6A961 - Dorado principal */
+
+    /* Sidebar variables - Modo oscuro */
+    --sidebar-background: 0 0% 7%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 44 45% 57%; /* #C6A961 - Dorado principal */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 44 45% 57% / 0.15; /* Dorado con transparencia */
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
+  }
+}
+
+@layer base {
+  * {
+    
+  }
+  body {
+    @apply bg-background text-foreground;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+}
+
+/* Degradados sutiles con dorado */
+.bg-gold-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(198, 169, 97, 0.1) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.dark .bg-gold-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(198, 169, 97, 0.1) 0%,
+    rgba(14, 14, 14, 0) 100%
+  );
+}
+
+/* Mejoras responsivas */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+
+  .xs\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Estilos para tablas responsivas */
+.table-container {
+  @apply w-full overflow-x-auto;
+}
+
+/* Transiciones suaves para el modo oscuro */
+* {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 768px) {
+  .flex-wrap-mobile {
+    @apply flex-wrap;
+  }
+
+  .full-width-mobile {
+    @apply w-full;
+  }
+
+  .stack-mobile {
+    @apply flex-col;
+  }
+}

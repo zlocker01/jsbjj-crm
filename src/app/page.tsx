@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import About from "@/components/landing-page/about";
 import { Team } from "@/components/landing-page/team";
 import Booking from "@/components/landing-page/booking";
