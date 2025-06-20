@@ -64,7 +64,7 @@ export const Login = () => {
         description: "Bienvenido nuevamente.",
         variant: "success",
       });
-      router.push("/profile");
+      router.push("/private/profile");
     }
   }
 
@@ -119,9 +119,9 @@ export const Login = () => {
       </Form>
       <Navigation
         link1="¿Olvidaste tu contraseña?"
-        href1="/olvide-password"
+        href1="/public/olvide-password"
         link2="Registrarse"
-        href2="/registro"
+        href2="/public/registro"
       />
     </div>
   );

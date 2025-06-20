@@ -20,7 +20,7 @@ export const OAuth = () => {
         redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL!,
         // redirectTo: 'http://localhost:3000/auth/callback', // despliegue de desarrollo
         data: {
-          role: "empleado",
+          role: "admin",
         },
       } as any,
     });
