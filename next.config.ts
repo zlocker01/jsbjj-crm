@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "mdpgiynwstflshreoejy.supabase.co",
-        port: "",
+        port: "", 
         pathname: "/storage/v1/object/public/**",
       },
     ],
@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   transpilePackages: ["@react-pdf/renderer"],
-  webpack: (config) => {
+  webpack: (config: any) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: "standalone",
+  // Removed "standalone" output that was causing the build error
   serverExternalPackages: ['@supabase/ssr'],
 };
 
