@@ -1,6 +1,6 @@
 "use client";
 
-export const dynamic = false;
+export const dynamic = "force-static";
 
 const page = () => {
   return (
