@@ -4,6 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { Poppins, Playfair_Display } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import Header from '@/components/landing-page/header';
+import Footer from '@/components/landing-page/footer';
 
 const poppins = Poppins({
   weight: ['400', '500', '600'],
@@ -50,7 +52,6 @@ export default function RootLayout({
           {children}
           <Toaster />
           <Footer />
-          <NewsletterModal />
         </ThemeProvider>
       </body>
     </html>
