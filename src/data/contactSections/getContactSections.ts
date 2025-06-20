@@ -9,7 +9,9 @@ export const getContactSections = async (
 }> => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("contact_sections").select("*");
+  const { data, error } = await supabase.from("contact_sections")
+    .select("*")
+    .eq("landing_page_id", landingId);
 
   if (error) {
     console.error("🚀 ~ getContactSections error:", error.message);

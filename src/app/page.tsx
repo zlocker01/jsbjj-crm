@@ -21,9 +21,10 @@ import { getFaqItems } from "@/data/faqItems/getFaqItems";
 import { getJobBannerSections } from "@/data/jobBannerSections/getJobBannerSections";
 import { getEmployees } from "@/data/employees/getEmployees";
 import { getSchedules } from "@/data/schedule/getSchedules";
+import { LandingPage } from "@/interfaces/landingPages/LandingPage";
 
 export default async function Home() {
-  const landingId = await getLandingId();
+  const landingId: string | null = await getLandingId();
 
   if (!landingId) {
     return (
@@ -32,7 +33,6 @@ export default async function Home() {
       </div>
     );
   }
-
   // Obtener datos de las secciones (las que devuelven { data, error })
   const [
     { data: heroSection, error: heroError },
@@ -42,7 +42,7 @@ export default async function Home() {
     { data: jobBanner, error: jobBannerError },
     employees,
     schedules,
-  ] = await Promise.all([
+  ] = await Promise.all([ 
     getHeroSection(landingId),
     getAboutSection(landingId),
     getContactSections(landingId),

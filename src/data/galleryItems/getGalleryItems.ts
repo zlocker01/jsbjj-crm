@@ -7,11 +7,6 @@ export async function getGalleryItems(
 ): Promise<GalleryItem[] | null> {
   try {
     const supabase = await createClient();
-    const userId = await getUserId();
-
-    if (!userId) {
-      return null;
-    }
 
     const { data, error } = await supabase
       .from("gallery_items")

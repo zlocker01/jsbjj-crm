@@ -1,9 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import type { FaqItem } from "@/interfaces/faqItems/FaqItem";
 
-export async function getFaqItems(
+export const getFaqItems = async (
   landingPageId: string,
-): Promise<FaqItem[] | undefined> {
+): Promise<FaqItem[] | undefined> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase

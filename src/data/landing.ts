@@ -9,7 +9,6 @@ import type {
   ContactContent,
 } from "@/interfaces/landing";
 
-// Cliente de Supabase
 const supabase =  await createClient();
 
 /**
