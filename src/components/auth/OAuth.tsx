@@ -17,11 +17,10 @@ export const OAuth = () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "facebook",
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL!,
-        // redirectTo: 'http://localhost:3000/auth/callback', // despliegue de desarrollo
         data: {
           role: "admin",
         },
+        redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL!,
       } as any,
     });
     if (error || !data.url) {

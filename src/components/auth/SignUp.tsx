@@ -42,7 +42,7 @@ export const SignUp = () => {
       password: values.password as string,
       options: {
         data: {
-          role: "empleado",
+          role: "admin",
         },
       },
     };

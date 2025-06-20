@@ -42,52 +42,52 @@ export function DashboardLayout({
   const routes = [
     // {
     //   title: 'Dashboard',
-    //   href: '/dashboard',
+    //   href: '/session/dashboard',
     //   icon: LayoutDashboard,
     // },
     {
       title: "Editor de Landing",
-      href: "/landing-editor",
+      href: "/session/landing-editor",
       icon: Pencil,
     },
     {
       title: "Personal",
-      href: "/employees",
+      href: "/session/employees",
       icon: Users,
     },
     {
       title: "Galeria de Imagenes",
-      href: "/images-gallery",
+      href: "/session/images-gallery",
       icon: CameraIcon,
     },
     {
       title: "Gestión de Horarios",
-      href: "/schedule",
+      href: "/session/schedule",
       icon: Clock,
     },
     {
       title: "Servicios y Promos",
-      href: "/services",
+      href: "/session/services",
       icon: Tag,
     },
     {
       title: "Calendario de Citas",
-      href: `/calendar/${landingId}`,
+      href: `/session/calendar/${landingId}`,
       icon: Calendar,
     },
     {
       title: "Clientes",
-      href: "/clients",
+      href: "/session/clients",
       icon: Users,
     },
-    {
-      title: "Chatbot",
-      href: "/chatbot",
-      icon: MessageSquare,
-    },
+    // {
+    //   title: "Chatbot",
+    //   href: "/session/chatbot",
+    //   icon: MessageSquare,
+    // },
     {
       title: "Perfil",
-      href: "/profile",
+      href: "/session/profile",
       icon: User,
     },
   ];

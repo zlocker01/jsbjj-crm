@@ -1,27 +1,27 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import { Poppins, Playfair_Display } from "next/font/google";
-import { cn } from "@/lib/utils";
+import './globals.css';
+import type { Metadata } from 'next';
+import { Toaster } from '@/components/ui/toaster';
+import { ThemeProvider } from '@/components/theme/theme-provider';
+import { Poppins, Playfair_Display } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
 const poppins = Poppins({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  display: "swap",
+  weight: ['400', '500', '600'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  display: 'swap',
 });
 
 const playfairDisplay = Playfair_Display({
-  weight: ["700", "800"],
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
+  weight: ['700', '800'],
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "La Rochelle - Estetica & Barberia",
-  description: "Servicios de estética y barberia profesional",
+  title: 'La Rochelle - Estetica & Barberia',
+  description: 'Servicios de estética y barberia profesional',
 };
 
 export default function RootLayout({
@@ -32,12 +32,13 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head />
+      <Header />
       <body
         suppressHydrationWarning
         className={cn(
           poppins.variable,
           playfairDisplay.variable,
-          "min-h-screen bg-background antialiased font-sans",
+          'min-h-screen bg-background antialiased font-sans'
         )}
       >
         <ThemeProvider
@@ -48,6 +49,8 @@ export default function RootLayout({
         >
           {children}
           <Toaster />
+          <Footer />
+          <NewsletterModal />
         </ThemeProvider>
       </body>
     </html>
