@@ -70,14 +70,14 @@ export default async function Home() {
   return (
     <>
       <Header />
-      <main>
+      <main className="overflow-x-hidden">
         {heroSection && <Hero data={heroSection[0]} />}
         <Services landingId={landingId} />
         {aboutSection && <About data={aboutSection[0]} />}
         <Team data={employees ?? []} />
         <Gallery data={galleryItems ?? []} />
         <Promotions landingId={landingId} />
-        {/* <Booking /> */}
+        {/* <Booking />  */}
         {contactSection && (
           <Location data={contactSection[0]} schedules={schedules} />
         )}
