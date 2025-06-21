@@ -119,9 +119,9 @@ export const Login = () => {
       </Form>
       <Navigation
         link1="¿Olvidaste tu contraseña?"
-        href1="/public/olvide-password"
+        href1="/olvide-password"
         link2="Registrarse"
-        href2="/public/registro"
+        href2="/registro"
       />
     </div>
   );
