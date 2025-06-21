@@ -30,7 +30,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function NewsletterModal({landingId}: {landingId: string}) {
+export default function NewsletterModal({ landingId }: { landingId: string }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -49,37 +49,48 @@ export default function NewsletterModal({landingId}: {landingId: string}) {
 
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [landingId]);
 
-  const onSubmit = async(values: z.infer<typeof formSchema>) => {
-    const supabase = await createClient();
-    const { data, error } = await supabase.from("newsletter_subscribers").insert([
-      {
-        email: values.email,
-        landing_page_id: landingId,
-        subscribed_at: new Date(),
-        is_subscribed: true,
-        source: 'web',
-      },
-    ]);
-    if (error) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const supabase = await createClient();
+
+      const { data, error } = await supabase.from("newsletter_subscribers").insert([
+        {
+          email: values.email,
+          landing_page_id: landingId,
+          subscribed_at: new Date().toISOString(), // Formato ISO para fechas en DB
+          is_subscribed: true,
+          source: "web",
+        },
+      ]);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Hubo un error al suscribirte al newsletter.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      localStorage.setItem("hasSeenNewsletterModal", "true");
+      setOpen(false);
       toast({
-        title: "Error",
-        description: "Hubo un error al suscribirte al newsletter.",
+        title: "¡Gracias por suscribirte!",
+        description: "Recibirás nuestras promociones y tips de belleza.",
+        variant: "success",
+      });
+    } catch (e) {
+      toast({
+        title: "Error inesperado",
+        description: "No pudimos procesar tu solicitud. Inténtalo más tarde.",
         variant: "destructive",
       });
-      return;
     }
-    setOpen(false);
-    toast({
-      title: "¡Gracias por suscribirte!",
-      description: "Recibirás nuestras promociones y tips de belleza.",
-      variant: "success",
-    });
   };
 
   const handleClose = () => {
-    localStorage.setItem("hasSeenNewsletterModal", "true");
     setOpen(false);
   };
 
