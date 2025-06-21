@@ -82,7 +82,7 @@ export default async function Home() {
           <Location data={contactSection[0]} schedules={schedules} />
         )}
         {faqs && faqs.length > 0 && <Faq data={faqs} />}
-        {jobBanner && <JobBanner data={jobBanner[0]} />}
+        {/* {jobBanner && <JobBanner data={jobBanner[0]} />} */}
         <WhatsAppButton />
         <Footer />
       </main>
