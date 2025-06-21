@@ -21,6 +21,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-   '/private/:path*',
+   '/session/:path*',
   ],
 };
