@@ -1,30 +1,21 @@
-export const sendJobApplicationEmail = async ({
-  name,
-  email,
-  message,
-  attachment,
-}) => {
-      from: "La Rochelle <onboarding@resend.dev>", 
-      subject: `Nueva solicitud de trabajo de ${name}`,
-      reply_to: email,
-      html: `
-        <h1>Nueva Solicitud de Trabajo</h1>
-        <p><strong>Nombre:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Mensaje:</strong></p>
-        <p>${message || "El candidato no dejó un mensaje."}</p>
-      `,
-      attachments: [
-        {
-          filename: attachment.filename,
-          content: attachment.content,
-        },
-      ],
-    });
-
-    return data;
-  } catch (error) {
-    console.error("Error sending job application email:", error);
-    throw new Error("Failed to send email.");
-  }
-};
+export function generateJobApplicationEmailHtml(values: {
+  name: string;
+  email: string;
+  message: string;
+}) {
+  return `
+      <html>
+        <body style="font-family: sans-serif; padding: 20px;">
+          <h2>Nuevo mensaje desde tu sitio</h2>
+          <p><strong>Nombre:</strong> ${values.name}</p>
+          <p><strong>Email:</strong> ${values.email}</p>
+          <p><strong>Mensaje:</strong></p>
+          <div style="background: #f0f0f0; padding: 10px; border-radius: 6px;">
+            ${values.message}
+          </div>
+          <hr />
+          <p style="font-size: 12px; color: #999;">Este correo fue enviado desde el formulario de empleo de La Rochelle.</p>
+        </body>
+      </html>
+    `;
+}
