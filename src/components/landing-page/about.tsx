@@ -22,8 +22,8 @@ export default function About({ data }: { data: AboutSection }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
           <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-lg">
             <Image
-              src="/placeholder.svg?height=800&width=1200"
-              alt="Nuestro salón"
+              src="/landing-page/about.jpg"
+              alt="servicios de barbería Tlaxcala"
               fill
               className="object-cover"
             />

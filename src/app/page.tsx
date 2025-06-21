@@ -86,7 +86,7 @@ export default async function Home() {
         <WhatsAppButton />
         <Footer />
       </main>
-      <NewsletterModal />
+      <NewsletterModal landingId={landingId} />
     </>
   );
 }

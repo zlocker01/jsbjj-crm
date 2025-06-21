@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { createClient } from "@/utils/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -29,7 +30,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function NewsletterModal() {
+export default function NewsletterModal({landingId}: {landingId: string}) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -41,9 +42,7 @@ export default function NewsletterModal() {
   });
 
   useEffect(() => {
-    const hasSeenModal = localStorage.getItem("hasSeenNewsletterModal");
-
-    if (!hasSeenModal) {
+    if (!landingId) {
       const timer = setTimeout(() => {
         setOpen(true);
       }, 15000); // 15 segundos
@@ -52,12 +51,30 @@ export default function NewsletterModal() {
     }
   }, []);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    localStorage.setItem("hasSeenNewsletterModal", "true");
+  const onSubmit = async(values: z.infer<typeof formSchema>) => {
+    const supabase = await createClient();
+    const { data, error } = await supabase.from("newsletter_subscribers").insert([
+      {
+        email: values.email,
+        landing_page_id: landingId,
+        subscribed_at: new Date(),
+        is_subscribed: true,
+        source: 'web',
+      },
+    ]);
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Hubo un error al suscribirte al newsletter.",
+        variant: "destructive",
+      });
+      return;
+    }
     setOpen(false);
     toast({
       title: "¡Gracias por suscribirte!",
       description: "Recibirás nuestras promociones y tips de belleza.",
+      variant: "success",
     });
   };
 
