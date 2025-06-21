@@ -169,14 +169,6 @@ export function DashboardLayout({
                   className="max-h-20"
                 />
               </Link>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="ml-auto"
-                onClick={() => setOpen(false)}
-              >
-                <X className="h-5 w-5" />
-              </Button>
             </SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-auto">
