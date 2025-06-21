@@ -49,10 +49,6 @@ export default async function EmployeesPage() {
     );
   }
 
-  const userEmployees = employees.filter(
-    (employee) => employee.user_id === user.id,
-  );
-
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <div className="flex justify-between items-center mb-8">
@@ -65,7 +61,7 @@ export default async function EmployeesPage() {
         <AddEmployeeButton />
       </div>
 
-      {userEmployees.length === 0 ? (
+      {employees?.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed rounded-lg">
           <p className="text-muted-foreground mb-4">
             No hay empleados registrados aún
@@ -73,7 +69,7 @@ export default async function EmployeesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userEmployees.map((employee) => (
+          {employees?.map((employee) => (
             <EmployeeCard key={employee.id} employee={employee} />
           ))}
         </div>

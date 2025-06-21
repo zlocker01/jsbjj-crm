@@ -34,7 +34,6 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head />
-      {/* <Header /> */}
       <body
         suppressHydrationWarning
         className={cn(
@@ -51,7 +50,6 @@ export default function RootLayout({
         >
           {children}
           <Toaster />
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

@@ -54,13 +54,6 @@ export default async function ServicesPage() {
     );
   }
 
-  const userServices = services.filter(
-    (service) => service.user_id === user.id,
-  );
-  const userPromotions = promotions
-    ? promotions.filter((promotion) => promotion.user_id === user.id)
-    : [];
-
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <div className="flex justify-between items-center mb-8">
@@ -73,13 +66,13 @@ export default async function ServicesPage() {
         <AddServiceButton landingId={landingId} />
       </div>
 
-      {userServices.length === 0 ? (
+      {services?.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed rounded-lg">
           <p className="text-muted-foreground mb-4">No hay servicios aún</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userServices.map((service) => (
+          {services?.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
         </div>
@@ -94,13 +87,13 @@ export default async function ServicesPage() {
         <AddPromotionButton landingId={landingId} />
       </div>
 
-      {userPromotions.length === 0 ? (
+      {promotions?.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed rounded-lg">
           <p className="text-muted-foreground mb-4">No hay promociones aún</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userPromotions.map((promotion) => (
+          {promotions?.map((promotion) => (
             <PromotionCard key={promotion.id} promotion={promotion} />
           ))}
         </div>
