@@ -64,7 +64,7 @@ export function Team({ data }: { data: Employee[] }) {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {skillsArray.map((skill, index) => (
-                      <Badge key={index} variant="outline">
+                      <Badge key={index} variant="gold">
                         {skill}
                       </Badge>
                     ))}

@@ -132,7 +132,7 @@ export default function AddGalleryItemModal({
         },
         body: JSON.stringify({
           ...formData,
-          landing_page_id: landingId, // Asegurarnos de que siempre use el landingId correcto
+          landing_page_id: landingId,
         }),
       });
 

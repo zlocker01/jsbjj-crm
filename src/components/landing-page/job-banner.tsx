@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,23 +17,62 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import type { JobBannerSection } from "@/interfaces/jobBannerSections/JobBannerSection";
+import { Loader2 } from "lucide-react";
 
 export default function JobBanner({ data }: { data: JobBannerSection }) {
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setOpen(false);
-    toast({
-      title: "Solicitud enviada",
-      description: "Hemos recibido tu solicitud. Te contactaremos pronto.",
-      variant: "success",
-    });
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const cvFile = formData.get("cv") as File;
+
+    if (cvFile && cvFile.size === 0) {
+      toast({
+        title: "Error",
+        description: "Por favor, selecciona un archivo para tu CV.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/job-application", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al enviar la solicitud.");
+      }
+
+      setOpen(false);
+      toast({
+        title: "¡Solicitud enviada!",
+        description: "Hemos recibido tu solicitud. Te contactaremos pronto.",
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "No se pudo enviar tu solicitud. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section className="py-12 bg-primary text-primary-foreground">
+    <section className="py-12 bg-gradient-to-r from-amber-400 to-yellow-500 text-white">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">{data.title}</h2>
         <p className="max-w-2xl mx-auto mb-6">{data.subtitle}</p>
@@ -42,55 +82,36 @@ export default function JobBanner({ data }: { data: JobBannerSection }) {
               Envíanos tu CV o portafolio
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Únete a nuestro equipo</DialogTitle>
-              <DialogDescription>
-                Completa el formulario y adjunta tu CV o portafolio. Revisaremos
-                tu información y te contactaremos.
-              </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nombre completo</Label>
-                  <Input id="name" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Teléfono</Label>
-                  <Input id="phone" required />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">Nombre completo</Label>
+                <Input id="name" name="name" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Correo electrónico</Label>
-                <Input id="email" type="email" required />
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" name="email" type="email" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="position">Posición de interés</Label>
-                <Input id="position" required />
+                <Label htmlFor="message">Mensaje (Opcional)</Label>
+                <Textarea id="message" name="message" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="experience">Experiencia</Label>
-                <Textarea id="experience" required />
+                <Label htmlFor="cv">Adjunta tu CV (PDF, DOCX)</Label>
+                <Input id="cv" name="cv" type="file" required accept=".pdf,.doc,.docx" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="cv">CV o Portafolio (PDF, DOC, JPG)</Label>
-                <Input
-                  id="cv"
-                  type="file"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                >
-                  Cancelar
+              <DialogFooter>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...</>
+                  ) : (
+                    "Enviar Solicitud"
+                  )}
                 </Button>
-                <Button type="submit">Enviar solicitud</Button>
-              </div>
+              </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>

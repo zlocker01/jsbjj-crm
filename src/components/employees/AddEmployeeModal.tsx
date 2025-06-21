@@ -113,7 +113,7 @@ export function AddEmployeeModal({
       const cleanName = file.name.replace(/\s+/g, "-").toLowerCase();
       const fileName = `${Date.now()}-${cleanName}`;
 
-      // Subir el archivo al bucket 'landing-images'
+      // Subir el archivo al bucket 'employees-images'
       const { error: uploadError } = await supabase.storage
         .from("employees-images")
         .upload(fileName, file);
@@ -129,7 +129,6 @@ export function AddEmployeeModal({
 
       const publicUrl = urlData.publicUrl;
 
-      // Establecer la URL en el formulario
       form.setValue("image", publicUrl, { shouldValidate: true });
 
       toast({
@@ -319,58 +318,68 @@ export function AddEmployeeModal({
               }}
             />
 
-            <div>
-              <FormLabel>Foto del Empleado</FormLabel>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                className="hidden"
-              />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Foto del Empleado</FormLabel>
+                  <FormControl>
+                    <div className="space-y-2">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
 
-              <div className="mt-2 flex items-center gap-4">
-                {previewUrl || form.watch("image") ? (
-                  <div className="relative">
-                    <img
-                      src={previewUrl || form.watch("image")}
-                      alt="Vista previa"
-                      className="h-24 w-24 rounded-md object-cover"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute -right-2 -top-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      onClick={removeImage}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={triggerFileInput}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Upload className="mr-2 h-4 w-4" />
-                    )}
-                    Subir Imagen
-                  </Button>
-                )}
+                      <div className="mt-2 flex items-center gap-4">
+                        {previewUrl || field.value ? (
+                          <div className="relative">
+                            <img
+                              src={previewUrl || field.value}
+                              alt="Vista previa"
+                              className="h-24 w-24 rounded-md object-cover"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute -right-2 -top-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              onClick={removeImage}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={triggerFileInput}
+                            disabled={isUploading}
+                          >
+                            {isUploading ? (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                              <Upload className="mr-2 h-4 w-4" />
+                            )}
+                            Subir Imagen
+                          </Button>
+                        )}
 
-                <div className="text-sm text-muted-foreground">
-                  {isUploading
-                    ? "Subiendo imagen..."
-                    : "Sube una foto del empleado (opcional)"}
-                </div>
-              </div>
-              <input type="hidden" {...form.register("image")} />
-            </div>
+                        <div className="text-sm text-muted-foreground">
+                          {isUploading
+                            ? "Subiendo imagen..."
+                            : "Sube una foto del empleado (opcional)"}
+                        </div>
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <DialogFooter>
               <Button

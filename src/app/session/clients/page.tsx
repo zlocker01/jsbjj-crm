@@ -122,7 +122,7 @@ export default function ClientsPage() {
           </Card>
 
           <div className="mt-4">
-            <AdvancedMetrics />
+            {/* <AdvancedMetrics /> */}
           </div>
         </div>
 
@@ -175,7 +175,4 @@ export default function ClientsPage() {
       </Dialog>
     </div>
   );
-}
-function setIsNewClientDialogOpen(arg0: boolean) {
-  throw new Error("Function not implemented.");
 }
