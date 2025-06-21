@@ -40,7 +40,7 @@ export default function RootLayout({
         className={cn(
           poppins.variable,
           playfairDisplay.variable,
-          'min-h-screen bg-background antialiased font-sans'
+          'min-h-screen bg-background antialiased font-sans mt-28'
         )}
       >
         <ThemeProvider

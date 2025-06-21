@@ -34,7 +34,7 @@ export default function NotFound() {
   }, [redirectSeconds]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted p-4 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted p-4 text-center mt-36">
       <div className="mx-auto max-w-md space-y-6 sm:max-w-lg">
         {/* Número 404 estilizado con animación */}
         <div className="relative mx-auto w-full max-w-[280px]">
