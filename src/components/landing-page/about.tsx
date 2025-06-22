@@ -1,11 +1,10 @@
 import Image from "next/image";
 import type { AboutSection } from "@/interfaces/aboutSections/AboutSection";
-import { useId } from 'react';
+import AboutCarousel from "./AboutCarousel";
 
 export default function About({ data }: { data: AboutSection }) {
-  const uniqueId = useId();
   return (
-    <section id={uniqueId} className="py-16 md:py-24">
+    <section id="about" className="py-16 md:py-24">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -18,14 +17,8 @@ export default function About({ data }: { data: AboutSection }) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-          <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-lg">
-            <Image
-              src="/landing-page/about.jpg"
-              alt="servicios de barbería Tlaxcala"
-              fill
-              className="object-cover"
-            />
-          </div>
+          {/* images carusel */}
+          <AboutCarousel />
           <div className="space-y-6">
             <h3 className="text-2xl font-bold">{data.title}</h3>
             <p className="text-muted-foreground">{data.description}</p>
