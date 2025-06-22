@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendJobApplicationEmail } from "@/utils/resend/jobApplicationEmailTemplate";
+import { generateJobApplicationEmailHtml } from "@/utils/resend/jobApplicationEmailTemplate";
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     // Convertir el archivo a un Buffer para adjuntarlo
     const buffer = Buffer.from(await cv.arrayBuffer());
 
-    await sendJobApplicationEmail({
+    await generateJobApplicationEmailHtml({
       name,
       email,
       message,

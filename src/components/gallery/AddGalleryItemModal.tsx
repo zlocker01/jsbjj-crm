@@ -171,7 +171,7 @@ export default function AddGalleryItemModal({
       <DialogTrigger asChild>
         <Button variant="default">Agregar Item</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Agregar nuevo item a la galería</DialogTitle>
         </DialogHeader>
