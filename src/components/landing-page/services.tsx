@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import {
   Scissors,
@@ -126,50 +127,66 @@ export default function Services({ landingId }: { landingId: string }) {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredServices.map((service) => (
-                  <Card
-                    key={service.id}
-                    className="overflow-hidden transition-all hover:shadow-lg"
-                  >
-                    <div className="relative h-48 w-full">
-                      <Image
-                        src={service.image || "/placeholder.svg"}
-                        alt={service.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <CardHeader>
-                      <CardTitle>{service.title}</CardTitle>
-                      <CardDescription>{service.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-xl font-bold text-primary">
-                        ${service.price.toFixed(2)}
-                      </p>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>{service.duration_minutes} minutos</span>
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: filteredServices.length > 3, // Loop only if there are enough items
+                }}
+                className="w-full max-w-sm md:max-w-xl lg:max-w-4xl mx-auto"
+              >
+                <CarouselContent>
+                  {filteredServices.map((service) => (
+                    <CarouselItem
+                      key={service.id}
+                      className="md:basis-1/2 lg:basis-1/3"
+                    >
+                      <div className="p-1 h-full">
+                        <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col h-full">
+                          <div className="relative h-48 w-full">
+                            <Image
+                              src={service.image || "/placeholder.svg"}
+                              alt={service.title}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <CardHeader>
+                            <CardTitle>{service.title}</CardTitle>
+                            <CardDescription>
+                              {service.description}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-2 flex-grow">
+                            <p className="text-xl font-bold text-primary">
+                              ${service.price.toFixed(2)}
+                            </p>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Clock className="h-4 w-4" />
+                              <span>{service.duration_minutes} minutos</span>
+                            </div>
+                            <Badge variant="outline" className="capitalize">
+                              {service.category.toLowerCase()}
+                            </Badge>
+                          </CardContent>
+                          <CardFooter>
+                            <Button asChild className="w-full">
+                              <Link
+                                href="#booking"
+                                className="flex items-center gap-2"
+                              >
+                                <CalendarPlus className="h-4 w-4" />
+                                Agendar
+                              </Link>
+                            </Button>
+                          </CardFooter>
+                        </Card>
                       </div>
-                      <Badge variant="outline" className="capitalize">
-                        {service.category.toLowerCase()}
-                      </Badge>
-                    </CardContent>
-                    <CardFooter>
-                      <Button asChild className="w-full">
-                        <Link
-                          href="#booking"
-                          className="flex items-center gap-2"
-                        >
-                          <CalendarPlus className="h-4 w-4" />
-                          Agendar
-                        </Link>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="hidden md:flex" />
+                <CarouselNext className="hidden md:flex" />
+              </Carousel>
             )}
           </TabsContent>
         </Tabs>
