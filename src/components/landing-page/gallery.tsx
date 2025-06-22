@@ -6,6 +6,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import type { GalleryItem } from "@/interfaces/galleryItems/GalleryItem";
 
 const categories = [
@@ -69,55 +76,72 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
 
           <TabsContent value={category} className="mt-0">
             {filteredItems.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredItems.map((item) => (
-                  <Dialog key={item.id}>
-                    <DialogTrigger asChild>
-                      <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-all">
-                        <div className="relative h-64 w-full">
-                          <Image
-                            src={item.image || "/placeholder.svg"}
-                            alt={item.title || "Imagen de galería"}
-                            fill
-                            className="object-cover"
-                          />
-                          {item.is_before_after && (
-                            <Badge className="absolute top-2 right-2 bg-primary">
-                              Antes/Después
-                            </Badge>
-                          )}
-                        </div>
-                        <CardContent className="p-4">
-                          <h3 className="font-medium">{item.title}</h3>
-                          {item.description && (
-                            <p className="text-sm text-muted-foreground">
-                              {item.description}
-                            </p>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-3xl">
-                      <div className="relative h-[60vh] w-full">
-                        <Image
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.title || "Imagen ampliada"}
-                          fill
-                          className="object-contain"
-                        />
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {filteredItems.map((item) => (
+                    <CarouselItem
+                      key={item.id}
+                      className="md:basis-1/2 lg:basis-1/4"
+                    >
+                      <div className="p-1">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-all">
+                              <div className="relative h-64 w-full">
+                                <Image
+                                  src={item.image || "/placeholder.svg"}
+                                  alt={item.title || "Imagen de galería"}
+                                  fill
+                                  className="object-cover"
+                                />
+                                {item.is_before_after && (
+                                  <Badge className="absolute top-2 right-2 bg-primary">
+                                    Antes/Después
+                                  </Badge>
+                                )}
+                              </div>
+                              <CardContent className="p-4">
+                                <h3 className="font-medium">{item.title}</h3>
+                                {item.description && (
+                                  <p className="text-sm text-muted-foreground">
+                                    {item.description}
+                                  </p>
+                                )}
+                              </CardContent>
+                            </Card>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-3xl">
+                            <div className="relative h-[60vh] w-full">
+                              <Image
+                                src={item.image || "/placeholder.svg"}
+                                alt={item.title || "Imagen ampliada"}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <div className="text-center">
+                              <h3 className="text-xl font-medium">{item.title}</h3>
+                              {item.description && (
+                                <p className="text-muted-foreground">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
-                      <div className="text-center">
-                        <h3 className="text-xl font-medium">{item.title}</h3>
-                        {item.description && (
-                          <p className="text-muted-foreground">
-                            {item.description}
-                          </p>
-                        )}
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                ))}
-              </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
             ) : (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
