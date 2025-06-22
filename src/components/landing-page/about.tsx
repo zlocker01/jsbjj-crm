@@ -11,11 +11,9 @@ export default function About({ data }: { data: AboutSection }) {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Sobre La Rochelle
           </h2>
-          <p className="text-muted-foreground max-w-3xl mx-auto">
-            En La Rochelle, nos dedicamos a realzar la belleza natural de cada
-            cliente. Nuestro equipo de profesionales certificados combina
-            técnicas tradicionales con las últimas tendencias para ofrecerte
-            resultados excepcionales.
+          <p className="text-muted-foreground max-w-3xl mx-auto text-left">
+            En La Rochelle, realzamos tu belleza natural con técnicas de vanguardia y atención personalizada. Somos un centro de estética en Tlaxcala centro que fusiona tradición y tendencia en cada servicio. Nuestro equipo de especialistas ofrece lo mejor en tratamientos de belleza, manicura y pedicura, uñas acrílicas y de gel, así como un área exclusiva de barbería en Tlaxcala con cortes masculinos, afeitado con navaja y arreglo de barba profesional.
+            Ya sea que busques un salón de belleza cerca de ti o una clínica de belleza en Tlaxcala, La Rochelle es tu lugar.
           </p>
         </div>
 
@@ -37,20 +35,20 @@ export default function About({ data }: { data: AboutSection }) {
                 <p className="text-sm text-muted-foreground">
                   Clientes satisfechos
                 </p>
-              </div>
-              <div className="bg-muted/50 p-4 rounded-lg text-center">
-                <h4 className="text-4xl font-bold text-primary">+10</h4>
+              </div> */}
+              {/* <div className="bg-muted/50 p-4 rounded-lg text-center">
+                <h4 className="text-4xl font-bold text-primary">+3</h4>
                 <p className="text-sm text-muted-foreground">
                   Profesionales certificados
                 </p>
               </div>
               <div className="bg-muted/50 p-4 rounded-lg text-center">
-                <h4 className="text-4xl font-bold text-primary">+20</h4>
+                <h4 className="text-4xl font-bold text-primary">+10</h4>
                 <p className="text-sm text-muted-foreground">
                   Servicios especializados
                 </p>
-              </div>
-              <div className="bg-muted/50 p-4 rounded-lg text-center">
+              </div> */}
+              {/* <div className="bg-muted/50 p-4 rounded-lg text-center">
                 <h4 className="text-4xl font-bold text-primary">8</h4>
                 <p className="text-sm text-muted-foreground">
                   Años de experiencia

@@ -52,9 +52,7 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
             Nuestra Galería
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Explora algunos de nuestros mejores trabajos y transformaciones.
-            Cada imagen representa el compromiso con la calidad y la
-            satisfacción de nuestros clientes.
+            Explora algunos de nuestros mejores trabajos en estética y barbería en Tlaxcala centro. Cada imagen refleja nuestro compromiso con la calidad, el detalle y la satisfacción de quienes confían en nuestros servicios de belleza, uñas y barbería.
           </p>
         </div>
 
