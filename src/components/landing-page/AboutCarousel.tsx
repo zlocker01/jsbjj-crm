@@ -8,15 +8,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const aboutImages = [
     { src: "/landing-page/about.jpg", alt: "servicios de barbería Tlaxcala" },
     {
-        src: "/landing-page/gallery/barberia.jpg",
-        alt: "peluquería Tlaxcala",
-    },
-    {
-        src: "/landing-page/gallery/local.webp",
+        src: "/landing-page/local.webp",
         alt: "tratamientos de belleza Tlaxcala",
     },
     {
-        src: "/landing-page/gallery/uñas.webp",
+        src: "/landing-page/unas.webp",
         alt: "barbería Tlaxcala",
     },
 ];
