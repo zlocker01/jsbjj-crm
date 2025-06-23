@@ -39,6 +39,7 @@ export async function updateService(
         title: serviceData.title,
         description: serviceData.description || null,
         price: serviceData.price ? Number(serviceData.price) : undefined,
+        category: serviceData.category || 'Cabello',
         duration_minutes: serviceData.duration_minutes
           ? Number(serviceData.duration_minutes)
           : undefined,
