@@ -21,28 +21,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@/utils/supabase/client";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Por favor ingresa un correo electrónico válido",
-  }),
-});
+import { useToast } from "@/components/ui/use-toast";
+import { createNewsletterSubscriber } from "@/data/newsletterSubscribers/createNewsletterSubscriber";
+import { newsLetterFormSchema } from "@/schemas/newsLetterSchemas/newsLetterFormSchema";
 
 export default function NewsletterModal({ landingId }: { landingId: string }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof newsLetterFormSchema>>({
+    resolver: zodResolver(newsLetterFormSchema),
     defaultValues: {
       email: "",
     },
   });
 
   useEffect(() => {
-    if (!landingId) {
+    if (landingId) {
       const timer = setTimeout(() => {
         setOpen(true);
       }, 15000); // 15 segundos
@@ -51,24 +46,24 @@ export default function NewsletterModal({ landingId }: { landingId: string }) {
     }
   }, [landingId]);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof newsLetterFormSchema>) => {
     try {
-      const supabase = await createClient();
-
-      const { data, error } = await supabase.from("newsletter_subscribers").insert([
-        {
-          email: values.email,
-          landing_page_id: landingId,
-          subscribed_at: new Date().toISOString(), // Formato ISO para fechas en DB
-          is_subscribed: true,
-          source: "web",
+      const response = await fetch("/api/newsletterSubscribers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
+        body: JSON.stringify({
+          email: values.email,
+          source: "landing-" + landingId,
+        }),
+      });
 
-      if (error) {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
         toast({
           title: "Error",
-          description: "Hubo un error al suscribirte al newsletter.",
+          description: errorData.error || "Hubo un error al suscribirte al newsletter.",
           variant: "destructive",
         });
         return;
@@ -90,6 +85,8 @@ export default function NewsletterModal({ landingId }: { landingId: string }) {
     }
   };
 
+  const onInvalid = (errors: any) => console.error(errors);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -107,7 +104,7 @@ export default function NewsletterModal({ landingId }: { landingId: string }) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
