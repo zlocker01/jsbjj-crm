@@ -184,8 +184,8 @@ export default function Services({ landingId }: { landingId: string }) {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="hidden md:flex" />
-                <CarouselNext className="hidden md:flex" />
+                <CarouselPrevious className="hidden md:flex bg-gold text-black hover:bg-amber-400 border-gold" />
+                <CarouselNext className="hidden md:flex bg-gold text-black hover:bg-amber-400 border-gold" />
               </Carousel>
             )}
           </TabsContent>
