@@ -15,6 +15,14 @@ const aboutImages = [
         src: "/landing-page/unas.webp",
         alt: "barbería Tlaxcala",
     },
+    {
+        src: "/landing-page/lavado.jpg",
+        alt: "tratamientos capilares Tlaxcala",
+    },
+    {
+        src: "/landing-page/sillones.jpg",
+        alt: "alisado permanente Tlaxcala",
+    }
 ];
 
 export default function AboutCarousel() {
