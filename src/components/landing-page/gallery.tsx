@@ -137,8 +137,8 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="bg-gold text-black hover:bg-amber-400 border-gold" />
-                <CarouselNext className="bg-gold text-black hover:bg-amber-400 border-gold" />
+                <CarouselPrevious className="bg-gold text-black hover:bg-amber-400 border-gold absolute left-2 top-1/2 -translate-y-1/2 !-left-auto !-right-auto !-translate-x-0 z-10" />
+                <CarouselNext className="bg-gold text-black hover:bg-amber-400 border-gold absolute right-2 top-1/2 -translate-y-1/2 !-left-auto !-right-auto !translate-x-0 z-10" />
               </Carousel>
             ) : (
               <div className="text-center py-12">
