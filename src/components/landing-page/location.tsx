@@ -175,7 +175,7 @@ export default function Location({ data, schedules }: LocationProps) {
               <div className="flex gap-4">
                 <Button variant="outline" size="icon" asChild>
                   <Link
-                    href="https://instagram.com"
+                    href={`${data.instagram}`}
                     target="_blank"
                     aria-label="Instagram"
                   >
@@ -184,7 +184,7 @@ export default function Location({ data, schedules }: LocationProps) {
                 </Button>
                 <Button variant="outline" size="icon" asChild>
                   <Link
-                    href="https://facebook.com"
+                    href={`${data.facebook}`}
                     target="_blank"
                     aria-label="Facebook"
                   >
@@ -193,7 +193,7 @@ export default function Location({ data, schedules }: LocationProps) {
                 </Button>
                 <Button variant="outline" size="icon" asChild>
                   <Link
-                    href="https://tiktok.com"
+                    href={`${data.tik_tok}`}
                     target="_blank"
                     aria-label="TikTok"
                   >

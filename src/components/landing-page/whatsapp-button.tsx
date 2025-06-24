@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 export default function WhatsAppButton() {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const phoneNumber = "552461003603";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,7 +30,7 @@ export default function WhatsAppButton() {
 
   const handleWhatsAppClick = () => {
     window.open(
-      "https://wa.me/525512345678?text=Hola,%20me%20gustaría%20agendar%20una%20cita",
+      `https://wa.me/${phoneNumber}?text=Hola,%20me%20gustaría%20agendar%20una%20cita`,
       "_blank",
     );
   };
@@ -56,7 +57,7 @@ export default function WhatsAppButton() {
           </div>
           <p className="text-sm text-muted-foreground mb-4">
             Contáctanos por WhatsApp para agendar tu cita o resolver cualquier
-            duda 24/7.
+            duda.
           </p>
           <Button
             onClick={handleWhatsAppClick}
