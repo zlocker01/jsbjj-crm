@@ -17,11 +17,10 @@ import type { GalleryItem } from "@/interfaces/galleryItems/GalleryItem";
 
 const categories = [
   { id: "all", label: "Todos" },
-  { id: "hair", label: "Cabello" },
-  { id: "face", label: "Facial" },
-  { id: "body", label: "Corporal" },
-  { id: "nails", label: "Uñas" },
   { id: "barber", label: "Barbería" },
+  { id: "hair", label: "Cabello" },
+  { id: "nails", label: "Uñas" },
+  { id: "face", label: "Facial" },
 ];
 
 export default function Gallery({ data }: { data: GalleryItem[] }) {
@@ -62,17 +61,21 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
           onValueChange={setCategory}
           className="w-full"
         >
-          <div className="flex justify-center mb-8">
-            <TabsList>
+          <div className="flex justify-center my-8">
+            <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full max-w-3xl">
               {uniqueCategories.map((cat) => (
-                <TabsTrigger key={cat.id} value={cat.id}>
-                  {cat.label}
+                <TabsTrigger 
+                  key={cat.id} 
+                  value={cat.id}
+                  className="flex flex-col items-center justify-center py-2 px-1 text-xs sm:text-sm"
+                >
+                  <span>{cat.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
           </div>
 
-          <TabsContent value={category} className="mt-0">
+          <TabsContent value={category} className="mt-6">
             {filteredItems.length > 0 ? (
               <Carousel
                 opts={{

@@ -30,11 +30,11 @@ import type { Service } from "@/interfaces/services/Service";
 
 const serviceCategories = [
   { id: "all", label: "Todos" },
+  { id: "Barbería", label: "Barbería", icon: <Scissors className="h-4 w-4" /> },
   { id: "Cabello", label: "Cabello", icon: <Scissors className="h-4 w-4" /> },
   { id: "Facial", label: "Facial", icon: <Sparkles className="h-4 w-4" /> },
-  { id: "Corporal", label: "Corporal", icon: <Droplet className="h-4 w-4" /> },
   { id: "Uñas", label: "Uñas", icon: <Brush className="h-4 w-4" /> },
-  { id: "Barbería", label: "Barbería", icon: <Scissors className="h-4 w-4" /> },
+  { id: "Corporal", label: "Corporal", icon: <Droplet className="h-4 w-4" /> },
 ];
 
 const fetcher = (url: string) =>
@@ -104,22 +104,22 @@ export default function Services({ landingId }: { landingId: string }) {
           onValueChange={setCategory}
           className="w-full"
         >
-          <div className="flex justify-center mb-8">
-            <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2">
+          <div className="flex justify-center mb-8 md:mb-0">
+            <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full max-w-3xl">
               {serviceCategories.map((cat) => (
                 <TabsTrigger
                   key={cat.id}
                   value={cat.id}
-                  className="flex items-center gap-2"
+                  className="flex flex-col items-center justify-center py-2 px-1 text-xs sm:text-sm"
                 >
                   {cat.icon}
-                  {cat.label}
+                  <span className="mt-1">{cat.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
           </div>
 
-          <TabsContent value={category} className="mt-0">
+          <TabsContent value={category} className="mt-6">
             {filteredServices.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
@@ -138,7 +138,7 @@ export default function Services({ landingId }: { landingId: string }) {
                   {filteredServices.map((service) => (
                     <CarouselItem
                       key={service.id}
-                      className="md:basis-1/2 lg:basis-1/3"
+                      className="md:basis-1/2 lg:basis-1/3 mt-10"
                     >
                       <div className="p-1 h-full">
                         <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col h-full">

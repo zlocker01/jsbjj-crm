@@ -74,7 +74,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
   return (
     <section
       id="promotions"
-      className="py-16 md:py-24 bg-gradient-to-r from-gold to-amber-50 dark:from-gold-950/10 dark:to-amber-950/20"
+      className="py-16 md:py-24 bg-gradient-to-r from-amber-50 to-amber-100 dark:to-amber-950/20"
     >
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
@@ -102,7 +102,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
                   className="pl-4 md:basis-1/2 lg:basis-1/3"
                 >
                   <div className="p-1">
-                    <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow bg-zinc-900">
+                    <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow dark:bg-zinc-900">
                       <div className="relative h-48 w-full">
                         <Image
                           src={promo.image || "/placeholder.svg"}
