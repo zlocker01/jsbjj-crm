@@ -6,13 +6,12 @@ type CreateAppointmentData = Omit<Appointment, "id" | "created_at" | "user_id">;
 
 export const createAppointment = async (
   data: CreateAppointmentData,
-): Promise<Appointment | undefined> => {
+): Promise<Appointment> => {
   const supabase = await createClient();
   const userId = await getUserId();
 
   if (!userId) {
-    console.error("User ID not found, cannot create appointment.");
-    return undefined;
+    throw new Error("User ID not found, cannot create appointment.");
   }
 
   const appointmentData = {
@@ -27,9 +26,13 @@ export const createAppointment = async (
     .single();
 
   if (error) {
-    console.error("Error creating appointment:", error.message);
-    return undefined;
+    console.error("Error creating appointment in DB:", error.message);
+    throw new Error(`Supabase error: ${error.message}`);
   }
 
-  return newAppointment as Appointment;
+  if (!newAppointment) {
+    throw new Error("Appointment data was not returned after creation.");
+  }
+
+  return newAppointment;
 };

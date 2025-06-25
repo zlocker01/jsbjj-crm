@@ -13,9 +13,12 @@ export const appointmentSchema = z.object({
   start_datetime: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "La fecha de inicio debe ser una fecha válida",
   }),
-  end_datetime: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "La fecha de fin debe ser una fecha válida",
-  }),
+  end_datetime: z
+    .string()
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: "La fecha de fin debe ser una fecha válida",
+    })
+    .optional(),
   status: z.string().optional(),
   notes: z
     .string()

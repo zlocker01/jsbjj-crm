@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const { landingPageId, ...appointmentPayload } = await request.json();
 
     const supabase = await createClient();
     const userId = await getUserId();
@@ -53,21 +53,21 @@ export async function POST(request: NextRequest) {
     let duration_minutes: number | null = null;
     let price: number | null = null;
 
-    if (body.promotion_id) {
+    if (appointmentPayload.promotion_id) {
       const { data: promoData, error: promoError } = await supabase
         .from("promotions")
         .select("duration_minutes, discount_price")
-        .eq("id", body.promotion_id)
+        .eq("id", appointmentPayload.promotion_id)
         .single();
 
       if (promoError) throw promoError;
       duration_minutes = promoData?.duration_minutes;
       price = promoData?.discount_price;
-    } else if (body.service_id) {
+    } else if (appointmentPayload.service_id) {
       const { data: serviceData, error: serviceError } = await supabase
         .from("services")
         .select("duration_minutes, price")
-        .eq("id", body.service_id)
+        .eq("id", appointmentPayload.service_id)
         .single();
 
       if (serviceError) throw serviceError;
@@ -77,14 +77,14 @@ export async function POST(request: NextRequest) {
 
     // Calcular end_datetime
     let end_datetime: string | null = null;
-    if (body.start_datetime && duration_minutes !== null) {
-      const start = new Date(body.start_datetime);
+    if (appointmentPayload.start_datetime && duration_minutes !== null) {
+      const start = new Date(appointmentPayload.start_datetime);
       const end = new Date(start.getTime() + duration_minutes * 60 * 1000);
       end_datetime = end.toISOString(); // formato compatible con timestamp
     }
 
     const appointmentData = {
-      ...body,
+      ...appointmentPayload,
       user_id: userId,
       appointment_source: userData?.role || "web",
       actual_duration_minutes: duration_minutes,

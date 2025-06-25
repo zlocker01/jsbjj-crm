@@ -41,20 +41,46 @@ export default function CalendarPage() {
 
   const handleFormSubmit = async (data: any) => {
     try {
-      // TODO: Implementar lógica de guardado
-      console.log("Form submitted:", data);
-      toast({
-        title: "Cita guardada",
-        description: "La cita se ha guardado correctamente.",
-        variant: "success",
+      // Hacer la petición a la API para guardar la cita
+      const response = await fetch(`/api/appointments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          landingPageId: landingId,
+        }),
       });
-      setIsFormOpen(false);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || "Error al guardar la cita");
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        toast({
+          title: "Cita guardada",
+          description: "La cita se ha guardado correctamente.",
+          variant: "success",
+        });
+        setIsFormOpen(false);
+        
+        // Recargar los datos para mostrar la nueva cita
+        window.location.reload();
+      } else {
+        throw new Error(result.error || "Error desconocido al guardar la cita");
+      }
     } catch (error) {
       console.error("Error saving appointment:", error);
       toast({
-        title: "Error",
+        title: "Error", 
         description:
-          "No se pudo guardar la cita. Por favor, inténtalo de nuevo.",
+          error instanceof Error 
+            ? `No se pudo guardar la cita: ${error.message}` 
+            : "No se pudo guardar la cita. Por favor, inténtalo de nuevo.",
         variant: "destructive",
       });
     }
