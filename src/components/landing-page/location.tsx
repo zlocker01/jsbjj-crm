@@ -164,7 +164,7 @@ export default function Location({ data, schedules }: LocationProps) {
                     href="mailto:info@larochelle.com"
                     className="hover:text-primary"
                   >
-                    info@larochelle.com
+                    {data.email}
                   </a>
                 </p>
               </div>
