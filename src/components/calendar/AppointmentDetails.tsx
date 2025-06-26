@@ -98,10 +98,10 @@ export function AppointmentDetails({
           <User className="h-5 w-5 text-muted-foreground" />
           <div>
             <p className="font-medium">
-              {appointment.client_id || "Sin cliente"}
+              {appointment?.client_id || "Sin cliente"}
             </p>
             <p className="text-sm text-muted-foreground">
-              {appointment.client_id || "Sin correo"}
+              {appointment?.client_id || "Sin correo"}
             </p>
           </div>
         </div>
@@ -111,7 +111,7 @@ export function AppointmentDetails({
           <div>
             <p className="font-medium">
               {format(
-                new Date(appointment.start_datetime),
+                new Date(appointment?.start_datetime),
                 "EEEE d 'de' MMMM",
                 { locale: es },
               )}

@@ -78,7 +78,7 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
             </TabsList>
           </div>
 
-          <TabsContent value={category} className="mt-6">
+          <TabsContent value={category} className="mt-12 md:mt-6">
             {filteredItems.length > 0 ? (
               <Carousel
                 opts={{
