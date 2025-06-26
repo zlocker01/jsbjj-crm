@@ -197,7 +197,7 @@ export function AddEmployeeModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Agregar Nuevo Empleado</DialogTitle>
         </DialogHeader>
@@ -381,7 +381,7 @@ export function AddEmployeeModal({
               )}
             />
 
-            <DialogFooter>
+            <DialogFooter className="flex justify-end gap-3">
               <Button
                 type="button"
                 variant="outline"
