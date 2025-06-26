@@ -37,6 +37,7 @@ export default function CalendarPage() {
     promotions = [],
     isLoading,
     error,
+    mutate,
   } = useCalendarData(landingId);
 
   const handleFormSubmit = async (data: any) => {
@@ -68,7 +69,7 @@ export default function CalendarPage() {
         setIsFormOpen(false);
         
         // Recargar los datos para mostrar la nueva cita
-        window.location.reload();
+        mutate();
       } else {
         throw new Error(result.error || "Error desconocido al guardar la cita");
       }

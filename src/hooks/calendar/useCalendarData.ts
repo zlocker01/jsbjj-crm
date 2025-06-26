@@ -66,7 +66,7 @@ const fetchCalendarData = async ([_, landingPageId]: [
 };
 
 export const useCalendarData = (landingPageId: string) => {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR(
     ["calendar-data", landingPageId],
     fetchCalendarData,
   );
@@ -78,5 +78,6 @@ export const useCalendarData = (landingPageId: string) => {
     promotions: data?.promotions || [],
     isLoading,
     error: error?.message || null,
+    mutate,
   };
 };
