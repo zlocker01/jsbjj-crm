@@ -268,7 +268,7 @@ export function AddPromotionModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange || onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Editar Promoción" : "Añadir Nueva Promoción"}
@@ -279,109 +279,37 @@ export function AddPromotionModal({
               : "Añade una nueva promoción a tu lista."}
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Título</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Ej. Corte de Verano"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descripción</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe la promoción"
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
+        
+        <div>
+          <Form {...form}>
+            <form id="promotion-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="price"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Precio Original</FormLabel>
+                    <FormLabel>Título</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
+                        placeholder="Ej. Corte de Verano"
                         {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                        value={field.value ?? 0}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="discount_price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Precio con Descuento</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                        value={field.value ?? 0}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    {price > 0 && discountPrice > 0 && discountPrice < price && (
-                      <p className="text-sm text-green-600 mt-1">
-                        Descuento:{" "}
-                        {Math.round(((price - discountPrice) / price) * 100)}%
-                      </p>
-                    )}
-                  </FormItem>
-                )}
-              />
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="duration_minutes"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Duración (minutos)</FormLabel>
+                    <FormLabel>Descripción</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="15"
-                        placeholder="30"
+                      <Textarea
+                        placeholder="Describe la promoción"
                         {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value, 10) || null)}
                         value={field.value ?? ""}
                       />
                     </FormControl>
@@ -389,162 +317,245 @@ export function AddPromotionModal({
                   </FormItem>
                 )}
               />
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio Original</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          value={field.value ?? 0}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="discount_price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio con Descuento</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          value={field.value ?? 0}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                      {price > 0 && discountPrice > 0 && discountPrice < price && (
+                        <p className="text-sm text-green-600 mt-1">
+                          Descuento:{" "}
+                          {Math.round(((price - discountPrice) / price) * 100)}%
+                        </p>
+                      )}
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="duration_minutes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duración (minutos)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="0"
+                          step="15"
+                          placeholder="30"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value, 10) || null)}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Categoría</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una categoría" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {serviceCategories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="category"
+                name="valid_until"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Categoría</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecciona una categoría" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {serviceCategories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Fecha de Vencimiento</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? (
+                              format(new Date(field.value), "PPP")
+                            ) : (
+                              <span>Elige una fecha</span>
+                            )}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="valid_until"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Fecha de Vencimiento</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? (
-                            format(new Date(field.value), "PPP")
-                          ) : (
-                            <span>Elige una fecha</span>
-                          )}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={(date) =>
-                          field.onChange(date?.toISOString())
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Imagen</FormLabel>
-                  <FormControl>
-                    <div>
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        accept="image/*"
-                        className="hidden"
-                      />
-                      {previewUrl ? (
-                        <div className="relative mt-2 w-full h-48">
-                          <Image
-                            src={previewUrl}
-                            alt="Vista previa"
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-md"
-                          />
-                          <Button
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Imagen</FormLabel>
+                    <FormControl>
+                      <div>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept="image/*"
+                          className="hidden"
+                        />
+                        {previewUrl ? (
+                          <div className="relative mt-2 w-full h-48">
+                            <Image
+                              src={previewUrl}
+                              alt="Vista previa"
+                              layout="fill"
+                              objectFit="cover"
+                              className="rounded-md"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-2 right-2 rounded-full h-8 w-8"
+                              onClick={removeImage}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <button
                             type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2 rounded-full h-8 w-8"
-                            onClick={removeImage}
+                            className="mt-2 w-full border-2 border-dashed rounded-md p-8 text-center cursor-pointer hover:bg-accent/50 transition-colors flex flex-col items-center justify-center space-y-2 min-h-[12rem]"
+                            onClick={triggerFileInput}
                           >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          className="mt-2 w-full border-2 border-dashed rounded-md p-8 text-center cursor-pointer hover:bg-accent/50 transition-colors flex flex-col items-center justify-center space-y-2 min-h-[12rem]"
-                          onClick={triggerFileInput}
-                        >
-                          {isUploading ? (
-                            <>
-                              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                              <p className="text-sm text-muted-foreground">
-                                Subiendo imagen...
-                              </p>
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="h-8 w-8 text-muted-foreground" />
-                              <p className="text-sm text-muted-foreground">
-                                Haz clic para subir una imagen
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                PNG, JPG, JPEG (máx. 5MB)
-                              </p>
-                            </>
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={isUploading || form.formState.isSubmitting}>
-                {isUploading
-                  ? "Subiendo imagen..."
-                  : form.formState.isSubmitting
-                  ? "Guardando..."
-                  : isEditing
-                  ? "Guardar Cambios"
-                  : "Añadir Promoción"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+                            {isUploading ? (
+                              <>
+                                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                                <p className="text-sm text-muted-foreground">
+                                  Subiendo imagen...
+                                </p>
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="h-8 w-8 text-muted-foreground" />
+                                <p className="text-sm text-muted-foreground">
+                                  Haz clic para subir una imagen
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  PNG, JPG, JPEG (máx. 5MB)
+                                </p>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </div>
+        
+        <DialogFooter className="mt-4 flex justify-between gap-3">
+          <Button
+            type="button" 
+            variant="outline" 
+            onClick={onClose}
+            disabled={form.formState.isSubmitting}
+          >
+            Cancelar
+          </Button>
+          <Button 
+            type="submit"
+            form="promotion-form"
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
+          >
+            {form.formState.isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Guardando...
+              </>
+            ) : isEditing ? "Actualizar Promoción" : "Crear Promoción"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
