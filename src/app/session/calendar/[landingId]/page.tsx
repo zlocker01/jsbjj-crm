@@ -49,7 +49,6 @@ export default function CalendarPage() {
         },
         body: JSON.stringify({
           ...data,
-          landingPageId: landingId,
         }),
       });
 

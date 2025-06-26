@@ -156,9 +156,10 @@ export function AppointmentCalendar({
             const dayKey = format(day, "yyyy-MM-dd");
 
             return (
-              <button
+              <div
                 key={dayKey}
-                type="button"
+                role="button"
+                tabIndex={0}
                 className={`min-h-[100px] border rounded-md p-1 text-left ${
                   isCurrentMonth ? "bg-background" : "bg-muted/30"
                 } ${isToday ? "border-primary" : ""} cursor-pointer hover:bg-muted/50 transition-colors`}
@@ -214,7 +215,7 @@ export function AppointmentCalendar({
                     </div>
                   )}
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

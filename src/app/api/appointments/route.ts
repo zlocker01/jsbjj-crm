@@ -6,16 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const landingPageId = searchParams.get("landingPageId");
-
-    if (!landingPageId) {
-      return NextResponse.json(
-        { error: "El parámetro landingPageId es requerido." },
-        { status: 400 },
-      );
-    }
-
+    // Se elimina la validación de landingPageId ya que no es necesaria para getAppointments
     const appointments = await getAppointments();
     return NextResponse.json({
       success: true,

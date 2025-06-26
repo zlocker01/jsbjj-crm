@@ -32,8 +32,8 @@ const fetchCalendarData = async ([_, landingPageId]: [
       ),
     ]);
 
-    const appointments = Array.isArray(appointmentsResponse?.appointments)
-      ? appointmentsResponse.appointments
+    const appointments = Array.isArray(appointmentsResponse?.data)
+      ? appointmentsResponse.data
       : [];
 
     const clients = Array.isArray(clientsResponse?.clients)
