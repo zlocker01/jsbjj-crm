@@ -188,8 +188,8 @@ export default function Services({ landingId }: { landingId: string }) {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="bg-gold text-black hover:bg-amber-400 border-gold absolute left-2 top-1/2 -translate-y-1/2 !-left-auto !-right-auto !-translate-x-0 z-10 flex" />
-                <CarouselNext className="bg-gold text-black hover:bg-amber-400 border-gold absolute right-2 top-1/2 -translate-y-1/2 !-left-auto !-right-auto !translate-x-0 z-10 flex" />
+                <CarouselPrevious className="left-0 -translate-x-4" />
+                <CarouselNext className="right-0 translate-x-4" />
               </Carousel>
             )}
           </TabsContent>

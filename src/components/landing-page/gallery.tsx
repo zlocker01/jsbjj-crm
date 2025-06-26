@@ -70,7 +70,7 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
                 <TabsTrigger 
                   key={cat.id} 
                   value={cat.id}
-                  className="flex flex-col items-center justify-center py-2 px-1 text-xs sm:text-sm"
+                  className="flex flex-col items-center justify-center py-2 px-1 text-xs sm:text-sm bg-gold hover:bg-goldHover rounded-2xl"
                 >
                   <span>{cat.label}</span>
                 </TabsTrigger>
