@@ -1,1 +1,1 @@
-export type Category = "Cabello" | "Uñas" | "Corporal" | "Facial" | "Barbería";
+export type Category = "Cabello" | "Uñas" | "Maquillaje" | "Facial" | "Barbería" | "Colorimetría" | "Tratamientos capilares";

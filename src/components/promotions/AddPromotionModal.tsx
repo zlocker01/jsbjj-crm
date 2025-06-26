@@ -95,7 +95,7 @@ export function AddPromotionModal({
           price: 0,
           discount_price: 0,
           duration_minutes: 30,
-          category: "Facial", 
+          category: "Cabello", 
           valid_until: new Date().toISOString(),
           image: "",
         },
@@ -258,7 +258,7 @@ export function AddPromotionModal({
         price: 0,
         discount_price: 0,
         duration_minutes: 30,
-        category: "Facial", 
+        category: "Cabello", 
         valid_until: new Date().toISOString(),
         image: "",
       });

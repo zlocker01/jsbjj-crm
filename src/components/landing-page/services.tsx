@@ -23,10 +23,12 @@ import {
   Clock,
   Loader2,
   AlertCircle,
+  EyeClosed,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import type { Service } from "@/interfaces/services/Service";
+import { MagicWandIcon } from "@radix-ui/react-icons";
 
 const serviceCategories = [
   { id: "all", label: "Todos" },
@@ -34,7 +36,9 @@ const serviceCategories = [
   { id: "Cabello", label: "Cabello", icon: <Scissors className="h-4 w-4" /> },
   { id: "Facial", label: "Facial", icon: <Sparkles className="h-4 w-4" /> },
   { id: "Uñas", label: "Uñas", icon: <Brush className="h-4 w-4" /> },
-  { id: "Corporal", label: "Corporal", icon: <Droplet className="h-4 w-4" /> },
+  { id: "Colorimetría", label: "Colorimetría", icon: <Droplet className="h-4 w-4" /> },
+  { id: "Maquillaje", label: "Maquillaje", icon: <EyeClosed className="h-4 w-4" /> },
+  { id: "Tratamientos capilares", label: "Tratamientos capilares", icon: <MagicWandIcon className="h-4 w-4" /> },
 ];
 
 const fetcher = (url: string) =>
@@ -104,7 +108,7 @@ export default function Services({ landingId }: { landingId: string }) {
           onValueChange={setCategory}
           className="w-full"
         >
-          <div className="flex justify-center mb-8 md:mb-0">
+          <div className="flex justify-center mb-28 md:mb-14">
             <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full max-w-3xl">
               {serviceCategories.map((cat) => (
                 <TabsTrigger
@@ -164,7 +168,7 @@ export default function Services({ landingId }: { landingId: string }) {
                               <Clock className="h-4 w-4" />
                               <span>{service.duration_minutes} minutos</span>
                             </div>
-                            <Badge variant="outline" className="capitalize">
+                            <Badge variant="gold" className="capitalize">
                               {service.category.toLowerCase()}
                             </Badge>
                           </CardContent>

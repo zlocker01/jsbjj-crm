@@ -10,7 +10,7 @@ export const galleryItemSchema = z.object({
     .min(1, "La descripción es requerida")
     .max(500, "La descripción no puede exceder los 500 caracteres"),
   image: z.string().min(1, "La imagen es requerida"),
-  category: z.enum(["Cabello", "Facial", "Corporal", "Uñas"], {
+  category: z.enum(["Cabello", "Facial", "Uñas", "Colorimetría", "Tratamientos capilares", "Maquillaje"], {
     errorMap: () => ({ message: "Categoría inválida" }),
   }),
   is_before_after: z.boolean(),

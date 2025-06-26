@@ -5,7 +5,9 @@ export const serviceCategories = [
   "Cabello",
   "Facial",
   "Uñas",
-  "Corporal",
+  "Colorimetría",
+  "Tratamientos capilares",
+  "Maquillaje",
 ] as const;
 
 export const promotionItemSchema = z.object({
@@ -29,7 +31,7 @@ export const promotionItemSchema = z.object({
   }),
   duration_minutes: z
     .number()
-    .min(30, "La duración debe ser de al menos 30 minutos")
+    .min(10, "La duración debe ser de al menos 10 minutos")
     .max(1440, "La duración no puede ser mayor a 24 horas")
     .optional()
     .nullable(),

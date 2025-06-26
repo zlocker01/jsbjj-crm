@@ -21,6 +21,9 @@ const categories = [
   { id: "hair", label: "Cabello" },
   { id: "nails", label: "Uñas" },
   { id: "face", label: "Facial" },
+  { id: "color", label: "Colorimetría" },
+  { id: "treatment", label: "Tratamientos capilares" },
+  { id: "makeup", label: "Maquillaje" },
 ];
 
 export default function Gallery({ data }: { data: GalleryItem[] }) {

@@ -24,11 +24,13 @@ import { galleryItemFormSchema } from "@/schemas/gallerySchemas/galleryItemSchem
 import type { GalleryFormData } from "@/interfaces/galleryItems/GalleryFormData";
 
 const categories: Category[] = [
+  "Barbería",
   "Cabello",
   "Uñas",
-  "Corporal",
   "Facial",
-  "Barbería",
+  "Colorimetría",
+  'Tratamientos capilares',
+  'Maquillaje',
 ];
 
 export default function AddGalleryItemModal({

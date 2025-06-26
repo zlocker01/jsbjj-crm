@@ -63,7 +63,7 @@ export function AddServiceModal({
       title: "",
       description: "",
       price: 0,
-      duration_minutes: 30,
+      duration_minutes: 15,
       image: "",
       category: "Barbería",
       landing_page_id: landingId,
@@ -288,9 +288,9 @@ export function AddServiceModal({
                       <FormControl>
                         <Input
                           type="number"
-                          min="30"
+                          min="15"
                           step="15"
-                          placeholder="30"
+                          placeholder="15"
                           value={field.value ?? ""}
                           onChange={(e) =>
                             field.onChange(

@@ -173,7 +173,7 @@ export default function Location({ data, schedules }: LocationProps) {
             <div className="bg-background p-6 rounded-xl shadow-sm">
               <h3 className="font-medium mb-4">Redes Sociales</h3>
               <div className="flex gap-4">
-                <Button variant="outline" size="icon" asChild>
+                <Button variant="outline" size="icon" className='hover:bg-goldHover' asChild>
                   <Link
                     href={`${data.instagram}`}
                     target="_blank"
@@ -182,7 +182,7 @@ export default function Location({ data, schedules }: LocationProps) {
                     <Instagram className="h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="icon" asChild>
+                <Button variant="outline" size="icon"  className='hover:bg-goldHover'asChild>
                   <Link
                     href={`${data.facebook}`}
                     target="_blank"
@@ -191,7 +191,7 @@ export default function Location({ data, schedules }: LocationProps) {
                     <Facebook className="h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="icon" asChild>
+                <Button variant="outline" size="icon" className='hover:bg-goldHover' asChild>
                   <Link
                     href={`${data.tik_tok}`}
                     target="_blank"

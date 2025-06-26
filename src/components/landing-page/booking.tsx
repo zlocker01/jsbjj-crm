@@ -78,6 +78,7 @@ const services = [
   { id: "massage", name: "Masaje relajante", price: 700 },
   { id: "manicure", name: "Manicure y pedicure", price: 400 },
   { id: "treatment", name: "Tratamiento capilar", price: 500 },
+  { id: "treatment", name: "Tratamiento capilar", price: 500 },
 ];
 
 const stylists = [

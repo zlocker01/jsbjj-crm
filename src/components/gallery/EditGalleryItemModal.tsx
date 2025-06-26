@@ -23,9 +23,11 @@ import { useEffect, useState } from "react";
 const categories: Category[] = [
   "Cabello",
   "Uñas",
-  "Corporal",
   "Facial",
   "Barbería",
+  'Colorimetría',
+  'Tratamientos capilares',
+  'Maquillaje',
 ];
 
 interface EditGalleryItemModalProps {
