@@ -176,7 +176,7 @@ export function DashboardLayout({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="left" className="p-0 w-[80%] max-w-[300px]">
           <SheetHeader className="border-b px-4 py-3">
-            <SheetTitle className="flex items-center gap-2">
+            <SheetTitle className="flex items-center gap-2 justify-center">
               <Link
                 href="/dashboard"
                 className="flex items-center gap-2 font-semibold"
@@ -227,11 +227,11 @@ export function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col">
-        <header className={`sticky top-0 z-10 flex h-14 items-center gap-4 border-b px-4 md:px-6 transition-colors duration-300 ${scrolled ? "bg-gold/70 shadow-lg" : "bg-card"}`}>
+        <header className={`sticky top-0 z-10 flex h-14 items-center gap-4 border-b px-4 md:px-6 transition-colors duration-300 ${scrolled ? "bg-black/90 shadow-lg" : "bg-card"}`}>
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="md:hidden text-gold"
             onClick={() => setOpen(true)}
           >
             <Menu className="h-5 w-5" />
@@ -243,7 +243,7 @@ export function DashboardLayout({
             asChild
             className="self-start sm:self-auto"
           >
-            <Link href="/" target="_blank" className="bg-gold hover:bg-goldHover text-white ${scrolled ? bg-black : bg-gold}">
+            <Link href="/" target="_blank" className="mt-3 md:mt-0 bg-gold hover:bg-goldHover text-white">
               <ExternalLink className="mr-2 h-4 w-4" />
               Ver Landing Page en Vivo
             </Link>
