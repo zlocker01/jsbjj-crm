@@ -115,11 +115,25 @@ export function AppointmentCalendar({
     e.stopPropagation();
     onAppointmentSelect(appointment);
 
+    const startDate = new Date(appointment.start_datetime);
+    const endDate = new Date(appointment.end_datetime);
+
     toast({
       title: "Cita seleccionada",
-      description: `${appointment.date} a las ${appointment.start_datetime}`,
-      duration: 4000,
-      variant: "gold",
+      description: (
+        <div className="space-y-1">
+          <div>
+            <span className="font-medium">Día: </span>
+            <span>{format(startDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es })}</span>
+          </div>
+          <div>
+            <span className="font-medium">Hora: </span>
+            <span>{format(startDate, "h:mm a")} - {format(endDate, "h:mm a")}</span>
+          </div>
+        </div>
+      ),
+      duration: 5000,
+      variant: "success",
     });
   };
 
