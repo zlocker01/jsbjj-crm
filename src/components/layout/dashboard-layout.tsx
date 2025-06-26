@@ -8,6 +8,7 @@ import {
   Calendar,
   CameraIcon,
   Clock,
+  ExternalLink,
   LayoutDashboard,
   Menu,
   MessageSquare,
@@ -38,6 +39,23 @@ export function DashboardLayout({
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const routes = [
     // {
@@ -209,7 +227,7 @@ export function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-card px-4 md:px-6">
+        <header className={`sticky top-0 z-10 flex h-14 items-center gap-4 border-b px-4 md:px-6 transition-colors duration-300 ${scrolled ? "bg-gold/70 shadow-lg" : "bg-card"}`}>
           <Button
             variant="ghost"
             size="icon"
@@ -218,6 +236,17 @@ export function DashboardLayout({
           >
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle Menu</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="self-start sm:self-auto"
+          >
+            <Link href="/" target="_blank" className="bg-gold hover:bg-goldHover text-white ${scrolled ? bg-black : bg-gold}">
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Ver Landing Page en Vivo
+            </Link>
           </Button>
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
