@@ -52,7 +52,7 @@ export function LandingEditor({
   };
 
   return (
-    <div className="p-6 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 rounded-xl shadow-lg">
+    <div className="dark:to-black rounded-xl shadow-lg">
       <Accordion type="single" collapsible className="w-full space-y-4">
         {/* Hero Section */}
         <LandingHeroEditor

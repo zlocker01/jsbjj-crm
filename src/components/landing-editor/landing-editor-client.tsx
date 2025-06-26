@@ -51,7 +51,7 @@ export function LandingEditorClient({
             asChild
             className="self-start sm:self-auto"
           >
-            <Link href="/" target="_blank">
+            <Link href="/" target="_blank" className="bg-gold hover:bg-goldHover text-white">
               <ExternalLink className="mr-2 h-4 w-4" />
               Ver Landing Page en Vivo
             </Link>
