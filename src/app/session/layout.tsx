@@ -1,6 +1,6 @@
+import "./globals.css";
 import type React from "react";
 import type { Metadata } from "next";
-import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { ToastProvider } from "@/components/toast-provider";
