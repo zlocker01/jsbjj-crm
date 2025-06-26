@@ -50,7 +50,7 @@ export default async function ImagesGallery() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 flex-col md:flex-row gap-4">
         <div>
           <h1 className="text-3xl font-bold">Galería de Imágenes</h1>
           <p className="text-muted-foreground">

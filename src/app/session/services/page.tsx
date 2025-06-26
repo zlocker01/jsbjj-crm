@@ -56,7 +56,7 @@ export default async function ServicesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 flex-col md:flex-row gap-4">
         <div>
           <h2 className="text-3xl font-bold">Servicios</h2>
           <p className="text-muted-foreground">
@@ -77,7 +77,7 @@ export default async function ServicesPage() {
           ))}
         </div>
       )}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 flex-col md:flex-row gap-4">
         <div>
           <h2 className="text-3xl font-bold">Promociones</h2>
           <p className="text-muted-foreground">
