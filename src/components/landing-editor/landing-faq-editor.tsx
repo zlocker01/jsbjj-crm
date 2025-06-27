@@ -191,9 +191,9 @@ export function LandingFaqEditor({
             value={`item-${faq.id || `new-faq-${index}`}`}
           >
             <AccordionTrigger className="">{faq.question}</AccordionTrigger>
-            <AccordionContent className="flex justify-between items-center gap-2">
+            <AccordionContent className="flex flex-col items-center gap-2">
               <p>{faq.answer}</p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
                 {faq.id && (
                   <Button size="sm" onClick={() => onEditClick(faq)}>
                     Editar
@@ -216,8 +216,8 @@ export function LandingFaqEditor({
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" className="w-full">
-            Añadir nueva pregunta
+          <Button variant="gold" className="w-full">
+            Añadir nueva pregunta +
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -255,7 +255,7 @@ export function LandingFaqEditor({
               )}
             </div>
             <div className="flex justify-end">
-              <Button type="submit">Agregar</Button>
+              <Button type="submit" variant="gold">Agregar</Button>
             </div>
           </form>
         </DialogContent>
@@ -304,7 +304,7 @@ export function LandingFaqEditor({
                 </p>
               )}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-center">
               <Button type="submit">Guardar Cambios</Button>
             </div>
           </form>
