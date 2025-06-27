@@ -52,8 +52,7 @@ export function AppointmentDetails({
 
   const handleCancelAppointment = async () => {
     try {
-      // Lógica para cancelar la cita
-      const response = await fetch(`/api/appointments/${appointment.id}`, {
+      await fetch(`/api/appointments/${appointment.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -61,17 +60,8 @@ export function AppointmentDetails({
         body: JSON.stringify({ status: "Cancelada" }),
       });
 
-      if (!response.ok) {
-        throw new Error("Error al cancelar la cita");
-      }
-
-      // Cerrar el diálogo de confirmación
       setShowCancelDialog(false);
-
-      // Cerrar los detalles
       onClose();
-
-      // Mostrar notificación
       toast({
         title: "Cita cancelada",
         description: "La cita ha sido cancelada correctamente.",
@@ -111,6 +101,9 @@ export function AppointmentDetails({
             </p>
             <p className="text-sm text-muted-foreground">
               {clients.find((client) => client.id === appointment?.client_id)?.email}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {clients.find((client) => client.id === appointment?.client_id)?.phone}
             </p>
           </div>
         </div>
@@ -186,8 +179,8 @@ export function AppointmentDetails({
           </DialogHeader>
           <div className="py-4 space-y-3">
             <div className="p-3 bg-muted rounded-lg space-y-2">
-              <div className="font-medium">{appointment.client_id}</div>
-              <div className="text-sm">{appointment.service_id}</div>
+              <div className="font-medium">{clients.find((client) => client.id === appointment?.client_id)?.name}</div>
+              <div className="text-sm">Servicio: {services.find((service) => service.id === appointment?.service_id)?.title}</div>
               <div className="text-sm text-muted-foreground">
                 {format(
                   new Date(appointment.start_datetime),
