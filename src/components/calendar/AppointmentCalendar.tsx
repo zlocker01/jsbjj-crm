@@ -152,6 +152,100 @@ export function AppointmentCalendar({
     </div>
   );
 
+  const renderDayView = () => {
+    const day = calendarDays[0];
+    if (!day) return null;
+
+    const dayAppointments = getAppointmentsForDate(day);
+    const hours = Array.from({ length: 13 }, (_, i) => i + 8); // 8 AM to 8 PM
+
+    return (
+      <div className="border rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-center mb-4">
+          {format(day, "EEEE, d 'de' MMMM", { locale: es })}
+        </h3>
+        <div className="relative">
+          {hours.map((hour) => (
+            <div key={hour} className="flex items-center h-16 border-t">
+              <div className="text-xs text-muted-foreground w-16 text-right pr-2">
+                {format(new Date(0, 0, 0, hour), "h a")}
+              </div>
+              <div className="flex-1" />
+            </div>
+          ))}
+          {dayAppointments.map((appointment) => {
+            const start = new Date(appointment.start_datetime);
+            const top = (start.getHours() - 8 + start.getMinutes() / 60) * 64; // 64px per hour
+            return (
+              <button
+                key={appointment.id}
+                type="button"
+                className={`absolute left-16 right-0 p-2 rounded-lg text-left text-sm z-10 ${
+                  appointment.status === "Confirmada"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                    : appointment.status === "Cancelada"
+                    ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
+                    : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                }`}
+                style={{ top: `${top}px`, height: '60px' }}
+                onClick={(e) => handleAppointmentClick(appointment, e)}
+              >
+                Cita {format(start, "h:mm a")}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const renderWeekView = () => (
+    <div className="border rounded-lg overflow-hidden">
+      <div className="grid grid-cols-7 divide-x">
+        {calendarDays.map((day) => (
+          <div key={format(day, "yyyy-MM-dd")} className="flex flex-col items-center py-2">
+            <div className="font-medium text-sm">{format(day, "E", { locale: es })}</div>
+            <div className={`text-lg font-bold ${
+              format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? 'text-primary' : ''
+            }`}>
+              {format(day, "d")}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-7 divide-x h-[600px] overflow-y-auto">
+        {calendarDays.map((day) => {
+          const dayAppointments = getAppointmentsForDate(day);
+          return (
+            <div key={format(day, "yyyy-MM-dd")} className="relative border-t">
+              {dayAppointments.map((appointment) => {
+                const start = new Date(appointment.start_datetime);
+                const top = (start.getHours() * 60 + start.getMinutes()) / (24 * 60) * 100; // Position as percentage
+                return (
+                  <button
+                    key={appointment.id}
+                    type="button"
+                    className={`absolute w-full text-xs p-1 rounded truncate text-left ${
+                      appointment.status === "Confirmada"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                        : appointment.status === "Cancelada"
+                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
+                        : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                    }`}
+                    style={{ top: `${top}%` }}
+                    onClick={(e) => handleAppointmentClick(appointment, e)}
+                  >
+                    {format(start, "HH:mm")}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   const renderMonthView = () => (
     <div className="overflow-x-auto">
       <div className="min-w-[640px]">
@@ -262,7 +356,8 @@ export function AppointmentCalendar({
       </div>
       {renderHeader()}
       {view === "month" && renderMonthView()}
-      {/* Puedes agregar renderWeekView y renderDayView si lo necesitas */}
+      {view === "week" && renderWeekView()}
+      {view === "day" && renderDayView()}
     </div>
   );
 }

@@ -29,10 +29,15 @@ export default function CalendarPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
+  const [view, setView] = useState('month');
 
   // Nueva función para manejar la selección de cita
   const handleAppointmentSelect = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
+  };
+
+  const handleDateChange = (date: Date) => {
+    console.log(date);
   };
 
   const {
@@ -137,12 +142,13 @@ export default function CalendarPage() {
       <div className="w-full grid grid-cols-1 lg:grid-cols-10 gap-4">
         <div className="col-span-1 lg:col-span-7">
           <AppointmentCalendar
-            view="month"
+            view={view as "month" | "week" | "day"}
+            onViewChange={setView}
             appointments={appointments}
             isLoading={isLoading}
             error={error}
-            onDateChange={(date) => console.log(date)}
-            onAppointmentSelect={setSelectedAppointment}
+            onDateChange={handleDateChange}
+            onAppointmentSelect={handleAppointmentSelect}
           />
         </div>
         <div className="col-span-1 lg:col-span-3">

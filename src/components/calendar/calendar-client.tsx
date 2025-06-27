@@ -1,9 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { AppointmentCalendar } from "./AppointmentCalendar";
 import { AppointmentDetails } from "./AppointmentDetails";
 import { AppointmentForm } from "./AppointmentForm";
+import type { Appointment } from "@/interfaces/appointments/Appointment";
 
 interface CalendarClientProps {
-  view: "month" | "week" | "day";
   selectedDate: Date;
   selectedAppointment: any;
   isCreating: boolean;
@@ -11,8 +14,7 @@ interface CalendarClientProps {
   clients: any[];
   services: any[];
   promotions: any[];
-  appointments: any[];
-  onViewChange: (view: "month" | "week" | "day") => void;
+  appointments: Appointment[];
   onDateChange: (date: Date) => void;
   onAppointmentSelect: (appointment: any) => void;
   onCreateAppointment: () => void;
@@ -22,7 +24,6 @@ interface CalendarClientProps {
 }
 
 export function CalendarClient({
-  view,
   selectedDate,
   selectedAppointment,
   isCreating,
@@ -31,7 +32,6 @@ export function CalendarClient({
   services,
   promotions,
   appointments,
-  onViewChange,
   onDateChange,
   onAppointmentSelect,
   onCreateAppointment,
@@ -39,6 +39,8 @@ export function CalendarClient({
   onCancelEdit,
   onAppointmentSubmit,
 }: CalendarClientProps) {
+  const [view, setView] = useState<"month" | "week" | "day">("month");
+
   return (
     <div className="flex flex-col gap-4">
       {/* ... UI del encabezado ... */}
@@ -49,7 +51,7 @@ export function CalendarClient({
             appointments={appointments}
             isLoading={false}
             error={null}
-            onViewChange={onViewChange}
+            onViewChange={setView}
             onDateChange={onDateChange}
             onAppointmentSelect={onAppointmentSelect}
           />
