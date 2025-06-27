@@ -30,6 +30,7 @@ interface AppointmentCalendarProps {
 export function AppointmentCalendar({
   view,
   appointments,
+  onViewChange,
   onDateChange = () => {},
   onAppointmentSelect = () => {},
 }: AppointmentCalendarProps) {
@@ -132,7 +133,7 @@ export function AppointmentCalendar({
           </div>
         </div>
       ),
-      duration: 5000,
+      duration: 4000,
       variant: "success",
     });
   };
@@ -239,6 +240,26 @@ export function AppointmentCalendar({
 
   return (
     <div>
+      <div className="flex gap-2 mb-4">
+        <Button
+          onClick={() => onViewChange && onViewChange("month")}
+          variant={view === "month" ? "gold" : "outline"}
+        >
+          Mes
+        </Button>
+        <Button
+          onClick={() => onViewChange && onViewChange("week")}
+          variant={view === "week" ? "gold" : "outline"}
+        >
+          Semana
+        </Button>
+        <Button
+          onClick={() => onViewChange && onViewChange("day")}
+          variant={view === "day" ? "gold" : "outline"}
+        >
+          Día
+        </Button>
+      </div>
       {renderHeader()}
       {view === "month" && renderMonthView()}
       {/* Puedes agregar renderWeekView y renderDayView si lo necesitas */}

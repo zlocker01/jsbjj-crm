@@ -70,6 +70,9 @@ export function CalendarClient({
               onEdit={onEditAppointment}
               onCreateNew={onCreateAppointment}
               onClose={onCancelEdit}
+              clients={clients}
+              services={services}
+              promotions={promotions}
             />
           )}
         </div>

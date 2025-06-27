@@ -128,6 +128,8 @@ export function AppointmentDetails({
         <div className="space-y-2">
           <p className="text-sm font-medium">Servicio</p>
           <p>{services.find((service) => service.id === appointment?.service_id)?.title || "Sin servicio"}</p>
+          <p>Precio: ${services.find((service) => service.id === appointment?.service_id)?.price || "Sin precio"}</p>
+          <p>Duración aproximada: {services.find((service) => service.id === appointment?.service_id)?.duration_minutes || "Sin duración"} minutos</p>
         </div>
 
         <div className="space-y-2">
@@ -166,9 +168,9 @@ export function AppointmentDetails({
         >
           Cancelar cita
         </Button>
-        <Button size="sm" onClick={() => onEdit(appointment)}>
+        {/* <Button size="sm" onClick={() => onEdit(appointment)}>
           Editar
-        </Button>
+        </Button> */}
       </div>
 
       {/* Diálogo de confirmación de cancelación */}
@@ -198,7 +200,7 @@ export function AppointmentDetails({
             </p>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex justify-between gap-3 md:gap-0">
             <Button
               variant="outline"
               onClick={() => setShowCancelDialog(false)}

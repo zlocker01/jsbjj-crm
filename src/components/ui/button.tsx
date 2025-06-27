@@ -21,6 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         success: "bg-emerald-600 shadow-sm hover:bg-emerald-500 text-white",
         facebook: "bg-facebook text-white shadow-sm hover:bg-facebook/90",
+        gold: "bg-gold text-white shadow-sm hover:bg-gold/90",  
       },
       size: {
         default: "h-9 px-4 py-2",
