@@ -15,9 +15,15 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import type { Appointment } from "@/interfaces/appointments/Appointment";
+import { Client } from "@/interfaces/client/Client";
+import { Promotion } from "@/interfaces/promotions/Promotion";
+import { Service } from "@/interfaces/services/Service";
 
 interface AppointmentDetailsProps {
   appointment: Appointment | null;
+  clients: Client[];
+  services: Service[];
+  promotions: Promotion[];
   onEdit: (appointment: Appointment) => void;
   onCreateNew: () => void;
   onClose: () => void;
@@ -25,6 +31,9 @@ interface AppointmentDetailsProps {
 
 export function AppointmentDetails({
   appointment,
+  clients,
+  services,
+  promotions,
   onEdit,
   onCreateNew,
   onClose,
@@ -98,10 +107,10 @@ export function AppointmentDetails({
           <User className="h-5 w-5 text-muted-foreground" />
           <div>
             <p className="font-medium">
-              {appointment?.client_id || "Sin cliente"}
+              {clients.find((client) => client.id === appointment?.client_id)?.name}
             </p>
             <p className="text-sm text-muted-foreground">
-              {appointment?.client_id || "Sin correo"}
+              {clients.find((client) => client.id === appointment?.client_id)?.email}
             </p>
           </div>
         </div>
@@ -125,7 +134,7 @@ export function AppointmentDetails({
 
         <div className="space-y-2">
           <p className="text-sm font-medium">Servicio</p>
-          <p>{appointment.service_id || "Sin servicio"}</p>
+          <p>{services.find((service) => service.id === appointment?.service_id)?.title || "Sin servicio"}</p>
         </div>
 
         <div className="space-y-2">
@@ -133,10 +142,10 @@ export function AppointmentDetails({
           <Badge
             variant={
               appointment.status === "Confirmada"
-                ? "default"
+                ? "confirmada"
                 : appointment.status === "Cancelada"
-                  ? "destructive"
-                  : "outline"
+                  ? "cancelada"
+                  : "proceso"
             }
           >
             {appointment.status === "Confirmada"
@@ -157,7 +166,7 @@ export function AppointmentDetails({
 
       <div className="flex justify-end space-x-2 pt-4">
         <Button
-          variant="outline"
+          variant="destructive"
           size="sm"
           onClick={() => setShowCancelDialog(true)}
           disabled={appointment.status === "Cancelada"}

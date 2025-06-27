@@ -30,6 +30,11 @@ export default function CalendarPage() {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
 
+  // Nueva función para manejar la selección de cita
+  const handleAppointmentSelect = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+  };
+
   const {
     appointments = [],
     clients = [],
@@ -59,7 +64,7 @@ export default function CalendarPage() {
       }
 
       const result = await response.json();
-      
+
       if (result.success) {
         toast({
           title: "Cita guardada",
@@ -67,7 +72,7 @@ export default function CalendarPage() {
           variant: "success",
         });
         setIsFormOpen(false);
-        
+
         // Recargar los datos para mostrar la nueva cita
         mutate();
       } else {
@@ -76,10 +81,10 @@ export default function CalendarPage() {
     } catch (error) {
       console.error("Error saving appointment:", error);
       toast({
-        title: "Error", 
+        title: "Error",
         description:
-          error instanceof Error 
-            ? `No se pudo guardar la cita: ${error.message}` 
+          error instanceof Error
+            ? `No se pudo guardar la cita: ${error.message}`
             : "No se pudo guardar la cita. Por favor, inténtalo de nuevo.",
         variant: "destructive",
       });
@@ -137,11 +142,15 @@ export default function CalendarPage() {
             isLoading={isLoading}
             error={error}
             onDateChange={(date) => console.log(date)}
+            onAppointmentSelect={setSelectedAppointment}
           />
         </div>
         <div className="col-span-1 lg:col-span-3">
           <AppointmentDetails
             appointment={selectedAppointment}
+            clients={clients}
+            services={services}
+            promotions={promotions}
             onEdit={() => {
               if (selectedAppointment) {
                 setIsFormOpen(true);
@@ -149,7 +158,7 @@ export default function CalendarPage() {
             }}
             onClose={() => setSelectedAppointment(null)}
             onCreateNew={() => {
-              setSelectedAppointment(null); // Ensure form is for a new appointment
+              setSelectedAppointment(null);
               setIsFormOpen(true);
             }}
           />
