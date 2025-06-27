@@ -152,11 +152,34 @@ export function AppointmentCalendar({
     </div>
   );
 
+  const layoutAppointmentsForDay = (appointments: Appointment[]) => {
+    const groupedByStartTime = appointments.reduce((acc, app) => {
+      const startTime = new Date(app.start_datetime).getTime();
+      if (!acc[startTime]) {
+        acc[startTime] = [];
+      }
+      acc[startTime].push(app);
+      return acc;
+    }, {} as Record<number, Appointment[]>);
+
+    return Object.values(groupedByStartTime).flatMap(group => {
+      const groupWidth = 100 / group.length;
+      return group.map((app, index) => ({
+        ...app,
+        layout: {
+          width: `${groupWidth}%`,
+          left: `${groupWidth * index}%`,
+        },
+      }));
+    });
+  };
+
   const renderDayView = () => {
     const day = calendarDays[0];
     if (!day) return null;
 
     const dayAppointments = getAppointmentsForDate(day);
+    const laidOutAppointments = layoutAppointmentsForDay(dayAppointments);
     const hours = Array.from({ length: 13 }, (_, i) => i + 8); // 8 AM to 8 PM
 
     return (
@@ -173,21 +196,29 @@ export function AppointmentCalendar({
               <div className="flex-1" />
             </div>
           ))}
-          {dayAppointments.map((appointment) => {
+          {laidOutAppointments.map((appointment) => {
             const start = new Date(appointment.start_datetime);
             const top = (start.getHours() - 8 + start.getMinutes() / 60) * 64; // 64px per hour
+            const appointmentWidth = parseFloat(appointment.layout.width);
+            const appointmentLeft = parseFloat(appointment.layout.left);
+
             return (
               <button
                 key={appointment.id}
                 type="button"
-                className={`absolute left-16 right-0 p-2 rounded-lg text-left text-sm z-10 ${
+                className={`absolute p-2 rounded-lg text-left text-sm z-10 ${
                   appointment.status === "Confirmada"
                     ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
                     : appointment.status === "Cancelada"
                     ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
                     : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
                 }`}
-                style={{ top: `${top}px`, height: '60px' }}
+                style={{
+                  top: `${top}px`,
+                  height: '60px',
+                  width: `calc((100% - 4rem) * ${appointmentWidth / 100})`,
+                  left: `calc(4rem + (100% - 4rem) * ${appointmentLeft / 100})`,
+                }}
                 onClick={(e) => handleAppointmentClick(appointment, e)}
               >
                 Cita {format(start, "h:mm a")}
@@ -216,23 +247,31 @@ export function AppointmentCalendar({
       <div className="grid grid-cols-7 divide-x h-[600px] overflow-y-auto">
         {calendarDays.map((day) => {
           const dayAppointments = getAppointmentsForDate(day);
+          const laidOutAppointments = layoutAppointmentsForDay(dayAppointments);
           return (
             <div key={format(day, "yyyy-MM-dd")} className="relative border-t">
-              {dayAppointments.map((appointment) => {
+              {laidOutAppointments.map((appointment) => {
                 const start = new Date(appointment.start_datetime);
                 const top = (start.getHours() * 60 + start.getMinutes()) / (24 * 60) * 100; // Position as percentage
+                const appointmentWidth = parseFloat(appointment.layout.width);
+                const appointmentLeft = parseFloat(appointment.layout.left);
+
                 return (
                   <button
                     key={appointment.id}
                     type="button"
-                    className={`absolute w-full text-xs p-1 rounded truncate text-left ${
+                    className={`absolute text-xs p-1 rounded truncate text-left ${
                       appointment.status === "Confirmada"
                         ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
                         : appointment.status === "Cancelada"
                         ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
                         : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
                     }`}
-                    style={{ top: `${top}%` }}
+                    style={{
+                      top: `${top}%`,
+                      width: `calc(${appointmentWidth}% - 2px)`,
+                      left: `calc(${appointmentLeft}% + 1px)`,
+                    }}
                     onClick={(e) => handleAppointmentClick(appointment, e)}
                   >
                     {format(start, "HH:mm")}
