@@ -40,6 +40,7 @@ export function ClientForm({
       name: "",
       email: "",
       phone: "",
+      birthday: "",
       notes: "",
     },
   });
@@ -93,6 +94,7 @@ export function ClientForm({
                   type="email"
                   placeholder="correo@ejemplo.com"
                   {...field}
+                  value={field.value || ''}
                 />
               </FormControl>
               <FormMessage />
@@ -107,7 +109,31 @@ export function ClientForm({
             <FormItem>
               <FormLabel>Teléfono</FormLabel>
               <FormControl>
-                <Input placeholder="+34 123 456 789" {...field} />
+                <Input
+                  placeholder="+34 123 456 789"
+                  {...field}
+                  value={field.value || ''}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="birthday"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Fecha de nacimiento</FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  placeholder="Selecciona la fecha de nacimiento"
+                  {...field}
+                  value={field.value || ""}
+                  max={new Date().toISOString().split("T")[0]} // No permite fechas futuras
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

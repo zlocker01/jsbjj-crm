@@ -4,6 +4,7 @@ export interface Client {
   email?: string;
   phone?: string;
   avatar?: string; // URL of the client's avatar
+  birthday?: string;
   notes?: string;
   registration_date: string; // ISO string para timestamp
   user_id: string; // UUID
