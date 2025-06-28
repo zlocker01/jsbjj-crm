@@ -36,46 +36,44 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const getClientAppointments = (clientId: string) => {
-  return [
-    {
-      id: "1",
-      service: "Corte de cabello",
-      date: "2023-03-15T10:00:00",
-      status: "completed",
-    },
-    {
-      id: "2",
-      service: "Manicura",
-      date: "2023-04-20T11:30:00",
-      status: "upcoming",
-    },
-    {
-      id: "3",
-      service: "Tratamiento facial",
-      date: "2023-05-05T14:00:00",
-      status: "upcoming",
-    },
-    {
-      id: "4",
-      service: "Masaje",
-      date: "2023-02-10T09:00:00",
-      status: "cancelled",
-    },
-  ];
-};
+// Hook para obtener las citas reales del cliente
+import { useEffect } from "react";
+
+function useClientAppointments(clientId: string) {
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!clientId) return;
+    setLoading(true);
+    setError(null);
+    fetch(`/api/clients/${clientId}/appointments`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Error al obtener citas");
+        const data = await res.json();
+        setAppointments(data.appointments || []);
+      })
+      .catch((err) => {
+        setError(err.message || "Error desconocido");
+        setAppointments([]);
+      })
+      .finally(() => setLoading(false));
+  }, [clientId]);
+
+  return { appointments, loading, error };
+}
+
 
 interface ClientDetailsProps {
-  // Added interface for props
   client: Client;
   onDeleteSuccess?: (clientId: Client["id"]) => void;
 }
 
 export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
-  // Updated signature
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // Added
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { toast } = useToast();
 
   if (!client) {
@@ -87,7 +85,7 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
     );
   }
 
-  const clientAppointments = getClientAppointments(client.id);
+  const { appointments: clientAppointments, loading: loadingAppointments, error: errorAppointments } = useClientAppointments(client.id);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -161,7 +159,7 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "completed":
+      case "Confirmada":
         return (
           <Badge
             variant="confirmada"
@@ -170,16 +168,16 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
             <CheckCircle className="mr-1 h-3 w-3" /> Completada
           </Badge>
         );
-      case "upcoming":
+      case "En Proceso":
         return (
           <Badge
             variant="proceso"
             className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100"
           >
-            <Clock className="mr-1 h-3 w-3" /> Próxima
+            <Clock className="mr-1 h-3 w-3" /> En Proceso
           </Badge>
         );
-      case "cancelada":
+      case "Cancelada":
         return (
           <Badge
             variant="cancelada"
@@ -206,6 +204,7 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
           email: client.email ?? "",
           phone: client.phone ?? "",
           notes: client.notes || "",
+          birthday: client.birthday || "",
           // Si ClientForm espera is_active y client_source_id, debes pasarlos aquí también
           // is_active: client.is_active,
           // client_source_id: client.client_source_id,
@@ -275,6 +274,7 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
           </div>
         </TabsContent>
         <TabsContent value="history" className="pt-4">
+
           {/* ... Contenido del historial ... */}
         </TabsContent>
         <TabsContent value="appointments" className="pt-4">
@@ -346,9 +346,6 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
             </AlertDialogContent>
           </AlertDialog>
         </div>
-        <Button onClick={handleViewAppointments} className="w-full">
-          Ver Citas
-        </Button>
       </div>
     </div>
   );

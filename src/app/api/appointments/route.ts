@@ -6,7 +6,6 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function GET(request: NextRequest) {
   try {
-    // Se elimina la validación de landingPageId ya que no es necesaria para getAppointments
     const appointments = await getAppointments();
     return NextResponse.json({
       success: true,
