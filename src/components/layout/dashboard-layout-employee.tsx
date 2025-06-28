@@ -29,7 +29,7 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-export function DashboardLayout({
+export function DashboardLayoutEmployee({
   children,
   landingId,
 }: {
@@ -59,53 +59,18 @@ export function DashboardLayout({
 
   const routes = [
     {
-      title: 'Dashboard',
-      href: '/session/admin/dashboard',
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Editor de Landing",
-      href: "/session/admin/landing-editor",
-      icon: Pencil,
-    },
-    {
-      title: "Personal",
-      href: "/session/admin/employees",
-      icon: Users,
-    },
-    {
-      title: "Galeria de Imagenes",
-      href: "/session/admin/images-gallery",
-      icon: CameraIcon,
-    },
-    {
-      title: "Gestión de Horarios",
-      href: "/session/admin/schedule",
-      icon: Clock,
-    },
-    {
-      title: "Servicios y Promos",
-      href: "/session/admin/services",
-      icon: Tag,
-    },
-    {
       title: "Calendario de Citas",
-      href: `/session/admin/calendar/${landingId}`,
+      href: `/session/employee/calendar/${landingId}`,
       icon: Calendar,
     },
     {
       title: "Clientes",
-      href: "/session/admin/clients",
+      href: "/session/employee/clients",
       icon: Users,
     },
-    // {
-    //   title: "Chatbot",
-    //   href: "/session/admin/chatbot",
-    //   icon: MessageSquare,
-    // },
     {
       title: "Perfil",
-      href: "/session/admin/profile",
+      href: "/session/employee/profile",
       icon: User,
     },
   ];
@@ -128,7 +93,7 @@ export function DashboardLayout({
       <div className="hidden w-64 flex-col border-r bg-card md:flex">
         <div className="flex h-14 items-center border-b px-4">
           <Link
-            href="session/admin/dashboard"
+            href="/session/employee/calendar"
             className="flex items-center gap-2 font-semibold justify-center"
           >
             <img
@@ -165,7 +130,7 @@ export function DashboardLayout({
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium">La Rochelle</p>
-              <p className="text-xs text-muted-foreground">Administrador</p>
+              <p className="text-xs text-muted-foreground">Empleado</p>
             </div>
             <ThemeToggle />
           </div>
@@ -178,7 +143,7 @@ export function DashboardLayout({
           <SheetHeader className="border-b px-4 py-3">
             <SheetTitle className="flex items-center gap-2 justify-center">
               <Link
-                href="admin/employee/dashboard"
+                href="/session/employee/calendar"
                 className="flex items-center gap-2 font-semibold"
               >
                 <img
@@ -217,7 +182,7 @@ export function DashboardLayout({
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium">La Rochelle</p>
-                <p className="text-xs text-muted-foreground">Administrador</p>
+                <p className="text-xs text-muted-foreground">Empleado</p>
               </div>
               <ThemeToggle />
             </div>

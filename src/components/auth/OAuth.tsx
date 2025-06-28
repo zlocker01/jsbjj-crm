@@ -18,7 +18,7 @@ export const OAuth = () => {
       provider: "google",
       options: {
         data: {
-          role: "admin",
+          role: "empleado",
         },
         redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL!,
       } as any,
@@ -31,10 +31,11 @@ export const OAuth = () => {
           "Ocurrió un error inesperado, por favor intenta nuevamente.",
         variant: "destructive",
       });
+      
     } else {
       toast({
         title: "¡Listo!",
-        description: "Conecta con tu cuenta de Facebook.",
+        description: "Conecta con tu cuenta de Google.",
         variant: "success",
       });
     }

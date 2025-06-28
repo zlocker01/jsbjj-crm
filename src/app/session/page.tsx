@@ -4,7 +4,7 @@ import { getUserRole } from "@/data/getUserRole";
 export default async function Home() {
   const userRole = await getUserRole();
   if (userRole === "admin") {
-    redirect("/dashboard");
+    redirect("/session/admin/dashboard");
   }
-  redirect("/employed");
+  redirect("/session/employee/profile");
 }

@@ -64,7 +64,7 @@ export const Login = () => {
         description: "Bienvenido nuevamente.",
         variant: "success",
       });
-      router.push("/session/profile");
+      router.push("/session");
     }
   }
 

@@ -21,7 +21,7 @@ const playfairDisplay = Playfair_Display({
 
 export const metadata: Metadata = {
   title: 'La Rochelle - Estetica & Barberia',
-  description: 'Servicios de estética y barberia profesional',
+  description: 'Servicios de estética y barberia en Tlaxcala',
 };
 
 export default function RootLayout({

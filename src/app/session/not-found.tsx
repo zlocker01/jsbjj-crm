@@ -29,7 +29,7 @@ export default function NotFound() {
       }, 1000);
       return () => clearTimeout(timer);
     } else {
-      window.location.href = "/perfil";
+      window.location.href = "/session";
     }
   }, [redirectSeconds]);
 
@@ -116,17 +116,12 @@ export default function NotFound() {
           <h3 className="mb-2 text-sm font-medium">Páginas populares</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/pacientes" className="text-primary hover:underline">
-                Pacientes
+              <Link href="/" className="text-primary hover:underline">
+                Inicio
               </Link>
             </li>
             <li>
-              <Link href="/contacto" className="text-primary hover:underline">
-                Contacto
-              </Link>
-            </li>
-            <li>
-              <Link href="/perfil" className="text-primary hover:underline">
+              <Link href="/session" className="text-primary hover:underline">
                 Perfil
               </Link>
             </li>
@@ -154,19 +149,19 @@ export default function NotFound() {
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4" />
                     <a
-                      href="mailto:soporte@ejemplo.com"
+                      href="mailto:contacto@larochellestetica.com"
                       className="text-primary hover:underline"
                     >
-                      soporte@ejemplo.com
+                      contacto@larochellestetica.com
                     </a>
                   </div>
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4" />
                     <a
-                      href="tel:+123456789"
+                      href="tel:2461003603"
                       className="text-primary hover:underline"
                     >
-                      +12 345 6789
+                      2461003603
                     </a>
                   </div>
                 </div>
