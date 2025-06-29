@@ -287,9 +287,10 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
               Citas canceladas: <span className="font-semibold">{clientAppointments.filter(a => a.status === "Cancelada").length}</span>
             </p>
           </div>
+        </TabsContent>
+
 
           {/* ... Citas pro cliente ... */}
-        </TabsContent>
         <TabsContent value="appointments" className="pt-4">
           <div className="space-y-4">
             <h4 className="text-sm font-medium">Citas del cliente</h4>
