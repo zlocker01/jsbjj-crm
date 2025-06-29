@@ -288,7 +288,7 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
                       <div>
                         <h5 className="font-medium">{appointment.service}</h5>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(appointment.date).toLocaleString("es-ES", {
+                          {new Date(appointment.start_datetime).toLocaleString("es-ES", {
                             dateStyle: "medium",
                             timeStyle: "short",
                           })}
