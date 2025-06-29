@@ -20,7 +20,6 @@ export async function GET(
     .from('appointments')
     .select('*')
     .eq('client_id', clientId)
-    .order('date', { ascending: false });
 
   if (error) {
     return NextResponse.json(
