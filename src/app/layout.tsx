@@ -22,6 +22,10 @@ const playfairDisplay = Playfair_Display({
 export const metadata: Metadata = {
   title: 'La Rochelle - Estetica & Barberia',
   description: 'Servicios de estética y barberia en Tlaxcala',
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.ico',
+  }
 };
 
 export default function RootLayout({
@@ -31,7 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <link rel="icon" href="/app/favicon/favicon.ico" />
+      <link rel="icon" href="/favicon.ico" />
       <head />
       <body
         suppressHydrationWarning
