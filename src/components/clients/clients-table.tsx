@@ -68,75 +68,72 @@ export function ClientsTable({
 
   return (
     <div className="space-y-4">
-      <ScrollArea className="w-full">
-        <div className="min-w-[600px]">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead className="hidden md:table-cell">Email</TableHead>
-                <TableHead className="hidden sm:table-cell">Teléfono</TableHead>
-                <TableHead className="text-right">Citas</TableHead>
-                <TableHead className="hidden sm:table-cell">
-                  Última Visita
-                </TableHead>
-                <TableHead>Estado</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: pageSize }).map((_, index) => (
-                  <ClientsTableRowSkeleton key={`skeleton-${index}`} />
-                ))
-              ) : paginatedClients.length > 0 ? (
-                paginatedClients.map((client: Client) => (
-                  <TableRow
-                    key={client.id}
-                    className={`cursor-pointer ${client.id === selectedClientId ? "bg-muted" : ""}`}
-                    onClick={() => onClientSelect(client)}
-                  >
-                    <TableCell className="font-medium">{client.name}</TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {client.email}
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      {client.phone}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {client.appointments}
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      {client.last_visit_date
-                        ? formatDate(client.last_visit_date)
-                        : "Sin visitas"}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`inline-block px-2 py-1 text-xs rounded-full ${
-                          client.is_active === true
-                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                            : "bg-red-100 text-gray-800 dark:bg-red-800 dark:text-gray-100"
+      <div style={{ width: '100%', overflowX: 'auto' }}>
+        <Table className="min-w-[900px] w-max">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nombre</TableHead>
+              <TableHead className="hidden md:table-cell">Email</TableHead>
+              <TableHead className="hidden sm:table-cell">Teléfono</TableHead>
+              <TableHead className="text-right">Citas</TableHead>
+              <TableHead className="hidden sm:table-cell">
+                Última Visita
+              </TableHead>
+              <TableHead>Estado</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              Array.from({ length: pageSize }).map((_, index) => (
+                <ClientsTableRowSkeleton key={`skeleton-${index}`} />
+              ))
+            ) : paginatedClients.length > 0 ? (
+              paginatedClients.map((client: Client) => (
+                <TableRow
+                  key={client.id}
+                  className={`cursor-pointer ${client.id === selectedClientId ? "bg-muted" : ""}`}
+                  onClick={() => onClientSelect(client)}
+                >
+                  <TableCell className="font-medium">{client.name}</TableCell>
+                  <TableCell className="table-cell">
+                    {client.email}
+                  </TableCell>
+                  <TableCell className="table-cell">
+                    {client.phone}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {client.appointments}
+                  </TableCell>
+                  <TableCell className="table-cell">
+                    {client.last_visit_date
+                      ? formatDate(client.last_visit_date)
+                      : "Sin visitas"}
+                  </TableCell>
+                  <TableCell>
+                    <span
+                      className={`inline-block px-2 py-1 text-xs rounded-full ${client.is_active === true
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                          : "bg-red-100 text-gray-800 dark:bg-red-800 dark:text-gray-100"
                         }`}
-                      >
-                        {client.is_active === true ? "Activo" : "Inactivo"}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center py-4 text-muted-foreground"
-                  >
-                    No se encontraron clientes
+                    >
+                      {client.is_active === true ? "Activo" : "Inactivo"}
+                    </span>
                   </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </ScrollArea>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center py-4 text-muted-foreground"
+                >
+                  No se encontraron clientes
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {totalPages > 1 && (
         <div className="flex items-center justify-end space-x-2">
