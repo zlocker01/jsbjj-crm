@@ -273,9 +273,22 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
             </p>
           </div>
         </TabsContent>
-        <TabsContent value="history" className="pt-4">
 
           {/* ... Contenido del historial ... */}
+        <TabsContent value="history" className="pt-4">
+          <div className="flex flex-col gap-2 mb-4">
+            <p className="text-sm">
+              Total de citas: <span className="font-semibold">{clientAppointments.length}</span>
+            </p>
+            <p className="text-sm">
+              Citas confirmadas: <span className="font-semibold">{clientAppointments.filter(a => a.status === "Confirmada").length}</span>
+            </p>
+            <p className="text-sm">
+              Citas canceladas: <span className="font-semibold">{clientAppointments.filter(a => a.status === "Cancelada").length}</span>
+            </p>
+          </div>
+
+          {/* ... Citas pro cliente ... */}
         </TabsContent>
         <TabsContent value="appointments" className="pt-4">
           <div className="space-y-4">
