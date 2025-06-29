@@ -73,10 +73,10 @@ export function ClientsTable({
           <TableHeader>
             <TableRow>
               <TableHead>Nombre</TableHead>
-              <TableHead className="hidden md:table-cell">Email</TableHead>
-              <TableHead className="hidden sm:table-cell">Teléfono</TableHead>
+              <TableHead >Email</TableHead>
+              <TableHead >Teléfono</TableHead>
               <TableHead className="text-right">Citas</TableHead>
-              <TableHead className="hidden sm:table-cell">
+              <TableHead>
                 Última Visita
               </TableHead>
               <TableHead>Estado</TableHead>
@@ -112,8 +112,8 @@ export function ClientsTable({
                   <TableCell>
                     <span
                       className={`inline-block px-2 py-1 text-xs rounded-full ${client.is_active === true
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                          : "bg-red-100 text-gray-800 dark:bg-red-800 dark:text-gray-100"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                        : "bg-red-100 text-gray-800 dark:bg-red-800 dark:text-gray-100"
                         }`}
                     >
                       {client.is_active === true ? "Activo" : "Inactivo"}
