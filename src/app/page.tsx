@@ -22,6 +22,7 @@ import { getJobBannerSections } from "@/data/jobBannerSections/getJobBannerSecti
 import { getEmployees } from "@/data/employees/getEmployees";
 import { getSchedules } from "@/data/schedule/getSchedules";
 import { LandingPage } from "@/interfaces/landingPages/LandingPage";
+import CookiesModal from "@/components/landing-page/cookiesModal";
 
 export default async function Home() {
   const landingId: string | null = await getLandingId();
@@ -87,6 +88,7 @@ export default async function Home() {
         <Footer />
       </main>
       <NewsletterModal landingId={landingId} />
+      <CookiesModal />
     </>
   );
 }

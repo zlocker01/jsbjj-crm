@@ -17,6 +17,7 @@ import { getContactSections } from "@/data/contactSections/getContactSections";
 import { getFaqItems } from "@/data/faqItems/getFaqItems";
 import { getJobBannerSections } from "@/data/jobBannerSections/getJobBannerSections";
 import NewsletterModal from "@/components/landing-page/newsletter-modal";
+import CookiesModal from "@/components/landing-page/cookiesModal";
 
 export default async function Home() {
   const landingId = await getLandingId();
@@ -62,6 +63,7 @@ export default async function Home() {
       <JobBanner data={jobBannerData[0]} />
       <WhatsAppButton />
       <NewsletterModal landingId={landingId} />
+      <CookiesModal />
     </main>
   );
 }

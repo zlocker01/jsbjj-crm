@@ -26,6 +26,7 @@ import { createNewsletterSubscriber } from "@/data/newsletterSubscribers/createN
 import { newsLetterFormSchema } from "@/schemas/newsLetterSchemas/newsLetterFormSchema";
 
 export default function NewsletterModal({ landingId }: { landingId: string }) {
+  const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -37,12 +38,15 @@ export default function NewsletterModal({ landingId }: { landingId: string }) {
   });
 
   useEffect(() => {
-    if (landingId) {
-      const timer = setTimeout(() => {
-        setOpen(true);
-      }, 15000); // 15 segundos
-
-      return () => clearTimeout(timer);
+    setIsClient(true);
+    if (landingId && typeof window !== "undefined") {
+      const hasSeen = window.localStorage.getItem('hasSeenNewsletterModal');
+      if (!hasSeen) {
+        const timer = setTimeout(() => {
+          setOpen(true);
+        }, 15000); // 15 segundos
+        return () => clearTimeout(timer);
+      }
     }
   }, [landingId]);
 
@@ -69,7 +73,9 @@ export default function NewsletterModal({ landingId }: { landingId: string }) {
         return;
       }
 
-      localStorage.setItem("hasSeenNewsletterModal", "true");
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("hasSeenNewsletterModal", "true");
+      }
       setOpen(false);
       toast({
         title: "¡Gracias por suscribirte!",
@@ -88,9 +94,13 @@ export default function NewsletterModal({ landingId }: { landingId: string }) {
   const onInvalid = (errors: any) => console.error(errors);
 
   const handleClose = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("hasSeenNewsletterModal", "true");
+    }
     setOpen(false);
   };
 
+  if (!isClient) return null;
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
