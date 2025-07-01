@@ -15,12 +15,13 @@ export async function GET(_: NextRequest, props: { params: Promise<{ id: string 
 export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const body = await req.json();
-  const error = await updateAppointment(params.id, body);
-  if (error) {
-    return NextResponse.json({ error }, { status: 500 });
+  const updatedAppointment = await updateAppointment(params.id, body);
+  if (!updatedAppointment) {
+    return NextResponse.json({ error: "Cita no encontrada o no se pudo actualizar." }, { status: 404 });
   }
   return NextResponse.json({
     message: "Cita actualizada correctamente.",
+    appointment: updatedAppointment,
   });
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -46,10 +46,17 @@ import { useToast } from "@/hooks/use-toast";
 const formSchema = z.object({
   service: z.string({
     required_error: "Por favor selecciona un servicio",
-  }),
-  stylist: z.string({
-    required_error: "Por favor selecciona un estilista",
-  }),
+  }).or(
+    z.literal("")
+  ),
+  promotion: z.string({
+    required_error: "Por favor selecciona una promoción",
+  }).or(
+    z.literal("")
+  ),
+  // stylist: z.string({
+  //   required_error: "Por favor selecciona un estilista",
+  // }),
   date: z.date({
     required_error: "Por favor selecciona una fecha",
   }),
@@ -71,51 +78,172 @@ const formSchema = z.object({
   }),
 });
 
-const services = [
-  { id: "haircut", name: "Corte de cabello", price: 300 },
-  { id: "coloring", name: "Tinte y mechas", price: 800 },
-  { id: "facial", name: "Limpieza facial", price: 600 },
-  { id: "massage", name: "Masaje relajante", price: 700 },
-  { id: "manicure", name: "Manicure y pedicure", price: 400 },
-  { id: "treatment", name: "Tratamiento capilar", price: 500 },
-  { id: "treatment", name: "Tratamiento capilar", price: 500 },
-];
-
-const stylists = [
-  { id: "maria", name: "María Rodríguez" },
-  { id: "carlos", name: "Carlos Gómez" },
-  { id: "laura", name: "Laura Sánchez" },
-  { id: "javier", name: "Javier Méndez" },
-];
-
-const timeSlots = [
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-];
-
-export default function Booking() {
+export default function Booking({landingId = ""}: {landingId?: string}) {
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [services, setServices] = useState<any[]>([]);
+  const [promotions, setPromotions] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [isLoadingTimeSlots, setIsLoadingTimeSlots] = useState(false);
+  const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const [isLoadingPromotions, setIsLoadingPromotions] = useState(true);
   const { toast } = useToast();
+  // const [stylists, setStylists] = useState<any[]>([]); // No implementado
+
+  // Cargar servicios, promociones y citas al montar
+  React.useEffect(() => {
+    console.log('LandingId recibido en component:', landingId);
+    if (!landingId) {
+      console.warn('landingId no proporcionado o inválido. Algunos datos no estarán disponibles.');
+      setIsLoadingServices(false);
+      setIsLoadingPromotions(false);
+      return;
+    }
+    
+    const fetchData = async () => {
+      try {
+        setIsLoadingServices(true);
+        // Cargar servicios
+        try {
+          console.log('Solicitando servicios con landingId:', landingId);
+          const resServices = await fetch(`/api/services?landingPageId=${landingId}`);
+          console.log('Respuesta de API servicios:', resServices.status, resServices.statusText);
+          
+          if (!resServices.ok) {
+            const errorText = await resServices.text();
+            console.error('Error al cargar servicios:', errorText);
+            toast({ title: "Error cargando servicios", variant: "destructive" });
+          } else {
+            const dataServices = await resServices.json();
+            console.log('Servicios recibidos (datos brutos):', dataServices);
+            if (dataServices && Array.isArray(dataServices.services)) {
+              console.log('Número de servicios encontrados:', dataServices.services.length);
+              setServices(dataServices.services);
+            } else {
+              console.warn('La estructura de datos de servicios no es la esperada:', dataServices);
+            }
+          }
+        } catch (serviceErr) {
+          console.error('Excepción al cargar servicios:', serviceErr);
+        }
+        setIsLoadingServices(false);
+
+        setIsLoadingPromotions(true);
+        // Cargar promociones
+        try {
+          console.log('Solicitando promociones con landingId:', landingId);
+          const resPromotions = await fetch(`/api/promotions?landingPageId=${landingId}`);
+          console.log('Respuesta de API promociones:', resPromotions.status, resPromotions.statusText);
+          
+          if (!resPromotions.ok) {
+            const errorText = await resPromotions.text();
+            console.error('Error al cargar promociones:', errorText);
+            toast({ title: "Error cargando promociones", variant: "destructive" });
+          } else {
+            const dataPromotions = await resPromotions.json();
+            console.log('Promociones recibidas (datos brutos):', dataPromotions);
+            if (dataPromotions && Array.isArray(dataPromotions.promotions)) {
+              console.log('Número de promociones encontradas:', dataPromotions.promotions.length);
+              setPromotions(dataPromotions.promotions);
+            } else {
+              console.warn('La estructura de datos de promociones no es la esperada:', dataPromotions);
+              console.log('Usando datos de prueba para promociones');
+            }
+          }
+        } catch (promoErr) {
+          console.error('Excepción al cargar promociones:', promoErr);
+        }
+        setIsLoadingPromotions(false);
+
+        // Cargar todas las citas existentes
+        try {
+          const resAppointments = await fetch(`/api/appointments`);
+          if (!resAppointments.ok) {
+            console.error('Error al cargar citas:', await resAppointments.text());
+            toast({ title: "Error cargando citas", variant: "destructive" });
+          } else {
+            const dataAppointments = await resAppointments.json();
+            console.log('Citas recibidas:', dataAppointments);
+            setAppointments(dataAppointments.data || []);
+          }
+        } catch (err) {
+          console.error('Error general:', err);
+          toast({ title: "Error cargando datos necesarios", variant: "destructive" });
+        }
+      } catch (err) {
+        console.error('Error general:', err);
+        toast({ title: "Error cargando datos necesarios", variant: "destructive" });
+        setIsLoadingServices(false);
+        setIsLoadingPromotions(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      service: "",
+      promotion: "",
       notes: "",
     },
     mode: "onChange", // Validar al cambiar los campos
   });
 
   const watchService = form.watch("service");
+  const watchPromotion = form.watch("promotion");
   const watchPaymentMethod = form.watch("paymentMethod");
+
+  // Generar timeSlots disponibles cuando cambie la fecha seleccionada
+  React.useEffect(() => {
+    const selectedDate = form.watch("date");
+    if (selectedDate) {
+      generateAvailableTimeSlots(selectedDate);
+    }
+  }, [form.watch("date"), appointments]);
+
+  // Función para generar horarios disponibles basados en fecha seleccionada
+  const generateAvailableTimeSlots = (selectedDate: Date) => {
+    setIsLoadingTimeSlots(true);
+    
+    // Definir horario de apertura (9am) y cierre (7pm)
+    const openingHour = 9;
+    const closingHour = 19;
+    
+    // Duración promedio de cada servicio en minutos (puede ajustarse según tus necesidades)
+    const appointmentDuration = 60;
+    
+    // Generar todos los posibles slots de tiempo por hora
+    const allPossibleSlots: string[] = [];
+    for (let hour = openingHour; hour < closingHour; hour++) {
+      allPossibleSlots.push(`${hour}:00`);
+      // También podríamos agregar slots cada media hora
+      if (hour < closingHour - 1) {
+        allPossibleSlots.push(`${hour}:30`);
+      }
+    }
+    
+    // Filtrar horarios ya ocupados para la fecha seleccionada
+    const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
+    const bookedAppointments = appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.date);
+      return format(appointmentDate, "yyyy-MM-dd") === selectedDateStr;
+    });
+    
+    // Extraer horas reservadas
+    const bookedTimes = bookedAppointments.map(appointment => {
+      // Asumiendo que appointment.time está en formato "HH:mm"
+      return appointment.time;
+    });
+    
+    // Filtrar slots disponibles
+    const availableSlots = allPossibleSlots.filter(slot => !bookedTimes.includes(slot));
+    
+    // Actualizar estado con slots disponibles
+    setAvailableTimeSlots(availableSlots);
+    setIsLoadingTimeSlots(false);
+  };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
@@ -124,6 +252,7 @@ export default function Booking() {
     toast({
       title: "¡Cita agendada con éxito!",
       description: `Te esperamos el ${format(values.date, "PPP", { locale: es })} a las ${values.time}`,
+      variant: "success",
     });
   };
 
@@ -135,7 +264,7 @@ export default function Booking() {
   const handleContinueToStep2 = async () => {
     // Validar todos los campos del paso 1
     const result = await form.trigger(
-      ["service", "stylist", "date", "time", "name", "email", "phone"],
+      ["service", /* "stylist", */ "date", "time", "name", "email", "phone"],
       {
         shouldFocus: true,
       },
@@ -227,56 +356,94 @@ export default function Booking() {
                       control={form.control}
                       name="service"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Servicio</FormLabel>
-                          <Select
-                            onValueChange={(value) => {
-                              field.onChange(value);
-                              setSelectedService(value);
-                            }}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="text-white">
+                            Servicio
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                // Si selecciona un servicio, resetear promoción
+                                if (value) form.setValue("promotion", "");
+                              }}
+                              value={field.value}
+                              disabled={isLoadingServices}
+                            >
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecciona un servicio" />
                               </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {services.map((service) => (
-                                <SelectItem key={service.id} value={service.id}>
-                                  {service.name} - ${service.price}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                              <SelectContent>
+                                {isLoadingServices ? (
+                                  <SelectItem value="loading" disabled>
+                                    Cargando servicios...
+                                  </SelectItem>
+                                ) : services.length === 0 ? (
+                                  <SelectItem value="no-services" disabled>
+                                    No hay servicios disponibles
+                                  </SelectItem>
+                                ) : (
+                                  services.map((service) => (
+                                    <SelectItem
+                                      key={service.id}
+                                      value={service.id.toString()}
+                                    >
+                                      {service.title} - {service.price}€
+                                    </SelectItem>
+                                  ))
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
+                    {/* Promociones */}
                     <FormField
                       control={form.control}
-                      name="stylist"
+                      name="promotion"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Estilista</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="text-white">
+                            Promoción
+                          </FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                // Si selecciona una promoción, resetear servicio
+                                if (value) form.setValue("service", "");
+                              }}
+                              value={field.value}
+                              disabled={isLoadingPromotions}
+                            >
                               <SelectTrigger>
-                                <SelectValue placeholder="Selecciona un estilista" />
+                                <SelectValue placeholder="Selecciona una promoción" />
                               </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {stylists.map((stylist) => (
-                                <SelectItem key={stylist.id} value={stylist.id}>
-                                  {stylist.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                              <SelectContent>
+                                {isLoadingPromotions ? (
+                                  <SelectItem value="loading" disabled>
+                                    Cargando promociones...
+                                  </SelectItem>
+                                ) : promotions.length === 0 ? (
+                                  <SelectItem value="no-promotions" disabled>
+                                    No hay promociones disponibles
+                                  </SelectItem>
+                                ) : (
+                                  promotions.map((promotion) => (
+                                    <SelectItem
+                                      key={promotion.id}
+                                      value={promotion.id.toString()}
+                                    >
+                                      {promotion.title} - {promotion.discount_price || promotion.price}€
+                                    </SelectItem>
+                                  ))
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -315,7 +482,11 @@ export default function Booking() {
                                 <Calendar
                                   mode="single"
                                   selected={field.value}
-                                  onSelect={field.onChange}
+                                  onSelect={(date) => {
+                                    field.onChange(date);
+                                    // Resetear el horario seleccionado cuando se cambia la fecha
+                                    form.setValue("time", "");
+                                  }}
                                   disabled={(date) =>
                                     date < new Date() || date.getDay() === 0
                                   }
@@ -344,12 +515,46 @@ export default function Booking() {
                                   <SelectValue placeholder="Selecciona una hora" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
-                                {timeSlots.map((time) => (
-                                  <SelectItem key={time} value={time}>
-                                    {time}
-                                  </SelectItem>
-                                ))}
+                              <SelectContent className="max-h-[300px] overflow-auto">
+                                {isLoadingTimeSlots ? (
+                                  <div className="p-2 text-center text-sm text-muted-foreground">
+                                    Cargando horarios disponibles...
+                                  </div>
+                                ) : availableTimeSlots.length > 0 ? (
+                                  <>
+                                    {/* Agrupar por mañana y tarde */}
+                                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                                      Mañana
+                                    </div>
+                                    {availableTimeSlots
+                                      .filter((time) => {
+                                        const hour = parseInt(time.split(":")[0]);
+                                        return hour < 12;
+                                      })
+                                      .map((time) => (
+                                        <SelectItem key={time} value={time}>
+                                          {time}
+                                        </SelectItem>
+                                      ))}
+                                    <div className="px-2 py-1.5 mt-2 text-xs font-medium text-muted-foreground">
+                                      Tarde
+                                    </div>
+                                    {availableTimeSlots
+                                      .filter((time) => {
+                                        const hour = parseInt(time.split(":")[0]);
+                                        return hour >= 12;
+                                      })
+                                      .map((time) => (
+                                        <SelectItem key={time} value={time}>
+                                          {time}
+                                        </SelectItem>
+                                      ))}
+                                  </>
+                                ) : (
+                                  <div className="p-2 text-center text-sm text-muted-foreground">
+                                    No hay horarios disponibles para esta fecha. Por favor selecciona otra fecha.
+                                  </div>
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -596,11 +801,11 @@ export default function Booking() {
                       a las {form.getValues("time")}
                     </p>
                     <p className="text-muted-foreground">
-                      Con:{" "}
+                      {/* Con:{" "}
                       {
                         stylists.find((s) => s.id === form.getValues("stylist"))
                           ?.name
-                      }
+                      } */}
                     </p>
                     <p className="text-muted-foreground mt-2">
                       Método de pago:{" "}

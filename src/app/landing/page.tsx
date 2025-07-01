@@ -56,7 +56,7 @@ export default async function Home() {
       <About data={aboutData[0]} />
       <Gallery data={galleryData} />
       <Promotions landingId={landingId} />
-      <Booking />
+      {/* <Booking landingId={landingId}/> */}
       <Testimonials />
       <Location data={contactData[0]} />
       <Faq data={faqData} />

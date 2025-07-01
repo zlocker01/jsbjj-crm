@@ -17,7 +17,7 @@ export const getAppointmentById = async (
     .from("appointments")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error("Error fetching appointment:", error.message);
