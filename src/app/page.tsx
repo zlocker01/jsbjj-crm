@@ -78,7 +78,7 @@ export default async function Home() {
         <Team data={employees ?? []} />
         <Gallery data={galleryItems ?? []} />
         <Promotions landingId={landingId} />
-        <Booking /> 
+        {/* <Booking />  */}
         {contactSection && (
           <Location data={contactSection[0]} schedules={schedules} />
         )}
