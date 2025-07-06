@@ -36,7 +36,7 @@ export default function About({ data }: { data: AboutSection }) {
                 </p>
               </div>
               <div className="bg-muted/50 p-4 rounded-lg text-center">
-                <h4 className="text-4xl font-bold text-primary">+10</h4>
+                <h4 className="text-4xl font-bold text-primary">+50</h4>
                 <p className="text-sm text-muted-foreground">
                   Servicios especializados
                 </p>

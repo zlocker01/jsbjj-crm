@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { HeroSection } from "@/interfaces/heroSection/Interface";
 import { useId } from 'react';
+import GraduationCarousel from "./graduationCarousel";
 
 export default function Hero({ data }: { data: HeroSection }) {
   const heroId = useId();
@@ -20,20 +21,25 @@ export default function Hero({ data }: { data: HeroSection }) {
               {data.text}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              {/* promotions button for graduation session */}
               <Button size="lg" asChild>
+                <Link href="#promotions">Ver Promociones de Graduación</Link>
+              </Button>
+              {/* <Button size="lg" asChild>
                 <Link href="#booking">Agenda tu cita</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="#services">Ver servicios</Link>
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden">
-            <img
+            {/* <img
               src={data.image}
               alt={data.title}
               className="w-full h-full object-cover"
-            />
+            /> */}
+            <GraduationCarousel />
           </div>
         </div>
       </div>
