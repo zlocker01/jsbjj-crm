@@ -136,22 +136,22 @@ export default function Promotions({ landingId }: { landingId: string }) {
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                        <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
                           {promo.description}
                         </p>
                         <div className="flex items-center gap-2 mb-3">
                           <span className="text-lg font-bold">
-                            {promo.discount_price}
+                            ${promo.discount_price}
                           </span>
                           <span className="text-sm text-muted-foreground line-through">
-                            {promo.price}
+                            ${promo.price}
                           </span>
                         </div>
                         <div className="space-y-1 text-xs text-muted-foreground">
                           {promo.duration_minutes && (
                             <div className="flex items-center">
                               <Clock className="h-3 w-3 mr-1" />
-                              <span>{promo.duration_minutes} minutos</span>
+                              <span>{promo.duration_minutes} minutos aprox.</span>
                             </div>
                           )}
                           <div className="flex items-center">
