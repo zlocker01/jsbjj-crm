@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Loader2, Upload, X } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -45,8 +46,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { createPromotion as addPromotion } from "@/data/promotions/createPromotion";
-import { updatePromotion } from "@/data/promotions/updatePromotion";
+// Eliminamos las importaciones de funciones de servidor y usaremos fetch API
 
 export type PromotionFormData = z.infer<typeof promotionItemSchema>;
 
@@ -75,6 +75,7 @@ export function AddPromotionModal({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const supabase = createClient();
 
   const form = useForm<PromotionFormData>({
     resolver: zodResolver(promotionItemSchema),
@@ -109,24 +110,36 @@ export function AddPromotionModal({
     
     setIsUploading(true);
     try {
-      // Aquí simularemos la carga de la imagen
-      // En un caso real, aquí harías la llamada a tu API para subir la archivo
+      // Crear un nombre de archivo limpio para evitar problemas
+      const cleanName = file.name.replace(/\s+/g, "-").toLowerCase();
+      const fileName = `landing/${landingId}/promotions/${Date.now()}-${cleanName}`;
+
+      // Subir el archivo al bucket 'landing-images' en Supabase
+      const { error: uploadError } = await supabase.storage
+        .from("landing-images")
+        .upload(fileName, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Obtener la URL pública del archivo
+      const { data: urlData } = supabase.storage
+        .from("landing-images")
+        .getPublicUrl(fileName);
+
+      const publicUrl = urlData.publicUrl;
       
-      // Simulamos un retraso para la carga
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Establecer la URL en el formulario
+      form.setValue("image", publicUrl, { shouldValidate: true });
       
-      // En un caso real, tu API devolvería la URL de la imagen subida
-      // Por ahora, usamos la URL del preview como si fuera la URL final
-      const imageUrl = previewUrl;
-      
-      form.setValue("image", imageUrl || "", { shouldValidate: true });
       toast({
         title: "Imagen subida",
         description: "La imagen se ha subido correctamente.",
         variant: "success",
       });
       
-      return imageUrl;
+      return publicUrl;
     } catch (error) {
       setPreviewUrl(null);
       form.setValue("image", "", { shouldValidate: true });
@@ -194,18 +207,44 @@ export function AddPromotionModal({
         category: data.category,
         valid_until: new Date(data.valid_until).toISOString(),
         image: data.image,
-        business_id: 1, 
+        landing_page_id: landingId
       };
 
       if (isEditing && promotion) {
-        await updatePromotion(promotion.id, promotionData);
+        // Actualizar usando la API
+        const response = await fetch(`/api/promotions/${promotion.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(promotionData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Error al actualizar la promoción");
+        }
+
         toast({
           title: "Promoción actualizada",
           description: "La promoción se ha actualizado con éxito.",
           variant: "success",
         });
       } else {
-        await addPromotion(promotionData);
+        // Crear usando la API
+        const response = await fetch("/api/promotions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(promotionData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Error al crear la promoción");
+        }
+
         toast({
           title: "Promoción añadida",
           description: "La promoción se ha añadido con éxito.",

@@ -13,6 +13,7 @@ import { es } from "date-fns/locale";
 import { AppointmentCalendar } from "@/components/calendar/AppointmentCalendar";
 import { AppointmentDetails } from "@/components/calendar/AppointmentDetails";
 import { AppointmentForm } from "@/components/calendar/AppointmentForm";
+import type { Appointment } from "@/interfaces/appointments/Appointment";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +21,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import type { Appointment } from "@/interfaces/appointments/Appointment";
 
 export default function CalendarPage() {
   const params = useParams();
