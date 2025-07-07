@@ -135,7 +135,7 @@ export default function Services({ landingId }: { landingId: string }) {
                   align: "start",
                   loop: filteredServices.length > 3, // Loop only if there are enough items
                 }}
-                className="w-full max-w-sm md:max-w-xl lg:max-w-4xl mx-auto"
+                className="w-full max-w-sm md:max-w-xl lg:max-w-6xl mx-auto"
               >
                 <CarouselContent>
                   {filteredServices.map((service) => {
