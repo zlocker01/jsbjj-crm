@@ -130,7 +130,10 @@ export default function CalendarPage() {
           </p>
         </div>
         <Button
-          onClick={() => setIsFormOpen(true)}
+          onClick={() => {
+              setSelectedAppointment(null);
+              setIsFormOpen(true);
+            }}
           className="self-end md:self-auto"
         >
           <Plus className="mr-2 h-4 w-4" />

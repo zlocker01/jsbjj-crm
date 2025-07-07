@@ -14,13 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "./form-fields/SearchableSelect";
 import { User, Scissors, Tag, Loader2 } from "lucide-react";
 
 import {
@@ -73,103 +67,55 @@ export function AppointmentForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Cliente */}
-          <FormField
+          <SearchableSelect
             control={form.control}
             name="client_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cliente</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <div className="flex items-center">
-                        <User className="mr-2 h-4 w-4 opacity-50" />
-                        <SelectValue placeholder="Selecciona un cliente" />
-                      </div>
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {clients.map((client) => (
-                      <SelectItem key={client.id} value={client.id}>
-                        {client.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Cliente"
+            placeholder="Selecciona un cliente"
+            notFoundMessage="Cliente no encontrado."
+            options={clients.map((client) => ({
+              value: client.id,
+              label: client.name,
+            }))}
+            icon={<User className="mr-2 h-4 w-4 opacity-50" />}
           />
 
           {/* Servicio */}
-          <FormField
+          <SearchableSelect
             control={form.control}
             name="service_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Servicio</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  value={field.value?.toString() || ""}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <div className="flex items-center">
-                        <Scissors className="mr-2 h-4 w-4 opacity-50" />
-                        <SelectValue placeholder="Selecciona un servicio" />
-                      </div>
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {services.map((service) => (
-                      <SelectItem key={service.id} value={service.id.toString()}>
-                        {service.title} - {service.duration_minutes} min
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Servicio"
+            placeholder="Selecciona un servicio"
+            notFoundMessage="Servicio no encontrado."
+            options={services.map((service) => ({
+              value: service.id.toString(),
+              label: `${service.title} - ${service.duration_minutes} min`,
+            }))}
+            icon={<Scissors className="mr-2 h-4 w-4 opacity-50" />}
+            onValueChange={(value, onChange) => {
+              onChange(value ? Number(value) : null);
+            }}
           />
         </div>
 
         {/* Promoción */}
-        <FormField
+        <SearchableSelect
           control={form.control}
           name="promotion_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Promoción</FormLabel>
-              <Select
-                onValueChange={(value) =>
-                  field.onChange(value === "no-promo" ? null : Number(value))
-                }
-                value={field.value?.toString() || "no-promo"}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <div className="flex items-center">
-                      <Tag className="mr-2 h-4 w-4 opacity-50" />
-                      <SelectValue placeholder="Sin promoción" />
-                    </div>
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="no-promo">Sin promoción</SelectItem>
-                  {promotions.map((promotion) => (
-                    <SelectItem
-                      key={promotion.id}
-                      value={promotion.id.toString()}
-                    >
-                      {promotion.title} - {promotion.duration_minutes} min
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Promoción"
+          placeholder="Selecciona una promoción"
+          notFoundMessage="Promoción no encontrada."
+          options={[
+            { value: "no-promo", label: "Sin promoción" },
+            ...promotions.map((promo) => ({
+              value: promo.id.toString(),
+              label: `${promo.title} - ${promo.duration_minutes} min`,
+            })),
+          ]}
+          icon={<Tag className="mr-2 h-4 w-4 opacity-50" />}
+          onValueChange={(value, onChange) => {
+            onChange(value === "no-promo" ? null : Number(value));
+          }}
         />
 
         {/* fecha */}
