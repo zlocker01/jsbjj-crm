@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import useSWR from "swr";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -139,54 +138,66 @@ export default function Services({ landingId }: { landingId: string }) {
                 className="w-full max-w-sm md:max-w-xl lg:max-w-4xl mx-auto"
               >
                 <CarouselContent>
-                  {filteredServices.map((service) => (
-                    <CarouselItem
-                      key={service.id}
-                      className="md:basis-1/2 lg:basis-1/3 mt-10"
-                    >
-                      <div className="p-1 h-full">
-                        <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col h-full">
-                          <div className="relative h-48 w-full">
-                            <Image
-                              src={service.image || "/placeholder.svg"}
-                              alt={service.title}
-                              fill
-                              className="object-cover"
-                            />
+                  {filteredServices.map((service) => {
+                    return (
+                      <CarouselItem
+                        key={service.id}
+                        className="md:basis-1/2 lg:basis-1/3 mt-10"
+                      >
+                        <div className="p-1 h-full">
+                          <div className="p-1 min-h-96">
+                            <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col relative h-[500px] gap-3">
+                              {/* Imagen de fondo */}
+                              <img
+                                src={service.image || "/placeholder.svg"}
+                                alt={service.title}
+                                className="object-cover absolute inset-0 z-0 w-full h-full"
+                                loading="lazy"
+                              />
+                              {/* Overlay de gradiente para legibilidad */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/35 to-transparent z-10" />
+                              {/* Contenido encima de la imagen */}
+                              <div className="relative z-20 flex flex-col h-full justify-end p-6">
+                                <div className="space-y-2">
+                                  <CardHeader className="p-0">
+                                    <CardTitle className="text-white drop-shadow-lg font-bold text-lg md:text-xl lg:text-2xl">
+                                      {service.title}
+                                    </CardTitle>
+                                    <CardDescription className="text-white/90 drop-shadow-md mb-2">
+                                      {service.description}
+                                    </CardDescription>
+                                  </CardHeader>
+                                  <CardContent className="space-y-2 p-0">
+                                    <p className="text-xl font-bold text-primary drop-shadow-md">
+                                      ${service.price.toFixed(2)}
+                                    </p>
+                                    <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
+                                      <Clock className="h-4 w-4" />
+                                      <span>{service.duration_minutes} minutos</span>
+                                    </div>
+                                    <Badge variant="gold" className="capitalize">
+                                      {service.category.toLowerCase()}
+                                    </Badge>
+                                  </CardContent>
+                                  <CardFooter className="p-0 pt-4">
+                                    <Button asChild className="w-full">
+                                      <Link
+                                        href="#booking"
+                                        className="flex items-center gap-2"
+                                      >
+                                        <CalendarPlus className="h-4 w-4" />
+                                        <span>Agendar Cita</span>
+                                      </Link>
+                                    </Button>
+                                  </CardFooter>
+                                </div>
+                              </div>
+                            </Card>
                           </div>
-                          <CardHeader>
-                            <CardTitle>{service.title}</CardTitle>
-                            <CardDescription>
-                              {service.description}
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent className="space-y-2 flex-grow">
-                            <p className="text-xl font-bold text-primary">
-                              ${service.price.toFixed(2)}
-                            </p>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Clock className="h-4 w-4" />
-                              <span>{service.duration_minutes} minutos</span>
-                            </div>
-                            <Badge variant="gold" className="capitalize">
-                              {service.category.toLowerCase()}
-                            </Badge>
-                          </CardContent>
-                          <CardFooter>
-                            <Button asChild className="w-full">
-                              <Link
-                                href="#booking"
-                                className="flex items-center gap-2"
-                              >
-                                <CalendarPlus className="h-4 w-4" />
-                                Agendar
-                              </Link>
-                            </Button>
-                          </CardFooter>
-                        </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
+                        </div>
+                      </CarouselItem>
+                    );
+                  })}
                 </CarouselContent>
                 <CarouselPrevious className="left-0 -translate-x-4" />
                 <CarouselNext className="right-0 translate-x-4" />

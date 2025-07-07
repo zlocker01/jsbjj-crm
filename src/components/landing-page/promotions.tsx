@@ -1,10 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+
 import Link from "next/link";
 import useSWR from "swr";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CalendarPlus, Loader2, AlertCircle, Clock } from "lucide-react";
@@ -74,7 +81,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
   return (
     <section
       id="promotions"
-      className="py-16 md:py-24 bg-gradient-to-r from-amber-50 to-amber-100 dark:to-amber-950/20"
+      className="py-16 md:py-24 bg-gradient-to-r from-gold to-amber-50 dark:from-gold-950/10 dark:to-amber-950/20"
     >
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
@@ -101,80 +108,80 @@ export default function Promotions({ landingId }: { landingId: string }) {
                   key={promo.id}
                   className="pl-4 md:basis-1/2 lg:basis-1/3"
                 >
-                  <div className="p-1">
-                    <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow dark:bg-zinc-900">
-                      <div className="relative h-48 w-full">
-                        <Image
-                          src={promo.image || "/placeholder.svg"}
-                          alt={promo.title}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute top-2 right-2">
-                          <Badge variant="destructive" className="px-3 py-1">
-                            {Math.round(
-                              ((parseFloat(promo.price) -
-                                parseFloat(promo.discount_price)) /
-                                parseFloat(promo.price)) *
-                                100,
-                            )}
-                            % OFF
-                          </Badge>
+                  <div className="p-1 h-full">
+                    <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col relative h-[500px] gap-3">
+                      {/* Imagen de fondo */}
+                      <img
+                        src={promo.image || "/placeholder.svg"}
+                        alt={promo.title}
+                        className="object-cover absolute inset-0 z-0 w-full h-full"
+                        loading="lazy"
+                      />
+                      {/* Overlay de gradiente para legibilidad */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
+
+                      {/* Discount Badge */}
+                      <div className="absolute top-4 right-4 z-20">
+                        <Badge variant="destructive" className="text-sm px-3 py-1">
+                          {Math.round(
+                            ((parseFloat(promo.price) -
+                              parseFloat(promo.discount_price)) /
+                              parseFloat(promo.price)) *
+                              100,
+                          )}%
+                          OFF
+                        </Badge>
+                      </div>
+
+                      {/* Contenido encima de la imagen */}
+                      <div className="relative z-20 flex flex-col h-full justify-end p-6">
+                        <div className="space-y-2">
+                          <CardHeader className="p-0">
+                            <CardTitle className="text-white drop-shadow-lg font-bold text-lg md:text-xl lg:text-2xl">
+                              {promo.title}
+                            </CardTitle>
+                            <CardDescription className="text-white/90 drop-shadow-md mb-2">
+                              {promo.description}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-2 p-0">
+                            {/* Prices */}
+                            <div className="flex items-baseline gap-2">
+                              <p className="text-2xl font-bold text-primary drop-shadow-md">
+                                ${promo.discount_price}
+                              </p>
+                              <p className="text-md font-normal text-white/80 line-through drop-shadow-sm">
+                                ${promo.price}
+                              </p>
+                            </div>
+                            {/* Validity */}
+                            <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
+                              <CalendarPlus className="h-4 w-4" />
+                              <span>
+                                Válido hasta{" "}
+                                {new Date(promo.valid_until).toLocaleDateString(
+                                  "es-ES",
+                                  {
+                                    day: "numeric",
+                                    month: "long",
+                                  },
+                                )}
+                              </span>
+                            </div>
+                          </CardContent>
+                          <CardFooter className="p-0 pt-4">
+                            <Button asChild className="w-full">
+                              <Link
+                                href="#booking"
+                                className="flex items-center gap-2"
+                              >
+                                <CalendarPlus className="h-4 w-4" />
+                                <span>Reservar ahora</span>
+                              </Link>
+                            </Button>
+                          </CardFooter>
                         </div>
                       </div>
-                      <CardContent className="p-4 flex-grow">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="text-lg font-semibold line-clamp-2">
-                            {promo.title}
-                          </h3>
-                          {promo.category && (
-                            <Badge
-                              variant="secondary"
-                              className="ml-2 whitespace-nowrap"
-                            >
-                              {promo.category}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
-                          {promo.description}
-                        </p>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="text-lg font-bold">
-                            ${promo.discount_price}
-                          </span>
-                          <span className="text-sm text-muted-foreground line-through">
-                            ${promo.price}
-                          </span>
-                        </div>
-                        <div className="space-y-1 text-xs text-muted-foreground">
-                          {promo.duration_minutes && (
-                            <div className="flex items-center">
-                              <Clock className="h-3 w-3 mr-1" />
-                              <span>{promo.duration_minutes} minutos aprox.</span>
-                            </div>
-                          )}
-                          <div className="flex items-center">
-                            <CalendarPlus className="h-3 w-3 mr-1" />
-                            <span>
-                              Válido hasta{" "}
-                              {new Date(promo.valid_until).toLocaleDateString(
-                                "es-ES",
-                                {
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                },
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="p-4 pt-0">
-                        <Button className="w-full" asChild>
-                          <Link href="#contact">Reservar ahora</Link>
-                        </Button>
-                      </CardFooter>
                     </Card>
                   </div>
                 </CarouselItem>
