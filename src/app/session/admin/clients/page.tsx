@@ -15,14 +15,7 @@ import {
 import { ClientsTable } from "@/components/clients/clients-table";
 import { ClientDetails } from "@/components/clients/client-details";
 import { Download, Plus, Search } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { ClientForm } from "@/components/clients/client-form";
+import { NewClientDialog } from "@/components/clients/NewClientDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { AdvancedMetrics } from "@/components/dashboard/advanced-metrics";
 import type { ClientFormValues } from "@/schemas/clientSchemas/clientSchema";
@@ -149,30 +142,11 @@ export default function ClientsPage() {
       </div>
 
       {/* Diálogo para crear nuevo cliente */}
-      <Dialog
+      <NewClientDialog
         open={isNewClientDialogOpen}
         onOpenChange={setIsNewClientDialogOpen}
-      >
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Crear Nuevo Cliente</DialogTitle>
-            <DialogDescription>
-              Completa el formulario para añadir un nuevo cliente a tu base de
-              datos.
-            </DialogDescription>
-          </DialogHeader>
-          <ClientForm
-            defaultValues={{
-              name: "",
-              email: "",
-              phone: "",
-              notes: "",
-            }}
-            onSubmit={handleCreateClient}
-            onCancel={() => setIsNewClientDialogOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
+        onSubmit={handleCreateClient}
+      />
     </div>
   );
 }

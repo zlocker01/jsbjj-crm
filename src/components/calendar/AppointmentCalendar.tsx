@@ -85,6 +85,7 @@ export function AppointmentCalendar({
     } else {
       setCurrentDate(addDays(currentDate, -1));
     }
+
   };
 
   const handleNext = () => {

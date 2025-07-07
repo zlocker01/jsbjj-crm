@@ -21,6 +21,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import type { Appointment } from "@/interfaces/appointments/Appointment";
+import { NewClientDialog } from "@/components/clients/NewClientDialog";
+import type { ClientFormValues } from "@/schemas/clientSchemas/clientSchema";
 
 export default function CalendarPage() {
   const params = useParams();
@@ -30,6 +32,7 @@ export default function CalendarPage() {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [view, setView] = useState('month');
+  const [isNewClientDialogOpen, setIsNewClientDialogOpen] = useState(false);
 
   // Nueva función para manejar la selección de cita
   const handleAppointmentSelect = (appointment: Appointment) => {
@@ -49,6 +52,29 @@ export default function CalendarPage() {
     error,
     mutate,
   } = useCalendarData(landingId);
+
+  const handleCreateClient = async (data: ClientFormValues) => {
+    const res = await fetch("/api/clients", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      toast({
+        title: "Cliente creado",
+        description: `El cliente ${data.name} ha sido creado correctamente.`,
+        variant: "success",
+      });
+      setIsNewClientDialogOpen(false);
+      mutate(); // Recargar todos los datos del calendario, incluyendo los clientes
+    } else {
+      toast({
+        title: "Error",
+        description: "No se pudo crear el cliente.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleFormSubmit = async (data: any) => {
     try {
@@ -129,16 +155,24 @@ export default function CalendarPage() {
             })}
           </p>
         </div>
-        <Button
-          onClick={() => {
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto self-end md:self-auto">
+          <Button
+            onClick={() => setIsNewClientDialogOpen(true)}
+            variant="outline"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Nuevo Cliente
+          </Button>
+          <Button
+            onClick={() => {
               setSelectedAppointment(null);
               setIsFormOpen(true);
             }}
-          className="self-end md:self-auto"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Nueva Cita
-        </Button>
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Nueva Cita
+          </Button>
+        </div>
       </div>
 
       {/* Grid responsive */}
@@ -199,6 +233,13 @@ export default function CalendarPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Diálogo para crear nuevo cliente */}
+      <NewClientDialog
+        open={isNewClientDialogOpen}
+        onOpenChange={setIsNewClientDialogOpen}
+        onSubmit={handleCreateClient}
+      />
     </div>
   );
 }

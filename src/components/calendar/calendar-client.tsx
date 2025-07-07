@@ -5,6 +5,7 @@ import { AppointmentCalendar } from "./AppointmentCalendar";
 import { AppointmentDetails } from "./AppointmentDetails";
 import { AppointmentForm } from "./AppointmentForm";
 import type { Appointment } from "@/interfaces/appointments/Appointment";
+import { ClientForm } from "../clients/client-form";
 
 interface CalendarClientProps {
   selectedDate: Date;
