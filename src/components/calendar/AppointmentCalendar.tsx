@@ -181,7 +181,7 @@ export function AppointmentCalendar({
 
     const dayAppointments = getAppointmentsForDate(day);
     const laidOutAppointments = layoutAppointmentsForDay(dayAppointments);
-    const hours = Array.from({ length: 13 }, (_, i) => i + 8); // 8 AM to 8 PM
+    const hours = Array.from({ length: 15 }, (_, i) => i + 6); // 6 AM to 8 PM
 
     return (
       <div className="border rounded-lg p-4">
@@ -199,7 +199,7 @@ export function AppointmentCalendar({
           ))}
           {laidOutAppointments.map((appointment) => {
             const start = new Date(appointment.start_datetime);
-            const top = (start.getHours() - 8 + start.getMinutes() / 60) * 64; // 64px per hour
+            const top = (start.getHours() - 6 + start.getMinutes() / 60) * 64; // 64px per hour, base hour is now 6
             const appointmentWidth = parseFloat(appointment.layout.width);
             const appointmentLeft = parseFloat(appointment.layout.left);
 

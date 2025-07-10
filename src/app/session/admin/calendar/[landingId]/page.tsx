@@ -12,14 +12,8 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { AppointmentCalendar } from "@/components/calendar/AppointmentCalendar";
 import { AppointmentDetails } from "@/components/calendar/AppointmentDetails";
-import { AppointmentForm } from "@/components/calendar/AppointmentForm";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { AppointmentDialog } from "@/components/calendar/AppointmentDialog";
+
 import type { Appointment } from "@/interfaces/appointments/Appointment";
 import { NewClientDialog } from "@/components/clients/NewClientDialog";
 import type { ClientFormValues } from "@/schemas/clientSchemas/clientSchema";
@@ -209,30 +203,15 @@ export default function CalendarPage() {
       </div>
 
       {/* Formulario en modal */}
-      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {selectedAppointment ? "Editar Cita" : "Nueva Cita"}
-            </DialogTitle>
-            <DialogDescription>
-              {selectedAppointment
-                ? "Modifica los datos de la cita"
-                : "Completa los datos para crear una nueva cita"}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <AppointmentForm
-              appointment={selectedAppointment || undefined}
-              clients={clients}
-              services={services}
-              promotions={promotions}
-              onSubmit={handleFormSubmit}
-              onCancel={() => setIsFormOpen(false)}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AppointmentDialog
+        open={isFormOpen}
+        onOpenChange={setIsFormOpen}
+        onSubmit={handleFormSubmit}
+        appointment={selectedAppointment}
+        clients={clients}
+        services={services}
+        promotions={promotions}
+      />
 
       {/* Diálogo para crear nuevo cliente */}
       <NewClientDialog

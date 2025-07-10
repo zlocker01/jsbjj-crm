@@ -68,9 +68,10 @@ function useClientAppointments(clientId: string) {
 interface ClientDetailsProps {
   client: Client;
   onDeleteSuccess?: (clientId: Client["id"]) => void;
+  onNewAppointmentClick?: () => void;
 }
 
-export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
+export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }: ClientDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -318,7 +319,7 @@ export function ClientDetails({ client, onDeleteSuccess }: ClientDetailsProps) {
                 Este cliente no tiene citas registradas.
               </p>
             )}
-            <Button size="sm" className="w-full mt-2">
+            <Button size="sm" className="w-full mt-2" onClick={onNewAppointmentClick} disabled={!onNewAppointmentClick}>
               <Plus className="mr-2 h-4 w-4" />
               Agendar nueva cita
             </Button>

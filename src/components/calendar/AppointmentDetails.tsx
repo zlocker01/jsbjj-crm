@@ -126,10 +126,35 @@ export function AppointmentDetails({
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">Servicio</p>
-          <p>{services.find((service) => service.id === appointment?.service_id)?.title || "Sin servicio"}</p>
-          <p>Precio: ${services.find((service) => service.id === appointment?.service_id)?.price || "Sin precio"}</p>
-          <p>Duración aproximada: {services.find((service) => service.id === appointment?.service_id)?.duration_minutes || "Sin duración"} minutos</p>
+          <p className="text-sm font-medium">Servicio o Promoción</p>
+          {appointment.promotion_id
+            ? (() => {
+                const promo = promotions.find((p) => p.id === appointment.promotion_id);
+                return promo ? (
+                  <>
+                    <p>{promo.title}</p>
+                    <p>
+                      Precio: <span className="line-through">${promo.price}</span> <span className="font-bold">${promo.discount_price}</span>
+                    </p>
+                    <p>Duración aproximada: {promo.duration_minutes} minutos</p>
+                    <p className="text-xs text-muted-foreground">{promo.description}</p>
+                  </>
+                ) : (
+                  <p>Sin promoción</p>
+                );
+              })()
+            : (() => {
+                const service = services.find((s) => s.id === appointment.service_id);
+                return service ? (
+                  <>
+                    <p>{service.title}</p>
+                    <p>Precio: ${service.price}</p>
+                    <p>Duración aproximada: {service.duration_minutes || 0} minutos</p>
+                  </>
+                ) : (
+                  <p>Sin servicio</p>
+                );
+              })()}
         </div>
 
         <div className="space-y-2">

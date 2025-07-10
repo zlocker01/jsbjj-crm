@@ -16,17 +16,29 @@ import { ClientsTable } from "@/components/clients/clients-table";
 import { ClientDetails } from "@/components/clients/client-details";
 import { Download, Plus, Search } from "lucide-react";
 import { NewClientDialog } from "@/components/clients/NewClientDialog";
+import { AppointmentDialog } from "@/components/calendar/AppointmentDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { AdvancedMetrics } from "@/components/dashboard/advanced-metrics";
 import type { ClientFormValues } from "@/schemas/clientSchemas/clientSchema";
 import useSWR, { mutate } from "swr";
 import type { Client } from "@/interfaces/client/Client";
+import type { Service } from "@/interfaces/services/Service";
+import type { Promotion } from "@/interfaces/promotions/Promotion";
 
 export default function ClientsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isNewClientDialogOpen, setIsNewClientDialogOpen] = useState(false);
+  const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  // Fetcher function for useSWR
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+  // Fetch data required for the appointment form
+  const { data: clientsData } = useSWR<Client[]>('/api/clients', fetcher);
+  const { data: servicesData } = useSWR<Service[]>('/api/services', fetcher);
+  const { data: promotionsData } = useSWR<Promotion[]>('/api/promotions', fetcher);
 
   const handleCreateClient = async (data: ClientFormValues) => {
     const res = await fetch("/api/clients", {
@@ -56,6 +68,34 @@ export default function ClientsPage() {
       setSelectedClient(null); // Limpiar la selección si el cliente eliminado era el seleccionado
     }
     mutate("/api/clients"); // Actualizar la lista de clientes
+  };
+
+  const handleAppointmentSubmit = async (data: any) => {
+    try {
+      const response = await fetch(`/api/appointments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || "Error al guardar la cita");
+      }
+
+      toast({
+        title: "Cita guardada",
+        description: "La cita se ha guardado correctamente.",
+        variant: "success",
+      });
+      setIsAppointmentDialogOpen(false);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? `No se pudo guardar la cita: ${error.message}` : "No se pudo guardar la cita.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -134,6 +174,7 @@ export default function ClientsPage() {
                 <ClientDetails
                   client={selectedClient}
                   onDeleteSuccess={handleDeleteClientSuccess}
+                  onNewAppointmentClick={() => setIsAppointmentDialogOpen(true)}
                 />
               )}
             </CardContent>
@@ -147,6 +188,20 @@ export default function ClientsPage() {
         onOpenChange={setIsNewClientDialogOpen}
         onSubmit={handleCreateClient}
       />
+
+      {/* Diálogo para crear nueva cita */}
+      {selectedClient && (
+        <AppointmentDialog
+          open={isAppointmentDialogOpen}
+          onOpenChange={setIsAppointmentDialogOpen}
+          onSubmit={handleAppointmentSubmit}
+          clients={clientsData || []}
+          services={servicesData || []}
+          promotions={promotionsData || []}
+          // Pasamos un objeto appointment parcial con el cliente ya seleccionado
+          appointment={{ client_id: selectedClient.id } as any}
+        />
+      )}
     </div>
   );
 }
