@@ -56,6 +56,22 @@ export default function GraduationCarousel() {
                         className="object-contain"
                     />
                 </motion.div>
+                <button
+                    type="button"
+                    onClick={prevImage}
+                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    aria-label="Imagen anterior"
+                >
+                    <ChevronLeft size={24} />
+                </button>
+                <button
+                    type="button"
+                    onClick={nextImage}
+                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    aria-label="Imagen siguiente"
+                >
+                    <ChevronRight size={24} />
+                </button>
             </AnimatePresence>
         </div>
     );
