@@ -171,13 +171,15 @@ export default function Promotions({ landingId }: { landingId: string }) {
                           </CardContent>
                           <CardFooter className="p-0 pt-4">
                             <Button asChild className="w-full">
-                              <Link
-                                href="#booking"
+                              <a
+                                href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita"
                                 className="flex items-center gap-2"
+                                target="_blank"
+                                rel="noopener noreferrer"
                               >
                                 <CalendarPlus className="h-4 w-4" />
                                 <span>Reservar ahora</span>
-                              </Link>
+                              </a>
                             </Button>
                           </CardFooter>
                         </div>

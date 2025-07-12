@@ -66,7 +66,7 @@ export default function Header() {
             ))}
             <ThemeToggle />
             <Button asChild>
-              <Link href="#booking">Agendar Cita</Link>
+              <a href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita" target="_blank" rel="noopener noreferrer">Agendar Cita</a>
             </Button>
           </nav>
 
@@ -115,9 +115,9 @@ export default function Header() {
                 </Link>
               ))}
               <Button asChild size="lg" className="mt-6 w-full">
-                <Link href="#booking" onClick={closeMenu}>
+                <a href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita" onClick={closeMenu} target="_blank" rel="noopener noreferrer">
                   Agendar Cita
-                </Link>
+                </a>
               </Button>
             </nav>
           </div>

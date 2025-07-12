@@ -98,12 +98,14 @@ export default async function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="#booking"
+                <a
+                  href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita"
                   className="text-muted-foreground hover:text-primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Agendar Cita
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
