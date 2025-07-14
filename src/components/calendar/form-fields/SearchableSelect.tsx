@@ -80,11 +80,11 @@ export function SearchableSelect({
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0 bg-gray-100 dark:bg-zinc-900" style={{ minWidth: 'var(--radix-popover-trigger-width)' }}>
-              <Command className="max-h-[300px]">
+            <PopoverContent className="w-full p-0 bg-gray-100 dark:bg-zinc-900" style={{ minWidth: 'var(--radix-popover-trigger-width)', maxWidth: '95vw' }}>
+              <Command className="max-h-[300px] overflow-hidden">
                 <CommandInput placeholder="Buscar..." />
                 <CommandEmpty>{notFoundMessage}</CommandEmpty>
-                <CommandGroup className="max-h-[200px] overflow-y-auto">
+                <CommandGroup className="max-h-[200px] overflow-y-auto overflow-x-hidden" style={{ touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' }}>
                   {options.map((option) => (
                     <CommandItem
                       value={option.label}
