@@ -42,7 +42,7 @@ export default function GraduationCarousel() {
         <div className="relative h-[400px] rounded-2xl overflow-hidden group">
             <AnimatePresence mode="wait">
                 <motion.div
-                    key={currentImage}
+                    key={`image-${currentImage}`}
                     className="w-full h-full"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -56,23 +56,23 @@ export default function GraduationCarousel() {
                         className="object-contain"
                     />
                 </motion.div>
-                <button
-                    type="button"
-                    onClick={prevImage}
-                    className="absolute top-1/2 left-2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    aria-label="Imagen anterior"
-                >
-                    <ChevronLeft size={24} />
-                </button>
-                <button
-                    type="button"
-                    onClick={nextImage}
-                    className="absolute top-1/2 right-2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    aria-label="Imagen siguiente"
-                >
-                    <ChevronRight size={24} />
-                </button>
             </AnimatePresence>
+            <button
+                type="button"
+                onClick={prevImage}
+                className="absolute top-1/2 left-2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                aria-label="Imagen anterior"
+            >
+                <ChevronLeft size={24} />
+            </button>
+            <button
+                type="button"
+                onClick={nextImage}
+                className="absolute top-1/2 right-2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                aria-label="Imagen siguiente"
+            >
+                <ChevronRight size={24} />
+            </button>
         </div>
     );
 }
