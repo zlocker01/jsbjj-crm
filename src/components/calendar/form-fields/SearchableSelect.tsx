@@ -81,10 +81,10 @@ export function SearchableSelect({
               </FormControl>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0 bg-gray-100 dark:bg-zinc-900" style={{ minWidth: 'var(--radix-popover-trigger-width)' }}>
-              <Command>
+              <Command className="max-h-[300px]">
                 <CommandInput placeholder="Buscar..." />
                 <CommandEmpty>{notFoundMessage}</CommandEmpty>
-                <CommandGroup>
+                <CommandGroup className="max-h-[200px] overflow-y-auto">
                   {options.map((option) => (
                     <CommandItem
                       value={option.label}
