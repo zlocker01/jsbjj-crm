@@ -3,14 +3,22 @@ import type { Promotion } from "@/interfaces/promotions/Promotion";
 
 export const getPromotions = async (
   landingPageId: string,
+  includeInactive: boolean = false,
 ): Promise<Promotion[] | null> => {
   try {
     const supabase = await createClient();
 
-    const { data, error } = await supabase
+    let query = supabase
       .from("promotions")
       .select("*")
       .eq("landing_page_id", landingPageId);
+      
+    // Only include active promotions unless specifically requested to include inactive ones
+    if (!includeInactive) {
+      query = query.eq("active", true);
+    }
+    
+    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching promotions:", error.message);

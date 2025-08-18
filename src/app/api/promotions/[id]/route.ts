@@ -52,18 +52,33 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
       );
     }
 
-    const body: Promotion = await req.json();
+    const body = await req.json();
+    
+    // Check if this is just an active status toggle request
+    const isToggleRequest = Object.keys(body).length === 1 && body.active !== undefined;
+    
+    let updateData: Partial<Omit<Promotion, "id" | "user_id">>;
+    
+    if (isToggleRequest) {
+      // Only update the active status
+      updateData = { active: body.active };
+      console.log("Processing toggle request:", updateData);
+    } else {
+      // For full promotion updates, only include fields that are provided
+      updateData = {};
+      
+      if (body.title !== undefined) updateData.title = body.title;
+      if (body.description !== undefined) updateData.description = body.description;
+      if (body.price !== undefined) updateData.price = body.price;
+      if (body.discount_price !== undefined) updateData.discount_price = body.discount_price;
+      if (body.valid_until !== undefined) updateData.valid_until = body.valid_until;
+      if (body.image !== undefined) updateData.image = body.image;
+      if (body.category !== undefined) updateData.category = body.category;
+      if (body.duration_minutes !== undefined) updateData.duration_minutes = body.duration_minutes;
+      if (body.active !== undefined) updateData.active = body.active;
+    }
 
-    const result = await updatePromotion(promotionId, {
-      title: body.title,
-      description: body.description,
-      price: body.price,
-      discount_price: body.discount_price,
-      valid_until: body.valid_until,
-      image: body.image,
-      category: body.category,
-      duration_minutes: body.duration_minutes,
-    });
+    const result = await updatePromotion(promotionId, updateData);
 
     if (typeof result === "string" && result.startsWith("Error")) {
       return NextResponse.json({ error: result }, { status: 400 });

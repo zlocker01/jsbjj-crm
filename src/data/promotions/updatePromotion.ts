@@ -33,19 +33,27 @@ export async function updatePromotion(
       return "No autorizado para actualizar el servicio";
     }
 
+    // Create an update object with only the fields that are provided
+    const updateObject: any = {};
+    
+    // Only include fields that are explicitly provided in promotionData
+    if (promotionData.title !== undefined) updateObject.title = promotionData.title;
+    if (promotionData.description !== undefined) updateObject.description = promotionData.description;
+    if (promotionData.price !== undefined) updateObject.price = Number(promotionData.price);
+    if (promotionData.discount_price !== undefined) updateObject.discount_price = Number(promotionData.discount_price);
+    if (promotionData.valid_until !== undefined) updateObject.valid_until = promotionData.valid_until;
+    if (promotionData.category !== undefined) updateObject.category = promotionData.category;
+    if (promotionData.duration_minutes !== undefined) updateObject.duration_minutes = promotionData.duration_minutes;
+    if (promotionData.active !== undefined) updateObject.active = promotionData.active;
+    
+    // Check if we have any fields to update
+    if (Object.keys(updateObject).length === 0) {
+      return "No se proporcionaron campos para actualizar";
+    }
+    
     const { data, error } = await supabase
       .from("promotions")
-      .update({
-        title: promotionData.title,
-        description: promotionData.description || null,
-        price: promotionData.price ? Number(promotionData.price) : undefined,
-        discount_price: promotionData.discount_price
-          ? Number(promotionData.discount_price)
-          : undefined,
-        valid_until: promotionData.valid_until,
-        category: promotionData.category,
-        duration_minutes: promotionData.duration_minutes,
-      })
+      .update(updateObject)
       .eq("id", id)
       .select("id")
       .single();

@@ -12,6 +12,7 @@ import {
 import { DeletePromotionButton } from "./DeletePromotionButton";
 import { EditPromotionButton } from "./EditPromotionButton";
 import { EditPromotionModal } from "./EditPromotionModal";
+import { TogglePromotionButton } from "./TogglePromotionButton";
 import type { Promotion } from "@/interfaces/promotions/Promotion";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -52,7 +53,7 @@ export function PromotionCard({
   };
 
   return (
-    <Card className="w-full overflow-hidden transition-all duration-300 hover:shadow-lg bg-gray-700 text-white">
+    <Card className={`w-full overflow-hidden transition-all duration-300 hover:shadow-lg bg-gray-700 text-white ${promotion.active === false ? 'opacity-60' : ''}`}>
       <div className="relative">
         <img
           src={promotion.image || "/placeholder-promotion.jpg"}
@@ -74,6 +75,11 @@ export function PromotionCard({
             <EditPromotionButton
               promotion={promotion}
               onPromotionUpdated={onPromotionUpdated}
+            />
+            <TogglePromotionButton
+              promotionId={promotion.id}
+              isActive={promotion.active !== false} // Default to true if undefined
+              onPromotionToggled={() => onPromotionUpdated()}
             />
             <DeletePromotionButton
               promotionId={promotion.id}

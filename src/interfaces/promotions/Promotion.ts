@@ -10,4 +10,5 @@ export interface Promotion {
   landing_page_id?: string;
   duration_minutes: number;
   category: string;
+  active?: boolean;
 }

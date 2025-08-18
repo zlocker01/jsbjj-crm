@@ -5,6 +5,7 @@ import { createPromotion } from "@/data/promotions/createPromotion";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const landingPageId = url.searchParams.get("landingPageId");
+  const includeInactive = url.searchParams.get("includeInactive") === "true";
 
   if (!landingPageId) {
     return NextResponse.json(
@@ -13,7 +14,7 @@ export async function GET(req: Request) {
     );
   }
 
-  const promotions = await getPromotions(landingPageId);
+  const promotions = await getPromotions(landingPageId, includeInactive);
   if (!promotions) {
     return NextResponse.json(
       { error: "No se pudieron obtener las promociones." },

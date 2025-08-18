@@ -19,6 +19,7 @@ export const createPromotion = async (
         {
           ...promotionData,
           user_id: userId,
+          active: true, // Default to active when creating a new promotion
         },
       ])
       .select("id")
