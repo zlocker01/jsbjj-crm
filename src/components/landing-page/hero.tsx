@@ -21,29 +21,29 @@ export default function Hero({ data }: { data: HeroSection }) {
               {data.text}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              {/* promotions button for graduation session */}
+              {/* promotions button for graduation session
               <Button size="lg" asChild>
                 <Link href="#promotions">Ver Promociones de Graduación
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-mortarboard-fill ml-2" viewBox="0 0 16 16">
                     <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z" />
                     <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z" />
                   </svg></Link>
-              </Button>
-              {/* <Button size="lg" asChild>
+              </Button> */}
+              <Button size="lg" asChild>
                 <Link href="#booking">Agenda tu cita</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="#services">Ver servicios</Link>
-              </Button> */}
+              </Button>
             </div>
           </div>
           <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden">
-            {/* <img
+            <img
               src={data.image}
               alt={data.title}
               className="w-full h-full object-cover"
-            /> */}
-            <GraduationCarousel />
+            />
+            {/* <GraduationCarousel /> */}
           </div>
         </div>
       </div>

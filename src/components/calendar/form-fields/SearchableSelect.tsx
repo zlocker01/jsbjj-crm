@@ -96,6 +96,7 @@ export function SearchableSelect({
                         } else {
                           field.onChange(option.value);
                         }
+                        
                         setOpen(false);
                       }}
                     >
