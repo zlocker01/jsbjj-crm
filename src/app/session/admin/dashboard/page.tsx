@@ -355,6 +355,42 @@ function computeCancellationTrendData(appts: Appointment[]): { month: string; ta
   return data;
 }
 
+// ---- Helpers de filtrado por rango temporal ----
+type TimeRange = "week" | "month" | "quarter" | "year";
+
+function getRangeStart(range: TimeRange, ref = new Date()): Date {
+  const d = new Date(ref);
+  switch (range) {
+    case "week": {
+      const start = new Date(d);
+      start.setDate(d.getDate() - 6);
+      start.setHours(0, 0, 0, 0);
+      return start;
+    }
+    case "month": {
+      return new Date(d.getFullYear(), d.getMonth(), 1);
+    }
+    case "quarter": {
+      const q = Math.floor(d.getMonth() / 3);
+      const qm = q * 3; // 0,3,6,9
+      return new Date(d.getFullYear(), qm, 1);
+    }
+    case "year":
+    default: {
+      return new Date(d.getFullYear(), 0, 1);
+    }
+  }
+}
+
+function filterAppointmentsByRange(appts: Appointment[], range: TimeRange): Appointment[] {
+  const start = getRangeStart(range);
+  const end = new Date();
+  return appts.filter((a) => {
+    const d = new Date(a.start_datetime);
+    return d >= start && d <= end;
+  });
+}
+
 export default async function DashboardPage() {
   // Cargar datos reales
   const [appointments = [], clients = []] = await Promise.all([
@@ -412,6 +448,42 @@ export default async function DashboardPage() {
   const heatmapData = computeHeatmapData(appointments);
   const popularServicesData = computePopularServicesData(appointments, (services as Service[]) || []);
   const cancellationTrendData = computeCancellationTrendData(appointments);
+
+  // Datasets por rango temporal para análisis de citas
+  const ranges: TimeRange[] = ["week", "month", "quarter", "year"];
+  const datasetsByRange = Object.fromEntries(
+    ranges.map((r) => {
+      const appts = filterAppointmentsByRange(appointments as Appointment[], r);
+      const byDay: AppointmentByDayData[] = computeAppointmentsByDayData(appts);
+      const byHour: AppointmentByHourData[] = computeAppointmentsByHourData(appts);
+      const byService: AppointmentByServiceData[] = computeAppointmentsByServiceData(appts, ((services as Service[]) || []));
+      const statusData: AppointmentStatusData[] = computeAppointmentStatusData(appts);
+      const heatmap: HeatmapData[] = computeHeatmapData(appts);
+      const popular: PopularServiceData[] = computePopularServicesData(appts, ((services as Service[]) || []));
+      const summary = computeAppointmentSummary(appts);
+      // Para la tendencia de cancelaciones, podemos mantener últimos 12 meses, independiente del rango
+      const cancelTrend = computeCancellationTrendData(appointments);
+      return [r, {
+        appointmentsByDayData: byDay,
+        appointmentsByHourData: byHour,
+        appointmentsByServiceData: byService,
+        appointmentStatusData: statusData,
+        heatmapData: heatmap,
+        popularServicesData: popular,
+        appointmentSummary: summary,
+        cancellationTrendData: cancelTrend,
+      }];
+    }),
+  ) as Record<TimeRange, {
+    appointmentsByDayData: AppointmentByDayData[];
+    appointmentsByHourData: AppointmentByHourData[];
+    appointmentsByServiceData: AppointmentByServiceData[];
+    appointmentStatusData: AppointmentStatusData[];
+    heatmapData: HeatmapData[];
+    popularServicesData: PopularServiceData[];
+    appointmentSummary: ReturnType<typeof computeAppointmentSummary>;
+    cancellationTrendData: ReturnType<typeof computeCancellationTrendData>;
+  }>;
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -523,6 +595,7 @@ export default async function DashboardPage() {
         popularServicesData={popularServicesData}
         appointmentSummary={appointmentSummary}
         cancellationTrendData={cancellationTrendData}
+        datasetsByRange={datasetsByRange}
       />
     </div>
   );

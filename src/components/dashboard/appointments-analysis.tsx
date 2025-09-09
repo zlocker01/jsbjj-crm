@@ -66,20 +66,41 @@ interface AppointmentsAnalysisProps {
     durationChange: number;
   };
   cancellationTrendData?: { month: string; tasa: number }[];
+  datasetsByRange?: Record<
+    "week" | "month" | "quarter" | "year",
+    {
+      appointmentsByDayData: AppointmentByDayData[];
+      appointmentsByHourData: AppointmentByHourData[];
+      appointmentsByServiceData: AppointmentByServiceData[];
+      appointmentStatusData: AppointmentStatusData[];
+      heatmapData: HeatmapData[];
+      popularServicesData: PopularServiceData[];
+      appointmentSummary: {
+        total: number;
+        growthPercent: number;
+        attendanceRate: number;
+        attendanceGrowth: number;
+        avgDuration: number;
+        durationChange: number;
+      };
+      cancellationTrendData: { month: string; tasa: number }[];
+    }
+  >;
 }
 
 export function AppointmentsAnalysis(props: AppointmentsAnalysisProps) {
   const [timeRange, setTimeRange] = useState("month");
 
   // Obtener datos para el análisis de citas
-  const appointmentsByDayData = props.appointmentsByDayData ?? getAppointmentsByDayData();
-  const appointmentsByHourData = props.appointmentsByHourData ?? getAppointmentsByHourData();
-  const appointmentsByServiceData = props.appointmentsByServiceData ?? getAppointmentsByServiceData();
-  const appointmentStatusData = props.appointmentStatusData ?? getAppointmentStatusData();
-  const heatmapData = props.heatmapData ?? getHeatmapData();
-  const popularServicesData = props.popularServicesData ?? getPopularServicesData();
-  const appointmentSummary = props.appointmentSummary ?? getAppointmentSummaryData();
-  const cancellationTrendData = props.cancellationTrendData ?? getCancellationTrendData();
+  const rangeData = props.datasetsByRange?.[timeRange as "week" | "month" | "quarter" | "year"];
+  const appointmentsByDayData = rangeData?.appointmentsByDayData ?? props.appointmentsByDayData ?? getAppointmentsByDayData();
+  const appointmentsByHourData = rangeData?.appointmentsByHourData ?? props.appointmentsByHourData ?? getAppointmentsByHourData();
+  const appointmentsByServiceData = rangeData?.appointmentsByServiceData ?? props.appointmentsByServiceData ?? getAppointmentsByServiceData();
+  const appointmentStatusData = rangeData?.appointmentStatusData ?? props.appointmentStatusData ?? getAppointmentStatusData();
+  const heatmapData = rangeData?.heatmapData ?? props.heatmapData ?? getHeatmapData();
+  const popularServicesData = rangeData?.popularServicesData ?? props.popularServicesData ?? getPopularServicesData();
+  const appointmentSummary = rangeData?.appointmentSummary ?? props.appointmentSummary ?? getAppointmentSummaryData();
+  const cancellationTrendData = (rangeData?.cancellationTrendData ?? props.cancellationTrendData) ?? getCancellationTrendData();
 
   return (
     <div className="space-y-4">
@@ -121,12 +142,32 @@ export function AppointmentsAnalysis(props: AppointmentsAnalysisProps) {
         />
       </div>
 
-      <Tabs defaultValue="distribution" className="space-y-4">
-        <TabsList className="w-full grid grid-cols-2 md:grid-cols-4">
-          <TabsTrigger value="distribution">Distribución</TabsTrigger>
-          <TabsTrigger value="heatmap">Mapa de Calor</TabsTrigger>
-          <TabsTrigger value="services">Servicios</TabsTrigger>
-          <TabsTrigger value="status">Estado</TabsTrigger>
+      <Tabs defaultValue="distribution" className="space-y-6">
+        <TabsList className="w-full flex flex-wrap gap-2 p-0 bg-transparent">
+          <TabsTrigger
+            value="distribution"
+            className="inline-flex items-center justify-center rounded-md border border-border bg-muted/30 hover:bg-accent/40 text-foreground px-2.5 py-1.5 text-xs sm:text-sm font-medium data-[state=active]:bg-primary/10 data-[state=active]:border-primary/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+          >
+            Distribución
+          </TabsTrigger>
+          <TabsTrigger
+            value="heatmap"
+            className="inline-flex items-center justify-center rounded-md border border-border bg-muted/30 hover:bg-accent/40 text-foreground px-2.5 py-1.5 text-xs sm:text-sm font-medium data-[state=active]:bg-primary/10 data-[state=active]:border-primary/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+          >
+            Mapa de Calor
+          </TabsTrigger>
+          <TabsTrigger
+            value="services"
+            className="inline-flex items-center justify-center rounded-md border border-border bg-muted/30 hover:bg-accent/40 text-foreground px-2.5 py-1.5 text-xs sm:text-sm font-medium data-[state=active]:bg-primary/10 data-[state=active]:border-primary/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+          >
+            Servicios
+          </TabsTrigger>
+          <TabsTrigger
+            value="status"
+            className="inline-flex items-center justify-center rounded-md border border-border bg-muted/30 hover:bg-accent/40 text-foreground px-2.5 py-1.5 text-xs sm:text-sm font-medium data-[state=active]:bg-primary/10 data-[state=active]:border-primary/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+          >
+            Estado
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="distribution" className="space-y-4">

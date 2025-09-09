@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
   ZAxis,
+  type TooltipProps,
 } from "recharts";
 import { ChartContainer } from "@/components/charts/chart-container";
 import type { HeatmapData } from "@/interfaces/dashboard";
@@ -21,6 +22,29 @@ export function AppointmentHeatmapChart({
   data,
 }: AppointmentHeatmapChartProps) {
   const [isMounted, setIsMounted] = useState(false);
+
+  // Tooltip personalizado para colorear solo el texto interior en dorado
+  const HeatmapTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+    if (!active || !payload || payload.length === 0) return null;
+    const p = payload[0]?.payload as any;
+    const gold = "#C6A961";
+    return (
+      <div
+        style={{
+          backgroundColor: "var(--background)",
+          border: `1px solid ${gold}`,
+          borderRadius: "0.375rem",
+          padding: "8px 12px",
+          boxShadow:
+            "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+        }}
+      >
+        <div style={{ color: gold }}>Cantidad : {p?.x} citas</div>
+        <div style={{ color: gold }}>Cantidad : {p?.y} citas</div>
+        <div style={{ color: gold }}>Cantidad : {p?.value} citas</div>
+      </div>
+    );
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,22 +71,7 @@ export function AppointmentHeatmapChart({
           allowDuplicatedCategory={false}
         />
         <ZAxis dataKey="value" range={[100, 1000]} name="Citas" />
-        <Tooltip
-          cursor={{ strokeDasharray: "3 3" }}
-          contentStyle={{
-            backgroundColor: "var(--background)",
-            borderColor: "var(--border)",
-            borderWidth: "1px",
-            borderRadius: "0.375rem",
-            boxShadow:
-              "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-            color: "var(--foreground)",
-            padding: "8px 12px",
-          }}
-          formatter={(value) => [`${value} citas`, "Cantidad"]}
-          itemStyle={{ padding: "2px 0" }}
-          labelStyle={{ fontWeight: "bold", marginBottom: "4px" }}
-        />
+        <Tooltip cursor={{ strokeDasharray: "3 3" }} content={<HeatmapTooltip />} />
         <Scatter data={data} fill="#8884d8" shape="circle" />
       </ScatterChart>
     </ChartContainer>
