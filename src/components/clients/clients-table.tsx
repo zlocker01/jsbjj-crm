@@ -75,11 +75,6 @@ export function ClientsTable({
               <TableHead>Nombre</TableHead>
               <TableHead >Email</TableHead>
               <TableHead >Teléfono</TableHead>
-              <TableHead className="text-right">Citas</TableHead>
-              <TableHead>
-                Última Visita
-              </TableHead>
-              <TableHead>Estado</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -101,30 +96,12 @@ export function ClientsTable({
                   <TableCell className="table-cell">
                     {client.phone}
                   </TableCell>
-                  <TableCell className="text-right">
-                    {client.appointments}
-                  </TableCell>
-                  <TableCell className="table-cell">
-                    {client.last_visit_date
-                      ? formatDate(client.last_visit_date)
-                      : "Sin visitas"}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-block px-2 py-1 text-xs rounded-full ${client.is_active === true
-                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                        : "bg-red-100 text-gray-800 dark:bg-red-800 dark:text-gray-100"
-                        }`}
-                    >
-                      {client.is_active === true ? "Activo" : "Inactivo"}
-                    </span>
-                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={3}
                   className="text-center py-4 text-muted-foreground"
                 >
                   No se encontraron clientes

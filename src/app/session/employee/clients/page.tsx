@@ -122,7 +122,7 @@ export default function ClientsPage() {
           </Card>
 
           <div className="mt-4">
-            {/* <AdvancedMetrics /> */}
+            <AdvancedMetrics />
           </div>
         </div>
 

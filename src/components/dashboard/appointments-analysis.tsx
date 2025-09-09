@@ -41,19 +41,45 @@ import {
   getAppointmentSummaryData,
   getCancellationTrendData,
 } from "@/data/dashboard-data";
+import type {
+  AppointmentByDayData,
+  AppointmentByHourData,
+  AppointmentByServiceData,
+  AppointmentStatusData,
+  HeatmapData,
+  PopularServiceData,
+} from "@/interfaces/dashboard";
 
-export function AppointmentsAnalysis() {
+interface AppointmentsAnalysisProps {
+  appointmentsByDayData?: AppointmentByDayData[];
+  appointmentsByHourData?: AppointmentByHourData[];
+  appointmentsByServiceData?: AppointmentByServiceData[];
+  appointmentStatusData?: AppointmentStatusData[];
+  heatmapData?: HeatmapData[];
+  popularServicesData?: PopularServiceData[];
+  appointmentSummary?: {
+    total: number;
+    growthPercent: number;
+    attendanceRate: number;
+    attendanceGrowth: number;
+    avgDuration: number;
+    durationChange: number;
+  };
+  cancellationTrendData?: { month: string; tasa: number }[];
+}
+
+export function AppointmentsAnalysis(props: AppointmentsAnalysisProps) {
   const [timeRange, setTimeRange] = useState("month");
 
   // Obtener datos para el análisis de citas
-  const appointmentsByDayData = getAppointmentsByDayData();
-  const appointmentsByHourData = getAppointmentsByHourData();
-  const appointmentsByServiceData = getAppointmentsByServiceData();
-  const appointmentStatusData = getAppointmentStatusData();
-  const heatmapData = getHeatmapData();
-  const popularServicesData = getPopularServicesData();
-  const appointmentSummary = getAppointmentSummaryData();
-  const cancellationTrendData = getCancellationTrendData();
+  const appointmentsByDayData = props.appointmentsByDayData ?? getAppointmentsByDayData();
+  const appointmentsByHourData = props.appointmentsByHourData ?? getAppointmentsByHourData();
+  const appointmentsByServiceData = props.appointmentsByServiceData ?? getAppointmentsByServiceData();
+  const appointmentStatusData = props.appointmentStatusData ?? getAppointmentStatusData();
+  const heatmapData = props.heatmapData ?? getHeatmapData();
+  const popularServicesData = props.popularServicesData ?? getPopularServicesData();
+  const appointmentSummary = props.appointmentSummary ?? getAppointmentSummaryData();
+  const cancellationTrendData = props.cancellationTrendData ?? getCancellationTrendData();
 
   return (
     <div className="space-y-4">
