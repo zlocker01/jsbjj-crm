@@ -25,14 +25,21 @@ export function AppointmentsByDayChart({ data }: AppointmentsByDayChartProps) {
     <ChartContainer height={300}>
       <BarChart
         data={data}
+        layout="vertical"
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="day" />
-        <YAxis />
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+        <XAxis type="number" />
+        <YAxis dataKey="day" type="category" />
         <TooltipWrapper formatter={(value) => [`${value} citas`, ""]} />
         <Legend />
-        <Bar dataKey="citas" name="Número de citas" fill="#8884d8" />
+        <Bar 
+          dataKey="citas" 
+          name="Número de citas" 
+          fill="#8884d8" 
+          barSize={30}
+          radius={4}
+        />
       </BarChart>
     </ChartContainer>
   );

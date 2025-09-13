@@ -27,14 +27,21 @@ export function AppointmentsByHourChart({
     <ChartContainer height={300}>
       <BarChart
         data={data}
+        layout="vertical"
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="hour" />
-        <YAxis />
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+        <XAxis type="number" />
+        <YAxis dataKey="hour" type="category" />
         <TooltipWrapper formatter={(value) => [`${value} citas`, ""]} />
         <Legend />
-        <Bar dataKey="citas" name="Número de citas" fill="#82ca9d" />
+        <Bar 
+          dataKey="citas" 
+          name="Número de citas" 
+          fill="#82ca9d" 
+          barSize={30}
+          radius={4}
+        />
       </BarChart>
     </ChartContainer>
   );

@@ -96,17 +96,51 @@ function computeRevenueSeriesWeekly(appointments: Appointment[]): RevenueData[] 
     .map(([name, ingresos]) => ({ name, ingresos, gastos: 0, beneficio: ingresos }));
 }
 
+// Paleta cualitativa amplia y de alto contraste (inspirada en Paul Tol / Tableau)
+const QUAL_PALETTE = [
+  "#332288", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77",
+  "#CC6677", "#882255", "#AA4499", "#6699CC", "#AA4466", "#4477AA",
+  "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB",
+  "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b",
+  "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+];
+
+function hashStringToInt(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function distinctColorForKey(key: string, idx: number): string {
+  // 1) Determinista por nombre usando paleta amplia
+  const h = hashStringToInt(key);
+  const paletteColor = QUAL_PALETTE[h % QUAL_PALETTE.length];
+  if (paletteColor) return paletteColor;
+  // 2) Fallback: HSL con ángulo dorado y alternancia de luminosidad para mayor contraste
+  const golden = 137.508;
+  const hue = (idx * golden) % 360;
+  const lightness = idx % 2 === 0 ? 45 : 60; // alterna 45%/60%
+  const saturation = 70;
+  return `hsl(${hue} ${saturation}% ${lightness}%)`;
+}
+
 function computeServiceRevenue(appointments: Appointment[], services: { id: number; title: string }[]): ServiceRevenueData[] {
   const titleById = new Map<number, string>();
   services.forEach((s) => titleById.set(s.id, s.title));
   const byService = new Map<string, number>();
   appointments.forEach((a) => {
     if (!a.service_id) return;
-    const name = titleById.get(Number(a.service_id)) || "Servicio";
+    const name = titleById.get(Number(a.service_id)) || `Servicio ${a.service_id}`;
     byService.set(name, (byService.get(name) || 0) + (a.price_charged || 0));
   });
-  const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#0088fe", "#00C49F", "#FFBB28", "#FF8042"];
-  return Array.from(byService.entries()).map(([name, value], idx) => ({ name, value, color: colors[idx % colors.length] }));
+  return Array.from(byService.entries()).map(([name, value], idx) => ({
+    name,
+    value,
+    color: distinctColorForKey(name, idx),
+  }));
 }
 
 function computeClientsOverview(appointments: Appointment[], clients: Client[]): ClientSegmentData[] {
