@@ -343,25 +343,66 @@ function computeHeatmapData(appts: Appointment[]): HeatmapData[] {
 }
 
 function computePopularServicesData(appts: Appointment[], services: Service[]): PopularServiceData[] {
-  const counts = new Map<number, number>();
+  const now = new Date();
+  const startThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const endPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+  
+  // Filtrar citas por mes actual y mes anterior
+  const thisMonthAppts = appts.filter(a => new Date(a.start_datetime) >= startThisMonth);
+  const prevMonthAppts = appts.filter(a => {
+    const d = new Date(a.start_datetime);
+    return d >= startPrevMonth && d <= endPrevMonth;
+  });
+  
+  // Contar citas por servicio para el mes actual
+  const countsThisMonth = new Map<number, number>();
   const totalDuration = new Map<number, number>();
-  appts.forEach(a => {
+  thisMonthAppts.forEach(a => {
     if (a.service_id) {
       const id = Number(a.service_id);
-      counts.set(id, (counts.get(id) || 0) + 1);
+      countsThisMonth.set(id, (countsThisMonth.get(id) || 0) + 1);
       totalDuration.set(id, (totalDuration.get(id) || 0) + (a.actual_duration_minutes || 0));
     }
   });
-  const items: PopularServiceData[] = Array.from(counts.entries()).map(([id, c]) => {
+  
+  // Contar citas por servicio para el mes anterior
+  const countsPrevMonth = new Map<number, number>();
+  prevMonthAppts.forEach(a => {
+    if (a.service_id) {
+      const id = Number(a.service_id);
+      countsPrevMonth.set(id, (countsPrevMonth.get(id) || 0) + 1);
+    }
+  });
+  
+  // Calcular crecimiento y crear objetos de datos
+  const items: PopularServiceData[] = Array.from(countsThisMonth.entries()).map(([id, count]) => {
     const svc = services.find(s => Number(s.id) === id);
-    const avg = Math.round((totalDuration.get(id) || 0) / Math.max(1, c));
+    const prevCount = countsPrevMonth.get(id) || 0;
+    
+    // Calcular porcentaje de crecimiento
+    let growthPercent = 0;
+    if (prevCount === 0) {
+      growthPercent = 100; // Nuevo servicio (100% de crecimiento)
+    } else {
+      growthPercent = Number((((count - prevCount) / prevCount) * 100).toFixed(1));
+    }
+    
+    // Formatear el crecimiento con signo
+    const growthFormatted = growthPercent > 0 
+      ? `+${growthPercent}%` 
+      : `${growthPercent}%`;
+    
+    const avg = Math.round((totalDuration.get(id) || 0) / Math.max(1, count));
     return {
       service: svc?.title || `Servicio ${id}`,
-      appointments: c,
-      growth: "+0%",
+      appointments: count,
+      growth: growthFormatted,
       avgDuration: `${avg || svc?.duration_minutes || 0} min`,
     };
   });
+  
+  // Ordenar por número de citas y tomar los 5 más populares
   return items.sort((a,b) => b.appointments - a.appointments).slice(0,5);
 }
 
@@ -603,7 +644,7 @@ export default async function DashboardPage() {
             <CardDescription>Distribución de clientes por categoría</CardDescription>
           </CardHeader>
           <CardContent>
-            <ClientsOverviewChart data={clientOverviewData} />
+            <ClientsOverviewChart data={clientOverviewData} isLoading={false} />
           </CardContent>
         </Card>
       </div>

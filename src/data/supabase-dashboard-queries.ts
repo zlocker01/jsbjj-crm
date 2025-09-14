@@ -89,12 +89,45 @@ export async function getAppointmentsByServiceFromSupabase(): Promise<Appointmen
 // Función para obtener datos de crecimiento de clientes desde Supabase
 export async function getClientGrowthDataFromSupabase(): Promise<ClientGrowthData[]> {
   try {
-    const { data, error } = await supabase.rpc('get_client_growth_data');
+    // Intentar primero con la función RPC
+    try {
+      const { data, error } = await supabase.rpc('get_client_growth_data');
+      
+      if (!error && data && data.length > 0) {
+        return data;
+      }
+    } catch (rpcError) {
+      console.log('RPC no disponible, usando tabla monthly_client_stats');
+    }
     
-    if (error) throw error;
+    // Si la RPC falla o no devuelve datos, usar la tabla monthly_client_stats
+    const { data: statsData, error: statsError } = await supabase
+      .from('monthly_client_stats')
+      .select('*')
+      .order('period_date', { ascending: true });
     
-    if (data && data.length > 0) {
-      return data;
+    if (statsError) throw statsError;
+    
+    if (statsData && statsData.length > 0) {
+      // Convertir a formato ClientGrowthData
+      const result: ClientGrowthData[] = statsData.map(stat => {
+        // Extraer el mes de la fecha (formato YYYY-MM-DD)
+        const date = new Date(stat.period_date);
+        const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        const monthName = monthNames[date.getMonth()];
+        
+        // Calcular clientes perdidos (si existe el campo o usar un valor estimado)
+        const perdidos = stat.lost_clients || Math.round(stat.new_clients * 0.3); // Estimación si no existe el campo
+        
+        return {
+          month: monthName,
+          nuevos: stat.new_clients,
+          perdidos: perdidos,
+          total: stat.total_clients
+        };
+      });
+      
+      return result;
     }
     
     // Datos de respaldo en caso de no encontrar resultados
@@ -189,12 +222,47 @@ export async function getClientRetentionDataFromSupabase(): Promise<ClientRetent
 // Función para obtener datos de satisfacción de clientes desde Supabase
 export async function getClientSatisfactionDataFromSupabase(): Promise<ClientSatisfactionData[]> {
   try {
-    const { data, error } = await supabase.rpc('get_client_satisfaction_data');
+    // Intentar primero con la función RPC
+    try {
+      const { data, error } = await supabase.rpc('get_client_satisfaction_data');
+      
+      if (!error && data && data.length > 0) {
+        return data;
+      }
+    } catch (rpcError) {
+      console.log('RPC no disponible, usando tabla satisfaction_metrics');
+    }
     
-    if (error) throw error;
+    // Si la RPC falla o no devuelve datos, usar la tabla satisfaction_metrics
+    const { data: metricsData, error: metricsError } = await supabase
+      .from('satisfaction_metrics')
+      .select('*');
     
-    if (data && data.length > 0) {
-      return data;
+    if (metricsError) throw metricsError;
+    
+    if (metricsData && metricsData.length > 0) {
+      // Agrupar por aspecto evaluado y calcular el promedio
+      const aspectGroups: Record<string, { total: number, count: number }> = {};
+      
+      metricsData.forEach(metric => {
+        const aspect = metric.aspect_evaluated;
+        
+        if (!aspectGroups[aspect]) {
+          aspectGroups[aspect] = { total: 0, count: 0 };
+        }
+        
+        aspectGroups[aspect].total += metric.rating_value;
+        aspectGroups[aspect].count += 1;
+      });
+      
+      // Convertir a formato ClientSatisfactionData
+      const result: ClientSatisfactionData[] = Object.entries(aspectGroups).map(([aspect, data]) => ({
+        aspect,
+        valor: parseFloat((data.total / data.count).toFixed(1)),
+        fullMark: 5
+      }));
+      
+      return result;
     }
     
     // Datos de respaldo en caso de no encontrar resultados
@@ -353,32 +421,32 @@ export async function getRevenueDataFromSupabase(timeRange: 'monthly' | 'weekly'
 }
 
 // Función para obtener datos de métricas generales desde Supabase
-export async function getMetricsDataFromSupabase(): Promise<MetricData[]> {
+export async function getMetricsDataFromSupabase(): Promise<MetricData[] | undefined> {
   try {
+    // Obtener datos de financial_records para ingresos
+    const { data: financialData, error: financialError } = await supabase
+      .from('financial_records')
+      .select('*')
+      .eq('period_type', 'monthly')
+      .order('period_date');
+    
+    if (financialError) throw financialError;
+    
     // Obtener datos de citas por mes
     const { data: appointmentsData, error: appointmentsError } = await supabase
       .from('appointments')
-      .select('created_at')
-      .order('created_at');
+      .select('start_datetime')
+      .order('start_datetime');
     
     if (appointmentsError) throw appointmentsError;
     
     // Obtener datos de clientes por mes
     const { data: clientsData, error: clientsError } = await supabase
-      .from('clients')
-      .select('created_at')
-      .order('created_at');
+      .from('monthly_client_stats')
+      .select('*')
+      .order('period_date');
     
     if (clientsError) throw clientsError;
-    
-    // Obtener datos de ingresos por mes (usando appointments y services)
-    const { data: revenueData, error: revenueError } = await supabase
-      .from('appointments')
-      .select('created_at, services(price)')
-      .eq('status', 'completed')
-      .order('created_at');
-    
-    if (revenueError) throw revenueError;
     
     // Procesar los datos por mes
     const months = [
@@ -386,59 +454,63 @@ export async function getMetricsDataFromSupabase(): Promise<MetricData[]> {
       'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
     ];
     
-    const currentYear = new Date().getFullYear();
     const result: MetricData[] = [];
     
-    for (let i = 0; i < 12; i++) {
-      const monthData: MetricData = {
-        name: months[i],
-        citas: 0,
-        ingresos: 0,
-        clientes: 0
-      };
+    // Si tenemos datos financieros, usarlos como base para nuestro resultado
+    if (financialData && financialData.length > 0) {
+      // Agrupar por mes
+      const monthlyData: Record<string, MetricData> = {};
       
-      // Contar citas para este mes
+      // Procesar datos financieros
+      financialData.forEach(record => {
+        const date = new Date(record.period_date);
+        const monthIndex = date.getMonth();
+        const monthName = months[monthIndex];
+        
+        if (!monthlyData[monthName]) {
+          monthlyData[monthName] = {
+            name: monthName,
+            ingresos: 0,
+            citas: 0,
+            clientes: 0
+          };
+        }
+        
+        monthlyData[monthName].ingresos += record.revenue || 0;
+      });
+      
+      // Procesar datos de citas
       if (appointmentsData) {
-        monthData.citas = appointmentsData.filter(item => {
-          const date = new Date(item.created_at);
-          return date.getMonth() === i && date.getFullYear() === currentYear;
-        }).length;
+        appointmentsData.forEach(item => {
+          const date = new Date(item.start_datetime);
+          const monthName = months[date.getMonth()];
+          
+          if (monthlyData[monthName]) {
+            monthlyData[monthName].citas += 1;
+          }
+        });
       }
       
-      // Contar clientes para este mes
-      if (clientsData) {
-        monthData.clientes = clientsData.filter(item => {
-          const date = new Date(item.created_at);
-          return date.getMonth() === i && date.getFullYear() === currentYear;
-        }).length;
+      // Procesar datos de clientes
+      if (clientsData && clientsData.length > 0) {
+        clientsData.forEach(record => {
+          const date = new Date(record.period_date);
+          const monthName = months[date.getMonth()];
+          
+          if (monthlyData[monthName]) {
+            monthlyData[monthName].clientes += record.new_clients || 0;
+          }
+        });
       }
       
-      // Calcular ingresos para este mes
-      if (revenueData) {
-        monthData.ingresos = revenueData
-          .filter(item => {
-            const date = new Date(item.created_at);
-            return date.getMonth() === i && date.getFullYear() === currentYear;
-          })
-          .reduce((sum, item) => {
-            // Extraer el precio de manera segura independientemente de la estructura
-            const services = item.services;
-            
-            // Si es un array, sumar los precios de todos los elementos
-            if (Array.isArray(services)) {
-              return sum + services.reduce((total, s) => total + (s?.price || 0), 0);
-            }
-            
-            // Si es un objeto con price, usar ese valor
-            const price = services && typeof services === 'object' ? (services as { price?: number }).price || 0 : 0;
-            return sum + price;
-          }, 0);
-      }
+      // Convertir el objeto a un array
+      result.push(...Object.values(monthlyData));
       
-      result.push(monthData);
+      // Ordenar por mes (usando el índice del mes en el array months)
+      result.sort((a, b) => {
+        return months.indexOf(a.name) - months.indexOf(b.name);
+      });
     }
-    
-    return result;
   } catch (error) {
     console.error('Error fetching metrics data:', error);
     // Datos de respaldo en caso de error

@@ -65,10 +65,10 @@ export function MetricsOverviewChart({ data: initialData }: MetricsOverviewChart
   const filteredData = filterDataForMobile(data, isMobile, isTablet);
 
   return (
-    <ChartContainer>
+    <ChartContainer height={350}>
       <BarChart
         data={filteredData}
-        margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
@@ -88,9 +88,27 @@ export function MetricsOverviewChart({ data: initialData }: MetricsOverviewChart
           }}
         />
         <Legend />
-        <Bar dataKey="citas" fill="#8884d8" name="Citas" />
-        <Bar dataKey="clientes" fill="#82ca9d" name="Clientes" />
-        <Bar dataKey="ingresos" fill="#ffc658" name="Ingresos ($)" />
+        <Bar 
+          dataKey="citas" 
+          fill="#8884d8" 
+          name="Citas" 
+          barSize={30}
+          radius={4}
+        />
+        <Bar 
+          dataKey="clientes" 
+          fill="#82ca9d" 
+          name="Clientes" 
+          barSize={30}
+          radius={4}
+        />
+        <Bar 
+          dataKey="ingresos" 
+          fill="#ffc658" 
+          name="Ingresos ($)" 
+          barSize={30}
+          radius={4}
+        />
       </BarChart>
     </ChartContainer>
   );

@@ -33,7 +33,7 @@ export function AppointmentsByHourChart({
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
         <XAxis type="number" />
         <YAxis dataKey="hour" type="category" />
-        <TooltipWrapper formatter={(value) => [`${value} citas`, ""]} />
+        <TooltipWrapper formatter={(value) => [`${Math.round(value)} citas`, ""]} />
         <Legend />
         <Bar 
           dataKey="citas" 
