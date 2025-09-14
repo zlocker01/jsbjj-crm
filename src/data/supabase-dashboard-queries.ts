@@ -421,7 +421,7 @@ export async function getRevenueDataFromSupabase(timeRange: 'monthly' | 'weekly'
 }
 
 // Función para obtener datos de métricas generales desde Supabase
-export async function getMetricsDataFromSupabase(): Promise<MetricData[] | undefined> {
+export async function getMetricsDataFromSupabase(): Promise<MetricData[]> {
   try {
     // Obtener datos de financial_records para ingresos
     const { data: financialData, error: financialError } = await supabase
@@ -456,61 +456,78 @@ export async function getMetricsDataFromSupabase(): Promise<MetricData[] | undef
     
     const result: MetricData[] = [];
     
-    // Si tenemos datos financieros, usarlos como base para nuestro resultado
+    // Inicializar datos mensuales
+    const monthlyData: Record<string, MetricData> = {};
+    
+    // Inicializar todos los meses del año actual
+    const currentYear = new Date().getFullYear();
+    months.forEach((monthName, index) => {
+      monthlyData[monthName] = {
+        name: monthName,
+        ingresos: 0,
+        citas: 0,
+        clientes: 0
+      };
+    });
+    
+    // Procesar datos financieros
     if (financialData && financialData.length > 0) {
-      // Agrupar por mes
-      const monthlyData: Record<string, MetricData> = {};
-      
-      // Procesar datos financieros
       financialData.forEach(record => {
         const date = new Date(record.period_date);
         const monthIndex = date.getMonth();
         const monthName = months[monthIndex];
         
-        if (!monthlyData[monthName]) {
-          monthlyData[monthName] = {
-            name: monthName,
-            ingresos: 0,
-            citas: 0,
-            clientes: 0
-          };
+        if (monthlyData[monthName]) {
+          monthlyData[monthName].ingresos += record.revenue || 0;
         }
-        
-        monthlyData[monthName].ingresos += record.revenue || 0;
-      });
-      
-      // Procesar datos de citas
-      if (appointmentsData) {
-        appointmentsData.forEach(item => {
-          const date = new Date(item.start_datetime);
-          const monthName = months[date.getMonth()];
-          
-          if (monthlyData[monthName]) {
-            monthlyData[monthName].citas += 1;
-          }
-        });
-      }
-      
-      // Procesar datos de clientes
-      if (clientsData && clientsData.length > 0) {
-        clientsData.forEach(record => {
-          const date = new Date(record.period_date);
-          const monthName = months[date.getMonth()];
-          
-          if (monthlyData[monthName]) {
-            monthlyData[monthName].clientes += record.new_clients || 0;
-          }
-        });
-      }
-      
-      // Convertir el objeto a un array
-      result.push(...Object.values(monthlyData));
-      
-      // Ordenar por mes (usando el índice del mes en el array months)
-      result.sort((a, b) => {
-        return months.indexOf(a.name) - months.indexOf(b.name);
       });
     }
+    
+    // Procesar datos de citas
+    if (appointmentsData && appointmentsData.length > 0) {
+      appointmentsData.forEach(item => {
+        const date = new Date(item.start_datetime);
+        const monthName = months[date.getMonth()];
+        
+        if (monthlyData[monthName]) {
+          monthlyData[monthName].citas += 1;
+        }
+      });
+    }
+    
+    // Procesar datos de clientes
+    if (clientsData && clientsData.length > 0) {
+      clientsData.forEach(record => {
+        const date = new Date(record.period_date);
+        const monthName = months[date.getMonth()];
+        
+        if (monthlyData[monthName]) {
+          monthlyData[monthName].clientes += record.new_clients || 0;
+        }
+      });
+    }
+    
+    // Convertir el objeto a un array
+    result.push(...Object.values(monthlyData));
+    
+    // Ordenar por mes (usando el índice del mes en el array months)
+    result.sort((a, b) => {
+      return months.indexOf(a.name) - months.indexOf(b.name);
+    });
+    
+    // Si no hay datos reales, usar datos de respaldo
+    if (result.length === 0 || result.every(item => item.ingresos === 0 && item.citas === 0 && item.clientes === 0)) {
+      return [
+        { name: "Ene", citas: 40, ingresos: 2400, clientes: 24 },
+        { name: "Feb", citas: 30, ingresos: 1398, clientes: 22 },
+        { name: "Mar", citas: 20, ingresos: 9800, clientes: 29 },
+        { name: "Abr", citas: 27, ingresos: 3908, clientes: 20 },
+        { name: "May", citas: 18, ingresos: 4800, clientes: 21 },
+        { name: "Jun", citas: 23, ingresos: 3800, clientes: 25 },
+      ];
+    }
+    
+    return result;
   } catch (error) {
     console.error('Error fetching metrics data:', error);
     // Datos de respaldo en caso de error

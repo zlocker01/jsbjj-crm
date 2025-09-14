@@ -64,19 +64,50 @@ export function MetricsOverviewChart({ data: initialData }: MetricsOverviewChart
   // Filtrar datos para dispositivos móviles para mostrar menos barras
   const filteredData = filterDataForMobile(data, isMobile, isTablet);
 
+  // Asegurarse de que los datos tengan valores para citas y clientes
+  const processedData = filteredData.map(item => ({
+    ...item,
+    citas: typeof item.citas === 'number' ? item.citas : 0,
+    clientes: typeof item.clientes === 'number' ? item.clientes : 0,
+    ingresos: typeof item.ingresos === 'number' ? item.ingresos : 0
+  }));
+
+  // Crear escalas separadas para diferentes magnitudes de datos
+  const maxIngresos = Math.max(...processedData.map(item => item.ingresos || 0));
+  const maxCitasClientes = Math.max(
+    ...processedData.map(item => Math.max(item.citas || 0, item.clientes || 0))
+  );
+
+  // Calcular factor de escala para ingresos
+  const scaleFactor = maxIngresos > 0 ? maxCitasClientes / maxIngresos : 1;
+
+  // Crear datos normalizados para visualización
+  const normalizedData = processedData.map(item => ({
+    ...item,
+    // Mantener valores originales para el tooltip
+    _ingresos: item.ingresos,
+    // Normalizar ingresos para la visualización
+    ingresos: item.ingresos * scaleFactor
+  }));
+
   return (
     <ChartContainer height={350}>
       <BarChart
-        data={filteredData}
+        data={normalizedData}
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
         <TooltipWrapper
-          formatter={(value, name) => {
+          formatter={(value, name, entry) => {
             if (name === "ingresos") {
-              return [`$${value.toLocaleString()}`, "Ingresos"];
+              // Usar el valor original para el tooltip
+              const dataIndex = entry.dataKey && entry.payload ? 
+                normalizedData.findIndex(item => item.name === entry.payload.name) : -1;
+              
+              const originalValue = dataIndex >= 0 ? normalizedData[dataIndex]._ingresos : 0;
+              return [`$${originalValue.toLocaleString()}`, "Ingresos"];
             }
             if (name === "citas") {
               return [`${value}`, "Citas"];
