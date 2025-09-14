@@ -5,22 +5,57 @@ import { Cell, Pie, PieChart } from "recharts";
 import { ChartContainer } from "@/components/charts/chart-container";
 import { TooltipWrapper } from "@/components/charts/tooltip-wrapper";
 import type { AppointmentByServiceData } from "@/interfaces/dashboard";
+import { getAppointmentsByServiceFromSupabase } from "@/data/supabase-dashboard-queries";
 
 interface AppointmentsByServiceChartProps {
-  data: AppointmentByServiceData[];
+  data?: AppointmentByServiceData[];
 }
 
 export function AppointmentsByServiceChart({
-  data,
+  data: initialData,
 }: AppointmentsByServiceChartProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const [data, setData] = useState<AppointmentByServiceData[]>(initialData || []);
+  const [isLoading, setIsLoading] = useState(!initialData);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    
+    // Si no hay datos iniciales, cargar desde Supabase
+    if (!initialData) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const servicesData = await getAppointmentsByServiceFromSupabase();
+          setData(servicesData);
+          setError(null);
+        } catch (err) {
+          console.error("Error al cargar datos de citas por servicio:", err);
+          setError("No se pudieron cargar los datos de citas por servicio");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchData();
+    }
+  }, [initialData]);
 
   if (!isMounted) {
     return <ChartContainer isLoading />;
+  }
+  
+  if (isLoading) {
+    return <ChartContainer isLoading />;
+  }
+  
+  if (error) {
+    return <ChartContainer error={error} />;
+  }
+  
+  if (data.length === 0) {
+    return <ChartContainer empty="No hay datos de citas por servicio disponibles" />;
   }
 
   return (

@@ -14,10 +14,12 @@ import type { ClientSatisfactionData } from "@/interfaces/dashboard";
 
 interface ClientSatisfactionChartProps {
   data: ClientSatisfactionData[];
+  isLoading: boolean;
 }
 
 export function ClientSatisfactionChart({
   data,
+  isLoading,
 }: ClientSatisfactionChartProps) {
   const [isMounted, setIsMounted] = useState(false);
 

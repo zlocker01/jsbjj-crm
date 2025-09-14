@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import type { ClientGrowthData, ClientSegmentData, ClientRetentionData, ClientSatisfactionData } from "@/interfaces/dashboard";
 import {
   Card,
   CardContent,
@@ -32,17 +33,64 @@ import {
   getClientOverviewData, // Import missing function
 } from "@/data/dashboard-data";
 import { ClientsOverviewChart } from "@/components/dashboard/clients-overview-chart";
+// Importar las funciones para obtener datos desde Supabase
+import {
+  getClientGrowthDataFromSupabase,
+  getClientSegmentDataFromSupabase,
+  getClientRetentionDataFromSupabase,
+  getClientSatisfactionDataFromSupabase,
+  getClientSourcesFromSupabase,
+} from "@/data/supabase-dashboard-queries";
 
 export function ClientsDetailedAnalysis() {
   const [timeRange, setTimeRange] = useState("year");
-
-  // Obtener datos para el análisis de clientes
-  const clientGrowthData = getClientGrowthData();
-  const clientSegmentData = getClientSegmentData();
-  const clientRetentionData = getClientRetentionData();
-  const clientSatisfactionData = getClientSatisfactionData();
-  const clientSourceData = getClientSourceData();
+  const [loading, setLoading] = useState(true);
+  
+  // Estados para almacenar los datos obtenidos de Supabase
+  const [clientGrowthData, setClientGrowthData] = useState<ClientGrowthData[]>([]);
+  const [clientSegmentData, setClientSegmentData] = useState<ClientSegmentData[]>([]);
+  const [clientRetentionData, setClientRetentionData] = useState<ClientRetentionData[]>([]);
+  const [clientSatisfactionData, setClientSatisfactionData] = useState<ClientSatisfactionData[]>([]);
+  const [clientSourceData, setClientSourceData] = useState<ClientSegmentData[]>([]);
+  
+  // Obtener datos de respaldo para el resumen y overview
   const clientSummary = getClientSummaryData();
+  
+  // Efecto para cargar los datos desde Supabase al montar el componente
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      try {
+        // Cargar datos desde Supabase en paralelo
+        const [growth, segment, retention, satisfaction, sources] = await Promise.all([
+          getClientGrowthDataFromSupabase(),
+          getClientSegmentDataFromSupabase(),
+          getClientRetentionDataFromSupabase(),
+          getClientSatisfactionDataFromSupabase(),
+          getClientSourcesFromSupabase(),
+        ]);
+        
+        // Actualizar los estados con los datos obtenidos
+        setClientGrowthData(growth);
+        setClientSegmentData(segment);
+        setClientRetentionData(retention);
+        setClientSatisfactionData(satisfaction);
+        setClientSourceData(sources.length > 0 ? sources : getClientSourceData());
+      } catch (error) {
+        console.error("Error al cargar datos de clientes:", error);
+        // Cargar datos de respaldo en caso de error
+        setClientGrowthData(getClientGrowthData());
+        setClientSegmentData(getClientSegmentData());
+        setClientRetentionData(getClientRetentionData());
+        setClientSatisfactionData(getClientSatisfactionData());
+        setClientSourceData(getClientSourceData());
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    loadData();
+  }, [timeRange]); // Recargar datos cuando cambie el rango de tiempo
 
   return (
     <div className="space-y-4">
@@ -71,16 +119,19 @@ export function ClientsDetailedAnalysis() {
           title="Clientes Totales"
           value={clientSummary.total}
           changePercent={clientSummary.growthPercent}
+          loading={loading}
         />
         <SummaryCard
           title="Tasa de Retención"
           value={`${clientSummary.retentionRate}%`}
           changePercent={clientSummary.retentionGrowth}
+          loading={loading}
         />
         <SummaryCard
           title="Valor Promedio"
           value={`$${clientSummary.avgValue}`}
           changePercent={clientSummary.avgValueGrowth}
+          loading={loading}
         />
       </div>
 
@@ -102,7 +153,7 @@ export function ClientsDetailedAnalysis() {
             </CardHeader>
             <CardContent>
               <div className="h-[400px]">
-                <ClientGrowthChart data={clientGrowthData} />
+                <ClientGrowthChart data={clientGrowthData} isLoading={loading} />
               </div>
             </CardContent>
           </Card>
@@ -119,7 +170,7 @@ export function ClientsDetailedAnalysis() {
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
-                  <ClientSegmentationChart data={clientSegmentData} />
+                  <ClientSegmentationChart data={clientSegmentData} isLoading={loading} />
                 </div>
               </CardContent>
             </Card>
@@ -132,7 +183,7 @@ export function ClientsDetailedAnalysis() {
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
-                  <ClientSourceChart data={clientSourceData} />
+                  <ClientSourceChart data={clientSourceData} isLoading={loading} />
                 </div>
               </CardContent>
             </Card>
@@ -149,7 +200,7 @@ export function ClientsDetailedAnalysis() {
             </CardHeader>
             <CardContent>
               <div className="h-[400px]">
-                <ClientRetentionChart data={clientRetentionData} />
+                <ClientRetentionChart data={clientRetentionData} isLoading={loading} />
               </div>
             </CardContent>
           </Card>
@@ -166,7 +217,7 @@ export function ClientsDetailedAnalysis() {
               </CardHeader>
               <CardContent>
                 <div className="h-[350px]">
-                  <ClientSatisfactionChart data={clientSatisfactionData} />
+                  <ClientSatisfactionChart data={clientSatisfactionData} isLoading={loading} />
                 </div>
               </CardContent>
             </Card>
@@ -178,7 +229,7 @@ export function ClientsDetailedAnalysis() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ClientsOverviewChart data={getClientOverviewData()} />
+                <ClientsOverviewChart data={getClientOverviewData()} isLoading={loading} />
               </CardContent>
             </Card>
           </div>

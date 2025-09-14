@@ -16,9 +16,10 @@ import type { ClientGrowthData } from "@/interfaces/dashboard";
 
 interface ClientGrowthChartProps {
   data: ClientGrowthData[];
+  isLoading: boolean;
 }
 
-export function ClientGrowthChart({ data }: ClientGrowthChartProps) {
+export function ClientGrowthChart({ data, isLoading }: ClientGrowthChartProps) {  
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

@@ -8,9 +8,10 @@ import type { ClientSegmentData } from "@/interfaces/dashboard";
 
 interface ClientSourceChartProps {
   data: ClientSegmentData[];
+  isLoading: boolean;
 }
 
-export function ClientSourceChart({ data }: ClientSourceChartProps) {
+export function ClientSourceChart({ data, isLoading }: ClientSourceChartProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import {
   LabelList,
   XAxis,
   YAxis,
+  Tooltip,
 } from 'recharts';
 import {
   Card,
@@ -27,9 +28,10 @@ import {
 } from '@/components/ui/chart';
 import type { ServiceRevenueData } from '@/interfaces/dashboard';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { getServiceRevenueDataFromSupabase } from '@/data/supabase-dashboard-queries';
 
 interface ServiceRevenueChartProps {
-  data: ServiceRevenueData[];
+  data?: ServiceRevenueData[];
 }
 
 const chartConfig = {
@@ -42,20 +44,84 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ServiceRevenueChart({ data }: ServiceRevenueChartProps) {
+// Componente para el tooltip personalizado
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-background p-2 rounded-md shadow-md border border-border">
+        <p className="font-medium">{data.name}</p>
+        <p className="text-sm text-muted-foreground">
+          Citas: {data.value}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export function ServiceRevenueChart({ data: propData }: ServiceRevenueChartProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const [data, setData] = useState<ServiceRevenueData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    
+    // Si se proporcionan datos como prop, úsalos
+    if (propData && propData.length > 0) {
+      setData(propData);
+      setLoading(false);
+      return;
+    }
+    
+    // De lo contrario, obtén datos de Supabase
+    const fetchData = async () => {
+      try {
+        const serviceData = await getServiceRevenueDataFromSupabase();
+        if (serviceData.length > 0) {
+          setData(serviceData);
+        } else {
+          // Si no hay datos de Supabase, usa datos de ejemplo
+          setData([
+            { name: "Corte para caballero", value: 48, color: '#8884d8' },
+            { name: "Corte para dama", value: 44, color: '#82ca9d' },
+            { name: "Perfilado de Cejas", value: 13, color: '#ffc658' },
+            { name: "Esmaltado Gelish", value: 11, color: '#ff8042' },
+            { name: "Corte Infantil", value: 9, color: '#0088fe' },
+          ]);
+        }
+      } catch (err) {
+        console.error('Error fetching service data:', err);
+        setError('Error al cargar los datos. Inténtalo de nuevo más tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [propData]);
 
-  if (!isMounted) {
+  if (!isMounted || loading) {
     return (
       <Card>
         <CardContent className="pt-6">
           <div className="flex h-[300px] w-full items-center justify-center">
             <p className="text-muted-foreground">Cargando...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex h-[300px] w-full items-center justify-center">
+            <p className="text-muted-foreground">{error}</p>
           </div>
         </CardContent>
       </Card>
@@ -97,10 +163,7 @@ export function ServiceRevenueChart({ data }: ServiceRevenueChartProps) {
           hide
         />
         <XAxis dataKey="value" type="number" hide />
-        <ChartTooltip
-          cursor={false}
-          content={<ChartTooltipContent indicator="line" />}
-        />
+        <Tooltip content={<CustomTooltip />} />
         <Bar
           dataKey="value"
           layout="vertical"
@@ -118,9 +181,7 @@ export function ServiceRevenueChart({ data }: ServiceRevenueChartProps) {
             offset={8}
             className="fill-foreground"
             fontSize={12}
-            formatter={(value: { toLocaleString: () => any }) =>
-              `$${value.toLocaleString()}`
-            }
+            formatter={(value: number) => value.toLocaleString()}
           />
         </Bar>
       </BarChart>

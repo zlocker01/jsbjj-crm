@@ -80,7 +80,7 @@ export function AppointmentHeatmapChart({
   const maxValue = Math.max(...data.map(item => item.value));
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full">
       <ChartContainer height={400}>
         <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />

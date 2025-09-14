@@ -18,26 +18,71 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChartContainer } from "@/components/charts/chart-container";
 import { TooltipWrapper } from "@/components/charts/tooltip-wrapper";
 import type { RevenueData } from "@/interfaces/dashboard";
+import { getRevenueDataFromSupabase } from "@/data/supabase-dashboard-queries";
 
 interface RevenueChartProps {
-  monthlyData: RevenueData[];
-  weeklyData: RevenueData[];
+  monthlyData?: RevenueData[];
+  weeklyData?: RevenueData[];
 }
 
-export function RevenueChart({ monthlyData, weeklyData }: RevenueChartProps) {
+export function RevenueChart({ monthlyData: initialMonthlyData, weeklyData: initialWeeklyData }: RevenueChartProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("line");
   const [timeRange, setTimeRange] = useState("monthly");
+  const [monthlyData, setMonthlyData] = useState<RevenueData[]>(initialMonthlyData || []);
+  const [weeklyData, setWeeklyData] = useState<RevenueData[]>(initialWeeklyData || []);
+  const [isLoading, setIsLoading] = useState(!initialMonthlyData || !initialWeeklyData);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Si no hay datos iniciales, cargar desde Supabase
+        if (!initialMonthlyData) {
+          const monthlyRevenueData = await getRevenueDataFromSupabase('monthly');
+          setMonthlyData(monthlyRevenueData);
+        }
+        
+        if (!initialWeeklyData) {
+          const weeklyRevenueData = await getRevenueDataFromSupabase('weekly');
+          setWeeklyData(weeklyRevenueData);
+        }
+        
+        setError(null);
+      } catch (err) {
+        console.error("Error al cargar datos de ingresos:", err);
+        setError("No se pudieron cargar los datos de ingresos");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (!initialMonthlyData || !initialWeeklyData) {
+      fetchData();
+    }
+  }, [initialMonthlyData, initialWeeklyData]);
 
   if (!isMounted) {
     return <ChartContainer isLoading />;
   }
-
+  
+  if (isLoading) {
+    return <ChartContainer isLoading />;
+  }
+  
+  if (error) {
+    return <ChartContainer error={error} />;
+  }
+  
   const data = timeRange === "monthly" ? monthlyData : weeklyData;
+  
+  if (data.length === 0) {
+    return <ChartContainer empty="No hay datos de ingresos disponibles" />;
+  }
 
   return (
     <div className="space-y-4">

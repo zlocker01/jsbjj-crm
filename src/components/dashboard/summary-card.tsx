@@ -8,6 +8,7 @@ interface SummaryCardProps {
   changePercent: number;
   changeLabel?: string;
   icon?: ReactNode;
+  loading?: boolean;
 }
 
 export function SummaryCard({
@@ -16,6 +17,7 @@ export function SummaryCard({
   changePercent,
   changeLabel = "respecto al mes anterior",
   icon,
+  loading,
 }: SummaryCardProps) {
   const isPositive = changePercent >= 0;
 

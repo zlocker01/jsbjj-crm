@@ -9,6 +9,8 @@ interface ChartContainerProps {
   height?: number | string;
   width?: number | string;
   isLoading?: boolean;
+  error?: string;
+  empty?: string;
 }
 
 export function ChartContainer({
@@ -16,6 +18,8 @@ export function ChartContainer({
   height = 350,
   width = "100%",
   isLoading = false,
+  error,
+  empty,
 }: ChartContainerProps) {
   if (isLoading) {
     return (
@@ -28,6 +32,22 @@ export function ChartContainer({
             <Skeleton className="h-4 w-20" />
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-[350px] flex items-center justify-center text-destructive">
+        {error}
+      </div>
+    );
+  }
+
+  if (empty) {
+    return (
+      <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+        {empty}
       </div>
     );
   }

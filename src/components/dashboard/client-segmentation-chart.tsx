@@ -8,10 +8,12 @@ import type { ClientSegmentData } from "@/interfaces/dashboard";
 
 interface ClientSegmentationChartProps {
   data: ClientSegmentData[];
+  isLoading: boolean;
 }
 
 export function ClientSegmentationChart({
   data,
+  isLoading,
 }: ClientSegmentationChartProps) {
   const [isMounted, setIsMounted] = useState(false);
 

@@ -8,9 +8,13 @@ import type { ClientRetentionData } from "@/interfaces/dashboard";
 
 interface ClientRetentionChartProps {
   data: ClientRetentionData[];
+  isLoading: boolean;
 }
 
-export function ClientRetentionChart({ data }: ClientRetentionChartProps) {
+export function ClientRetentionChart({
+  data,
+  isLoading,
+}: ClientRetentionChartProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

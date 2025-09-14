@@ -5,20 +5,57 @@ import { Cell, Pie, PieChart } from "recharts";
 import { ChartContainer } from "@/components/charts/chart-container";
 import { TooltipWrapper } from "@/components/charts/tooltip-wrapper";
 import type { ClientSegmentData } from "@/interfaces/dashboard";
+import { getClientSourcesFromSupabase } from "@/data/supabase-dashboard-queries";
 
 interface ClientsOverviewChartProps {
-  data: ClientSegmentData[];
+  data?: ClientSegmentData[];
+  isLoading: boolean;
+  
 }
 
-export function ClientsOverviewChart({ data }: ClientsOverviewChartProps) {
+export function ClientsOverviewChart({ data: initialData }: ClientsOverviewChartProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const [data, setData] = useState<ClientSegmentData[]>(initialData || []);
+  const [isLoading, setIsLoading] = useState(!initialData);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    
+    // Si no hay datos iniciales, cargar desde Supabase
+    if (!initialData) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const clientsData = await getClientSourcesFromSupabase();
+          setData(clientsData);
+          setError(null);
+        } catch (err) {
+          console.error("Error al cargar datos de fuentes de clientes:", err);
+          setError("No se pudieron cargar los datos de fuentes de clientes");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchData();
+    }
+  }, [initialData]);
 
   if (!isMounted) {
     return <ChartContainer isLoading />;
+  }
+  
+  if (isLoading) {
+    return <ChartContainer isLoading />;
+  }
+  
+  if (error) {
+    return <ChartContainer error={error} />;
+  }
+  
+  if (data.length === 0) {
+    return <ChartContainer empty="No hay datos de fuentes de clientes disponibles" />;
   }
 
   return (
@@ -40,7 +77,7 @@ export function ClientsOverviewChart({ data }: ClientsOverviewChartProps) {
             <Cell key={`cell-${entry.name}`} fill={entry.color} />
           ))}
         </Pie>
-        <TooltipWrapper />
+        <TooltipWrapper formatter={(value) => [`${value} clientes`, ""]} />
       </PieChart>
     </ChartContainer>
   );
