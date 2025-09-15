@@ -37,8 +37,11 @@ export function AppointmentsByHourChart({
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis type="number" />
-        <YAxis dataKey="hour" type="category" />
+        <XAxis type="number" allowDecimals={false} />
+        <YAxis dataKey="hour" type="category" tickFormatter={(hour) => {
+          // Si el formato es "9-10", lo dejamos igual (como al inicio)
+          return hour;
+        }} />
         <TooltipWrapper formatter={(value) => {
           const numValue = Array.isArray(value)
             ? value.map(Number).reduce((acc, val) => acc + val, 0)
