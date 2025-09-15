@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from "recharts";
-import { ChartContainer } from "@/components/charts/chart-container";
-import { TooltipWrapper } from "@/components/charts/tooltip-wrapper";
-import type { AppointmentByHourData } from "@/interfaces/dashboard";
+import { useState, useEffect } from 'react';
+import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from 'recharts';
+import { ChartContainer } from '@/components/charts/chart-container';
+import { TooltipWrapper } from '@/components/charts/tooltip-wrapper';
+import type { AppointmentByHourData } from '@/interfaces/dashboard';
 
 interface AppointmentsByHourChartProps {
   data: AppointmentByHourData[];
@@ -23,7 +23,7 @@ export function AppointmentsByHourChart({
     return <ChartContainer isLoading />;
   }
 
-  const normalizedData = data.map(item => ({
+  const normalizedData = data.map((item) => ({
     ...item,
     citas: Array.isArray(item.citas)
       ? item.citas.map(Number).reduce((acc, val) => acc + val, 0)
@@ -38,21 +38,29 @@ export function AppointmentsByHourChart({
       >
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
         <XAxis type="number" allowDecimals={false} />
-        <YAxis dataKey="hour" type="category" tickFormatter={(hour) => {
-          // Si el formato es "9-10", lo dejamos igual (como al inicio)
-          return hour;
-        }} />
-        <TooltipWrapper formatter={(value) => {
-          const numValue = Array.isArray(value)
-            ? value.map(Number).reduce((acc, val) => acc + val, 0)
-            : typeof value === 'string' ? parseFloat(value) : value;
-          return [Math.round(numValue), "Citas"];
-        }} />
+        <YAxis
+          dataKey="hour"
+          type="category"
+          tickFormatter={(hour) => {
+            // Si el formato es "9-10", lo dejamos igual (como al inicio)
+            return hour;
+          }}
+        />
+        <TooltipWrapper
+          formatter={(value) => {
+            const numValue = Array.isArray(value)
+              ? value.map(Number).reduce((acc, val) => acc + val, 0)
+              : typeof value === 'string'
+              ? parseFloat(value)
+              : value;
+            return [Math.round(numValue), 'Citas'];
+          }}
+        />
         <Legend />
-        <Bar 
-          dataKey="citas" 
-          name="Número de citas" 
-          fill="#82ca9d" 
+        <Bar
+          dataKey="citas"
+          name="Número de citas"
+          fill="#82ca9d"
           barSize={30}
           radius={4}
         />
