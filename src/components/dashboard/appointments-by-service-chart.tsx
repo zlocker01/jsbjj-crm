@@ -77,7 +77,10 @@ export function AppointmentsByServiceChart({
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
-        <TooltipWrapper formatter={(value) => [`${value} citas`, ""]} />
+        <TooltipWrapper formatter={(value) => {
+          const numValue = typeof value === 'string' ? parseFloat(value) : value;
+          return [`${numValue} citas`, ""];
+        }} />
       </PieChart>
     </ChartContainer>
   );

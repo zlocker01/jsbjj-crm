@@ -123,7 +123,10 @@ export function RevenueChart({ monthlyData: initialMonthlyData, weeklyData: init
                 <XAxis dataKey="name" />
                 <YAxis />
                 <TooltipWrapper
-                  formatter={(value) => [`$${value.toLocaleString()}`, ""]}
+                  formatter={(value) => {
+                    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+                    return [`$${numValue.toLocaleString()}`, ""];
+                  }}
                 />
                 <Legend />
                 <Line
@@ -148,7 +151,10 @@ export function RevenueChart({ monthlyData: initialMonthlyData, weeklyData: init
                 <XAxis dataKey="name" />
                 <YAxis />
                 <TooltipWrapper
-                  formatter={(value) => [`$${value.toLocaleString()}`, ""]}
+                  formatter={(value) => {
+                    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+                    return [`$${numValue.toLocaleString()}`, ""];
+                  }}
                 />
                 <Legend />
                 <Area
@@ -186,7 +192,10 @@ export function RevenueChart({ monthlyData: initialMonthlyData, weeklyData: init
                 <XAxis dataKey="name" />
                 <YAxis />
                 <TooltipWrapper
-                  formatter={(value) => [`$${value.toLocaleString()}`, ""]}
+                  formatter={(value) => {
+                    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+                    return [`$${numValue.toLocaleString()}`, ""];
+                  }}
                 />
                 <Legend />
                 <Bar dataKey="ingresos" fill="#8884d8" />

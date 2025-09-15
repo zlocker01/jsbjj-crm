@@ -77,7 +77,10 @@ export function ClientsOverviewChart({ data: initialData }: ClientsOverviewChart
             <Cell key={`cell-${entry.name}`} fill={entry.color} />
           ))}
         </Pie>
-        <TooltipWrapper formatter={(value) => [`${value} clientes`, ""]} />
+        <TooltipWrapper formatter={(value) => {
+          const numValue = typeof value === 'string' ? parseFloat(value) : value;
+          return [`${numValue} clientes`, ""];
+        }} />
       </PieChart>
     </ChartContainer>
   );

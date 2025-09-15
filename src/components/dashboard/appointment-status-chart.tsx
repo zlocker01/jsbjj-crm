@@ -76,7 +76,10 @@ export function AppointmentStatusChart({ data: initialData }: AppointmentStatusC
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
-        <TooltipWrapper formatter={(value, name) => [`${value} citas`, name]} />
+        <TooltipWrapper formatter={(value, name) => {
+          const numValue = typeof value === 'string' ? parseFloat(value) : value;
+          return [`${numValue} citas`, name];
+        }} />
       </PieChart>
     </ChartContainer>
   );

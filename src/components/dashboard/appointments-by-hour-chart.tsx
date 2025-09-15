@@ -23,17 +23,28 @@ export function AppointmentsByHourChart({
     return <ChartContainer isLoading />;
   }
 
+  const normalizedData = data.map(item => ({
+    ...item,
+    citas: Array.isArray(item.citas)
+      ? item.citas.map(Number).reduce((acc, val) => acc + val, 0)
+      : Number(item.citas),
+  }));
   return (
     <ChartContainer height={300}>
       <BarChart
-        data={data}
+        data={normalizedData}
         layout="vertical"
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
         <XAxis type="number" />
         <YAxis dataKey="hour" type="category" />
-        <TooltipWrapper formatter={(value) => [`${Math.round(value)} citas`, ""]} />
+        <TooltipWrapper formatter={(value) => {
+          const numValue = Array.isArray(value)
+            ? value.map(Number).reduce((acc, val) => acc + val, 0)
+            : typeof value === 'string' ? parseFloat(value) : value;
+          return [Math.round(numValue), "Citas"];
+        }} />
         <Legend />
         <Bar 
           dataKey="citas" 
