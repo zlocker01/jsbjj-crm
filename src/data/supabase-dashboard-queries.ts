@@ -24,13 +24,14 @@ export async function getServiceRevenueDataFromSupabase(): Promise<ServiceRevenu
     
     if (data && data.length > 0) {
       // Asignar colores a los servicios
-      const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe', '#00C49F', '#FFBB28', '#FF8042'];
-      
-      return data.map((item: any, index: number) => ({
-        name: item.service_name,
-        value: item.appointment_count,
-        color: colors[index % colors.length],
-      }));
+      const chartColors = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe', '#00C49F', '#FFBB28', '#FF8042'];
+      return (
+        data?.map((item: any, idx: number) => ({
+          name: item.name,
+          value: item.value, // Ahora value es el ingreso total
+          color: chartColors[idx % chartColors.length],
+        })) || []
+      );
     }
     
     return [];
@@ -73,8 +74,8 @@ export async function getAppointmentsByServiceFromSupabase(): Promise<Appointmen
       const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe', '#00C49F', '#FFBB28', '#FF8042'];
       
       return data.map((item: any, index: number) => ({
-        name: item.service_name,
-        value: item.appointment_count,
+        name: item.name,
+        value: item.value,
         color: colors[index % colors.length],
       }));
     }

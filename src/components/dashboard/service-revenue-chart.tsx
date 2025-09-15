@@ -52,7 +52,7 @@ const CustomTooltip = ({ active, payload }: any) => {
       <div className="bg-background p-2 rounded-md shadow-md border border-border">
         <p className="font-medium">{data.name}</p>
         <p className="text-sm text-muted-foreground">
-          Citas: {data.value}
+          Ingresos: {data.value.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
         </p>
       </div>
     );
