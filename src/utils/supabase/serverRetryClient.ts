@@ -20,9 +20,15 @@ export async function createRetryServerClient() {
             if (typeof window === 'undefined') {
               cookieStore.set(name, value, options);
             }
-          } catch (e) {
+          } catch (e: any) {
+             // In Next.js Server Components, we cannot set cookies.
+             // This is expected behavior when using createServerClient in a Server Component
+             // vs a Server Action or Route Handler.
+             // We suppress the error if it's the specific Next.js restriction.
+            if (e?.message?.includes("Cookies can only be modified")) {
+               return;
+            }
             console.error("Error setting cookie:", e);
-            // Silent fail for cases where we're not in a proper server action context
           }
         },
         remove(name, options) {
@@ -31,9 +37,11 @@ export async function createRetryServerClient() {
             if (typeof window === 'undefined') {
               cookieStore.set(name, '', { ...options, maxAge: 0 });
             }
-          } catch (e) {
+          } catch (e: any) {
+            if (e?.message?.includes("Cookies can only be modified")) {
+               return;
+            }
             console.error("Error removing cookie:", e);
-            // Silent fail for cases where we're not in a proper server action context
           }
         }
       }
