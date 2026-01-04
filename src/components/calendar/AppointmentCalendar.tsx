@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   addDays,
   addMonths,
@@ -9,22 +9,22 @@ import {
   getDaysInMonth,
   startOfMonth,
   subMonths,
-} from "date-fns";
-import { es } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { useToast } from "@/components/ui/use-toast";
-import type { Appointment } from "@/interfaces/appointments/Appointment";
+} from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useMediaQuery } from '@/hooks/use-media-query';
+import { useToast } from '@/components/ui/use-toast';
+import type { Appointment } from '@/interfaces/appointments/Appointment';
 
 interface AppointmentCalendarProps {
-  view: "month" | "week" | "day";
+  view: 'month' | 'week' | 'day';
   appointments: Appointment[];
   isLoading: boolean;
   error: string | null;
   onDateChange?: (date: Date) => void;
   onAppointmentSelect?: (appointment: Appointment) => void;
-  onViewChange?: (view: "month" | "week" | "day") => void;
+  onViewChange?: (view: 'month' | 'week' | 'day') => void;
 }
 
 export function AppointmentCalendar({
@@ -36,11 +36,11 @@ export function AppointmentCalendar({
 }: AppointmentCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState<Date[]>([]);
-  const isMobile = useMediaQuery("(max-width: 640px)");
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const { toast } = useToast();
 
   useEffect(() => {
-    if (view === "month") {
+    if (view === 'month') {
       const days: Date[] = [];
       const firstDay = startOfMonth(currentDate);
       const daysInMonth = getDaysInMonth(currentDate);
@@ -62,7 +62,7 @@ export function AppointmentCalendar({
       }
 
       setCalendarDays(days);
-    } else if (view === "week") {
+    } else if (view === 'week') {
       const days: Date[] = [];
       const dayOfWeek = getDay(currentDate);
       const firstDayOfWeek = addDays(currentDate, -dayOfWeek);
@@ -78,20 +78,19 @@ export function AppointmentCalendar({
   }, [currentDate, view]);
 
   const handlePrevious = () => {
-    if (view === "month") {
+    if (view === 'month') {
       setCurrentDate(subMonths(currentDate, 1));
-    } else if (view === "week") {
+    } else if (view === 'week') {
       setCurrentDate(addDays(currentDate, -7));
     } else {
       setCurrentDate(addDays(currentDate, -1));
     }
-
   };
 
   const handleNext = () => {
-    if (view === "month") {
+    if (view === 'month') {
       setCurrentDate(addMonths(currentDate, 1));
-    } else if (view === "week") {
+    } else if (view === 'week') {
       setCurrentDate(addDays(currentDate, 7));
     } else {
       setCurrentDate(addDays(currentDate, 1));
@@ -105,14 +104,14 @@ export function AppointmentCalendar({
     return appointments.filter(
       (appointment) =>
         appointment?.start_datetime &&
-        format(new Date(appointment.start_datetime), "yyyy-MM-dd") ===
-          format(date, "yyyy-MM-dd"),
+        format(new Date(appointment.start_datetime), 'yyyy-MM-dd') ===
+          format(date, 'yyyy-MM-dd')
     );
   };
 
   const handleAppointmentClick = (
     appointment: Appointment,
-    e: React.MouseEvent | React.KeyboardEvent,
+    e: React.MouseEvent | React.KeyboardEvent
   ) => {
     e.stopPropagation();
     onAppointmentSelect(appointment);
@@ -121,21 +120,25 @@ export function AppointmentCalendar({
     const endDate = new Date(appointment.end_datetime);
 
     toast({
-      title: "Cita seleccionada",
+      title: 'Cita seleccionada',
       description: (
         <div className="space-y-1">
           <div>
             <span className="font-medium">Día: </span>
-            <span>{format(startDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es })}</span>
+            <span>
+              {format(startDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es })}
+            </span>
           </div>
           <div>
             <span className="font-medium">Hora: </span>
-            <span>{format(startDate, "h:mm a")} - {format(endDate, "h:mm a")}</span>
+            <span>
+              {format(startDate, 'h:mm a')} - {format(endDate, 'h:mm a')}
+            </span>
           </div>
         </div>
       ),
       duration: 4000,
-      variant: "success",
+      variant: 'success',
     });
   };
 
@@ -145,7 +148,7 @@ export function AppointmentCalendar({
         <ChevronLeft className="w-5 h-5" />
       </Button>
       <h2 className="text-lg font-semibold">
-        {format(currentDate, "MMMM yyyy", { locale: es })}
+        {format(currentDate, 'MMMM yyyy', { locale: es })}
       </h2>
       <Button variant="ghost" size="icon" onClick={handleNext}>
         <ChevronRight className="w-5 h-5" />
@@ -163,7 +166,7 @@ export function AppointmentCalendar({
       return acc;
     }, {} as Record<number, Appointment[]>);
 
-    return Object.values(groupedByStartTime).flatMap(group => {
+    return Object.values(groupedByStartTime).flatMap((group) => {
       const groupWidth = 100 / group.length;
       return group.map((app, index) => ({
         ...app,
@@ -192,7 +195,7 @@ export function AppointmentCalendar({
           {hours.map((hour) => (
             <div key={hour} className="flex items-center h-16 border-t">
               <div className="text-xs text-muted-foreground w-16 text-right pr-2">
-                {format(new Date(0, 0, 0, hour), "h a")}
+                {format(new Date(0, 0, 0, hour), 'h a')}
               </div>
               <div className="flex-1" />
             </div>
@@ -207,12 +210,12 @@ export function AppointmentCalendar({
               <button
                 key={appointment.id}
                 type="button"
-                className={`absolute p-2 rounded-lg text-left text-sm z-10 ${
-                  appointment.status === "Confirmada"
-                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                    : appointment.status === "Cancelada"
-                    ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
-                    : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                className={`absolute p-2 rounded-lg text-left text-sm z-10 border shadow-sm hover:shadow-md transition-all ${
+                  appointment.status === 'Confirmada'
+                    ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                    : appointment.status === 'Cancelada'
+                    ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
+                    : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                 }`}
                 style={{
                   top: `${top}px`,
@@ -222,7 +225,7 @@ export function AppointmentCalendar({
                 }}
                 onClick={(e) => handleAppointmentClick(appointment, e)}
               >
-                Cita {format(start, "h:mm a")}
+                Cita {format(start, 'h:mm a')}
               </button>
             );
           })}
@@ -235,12 +238,21 @@ export function AppointmentCalendar({
     <div className="border rounded-lg overflow-hidden">
       <div className="grid grid-cols-7 divide-x">
         {calendarDays.map((day) => (
-          <div key={format(day, "yyyy-MM-dd")} className="flex flex-col items-center py-2">
-            <div className="font-medium text-sm">{format(day, "E", { locale: es })}</div>
-            <div className={`text-lg font-bold ${
-              format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? 'text-primary' : ''
-            }`}>
-              {format(day, "d")}
+          <div
+            key={format(day, 'yyyy-MM-dd')}
+            className="flex flex-col items-center py-2"
+          >
+            <div className="font-medium text-sm">
+              {format(day, 'E', { locale: es })}
+            </div>
+            <div
+              className={`text-lg font-bold ${
+                format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+                  ? 'text-primary'
+                  : ''
+              }`}
+            >
+              {format(day, 'd')}
             </div>
           </div>
         ))}
@@ -250,10 +262,12 @@ export function AppointmentCalendar({
           const dayAppointments = getAppointmentsForDate(day);
           const laidOutAppointments = layoutAppointmentsForDay(dayAppointments);
           return (
-            <div key={format(day, "yyyy-MM-dd")} className="relative border-t">
+            <div key={format(day, 'yyyy-MM-dd')} className="relative border-t">
               {laidOutAppointments.map((appointment) => {
                 const start = new Date(appointment.start_datetime);
-                const top = (start.getHours() * 60 + start.getMinutes()) / (24 * 60) * 100; // Position as percentage
+                const top =
+                  ((start.getHours() * 60 + start.getMinutes()) / (24 * 60)) *
+                  100; // Position as percentage
                 const appointmentWidth = parseFloat(appointment.layout.width);
                 const appointmentLeft = parseFloat(appointment.layout.left);
 
@@ -261,12 +275,12 @@ export function AppointmentCalendar({
                   <button
                     key={appointment.id}
                     type="button"
-                    className={`absolute text-xs p-1 rounded truncate text-left ${
-                      appointment.status === "Confirmada"
-                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                        : appointment.status === "Cancelada"
-                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
-                        : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                    className={`absolute text-xs p-1 rounded truncate text-left border shadow-sm hover:shadow-md transition-all ${
+                      appointment.status === 'Confirmada'
+                        ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                        : appointment.status === 'Cancelada'
+                        ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
+                        : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                     }`}
                     style={{
                       top: `${top}%`,
@@ -275,7 +289,7 @@ export function AppointmentCalendar({
                     }}
                     onClick={(e) => handleAppointmentClick(appointment, e)}
                   >
-                    {format(start, "HH:mm")}
+                    {format(start, 'HH:mm')}
                   </button>
                 );
               })}
@@ -290,7 +304,7 @@ export function AppointmentCalendar({
     <div className="overflow-x-auto">
       <div className="min-w-[640px]">
         <div className="grid grid-cols-7 gap-1 mb-2">
-          {["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map((day) => (
+          {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day) => (
             <div key={day} className="text-center font-medium py-2">
               {day}
             </div>
@@ -300,9 +314,9 @@ export function AppointmentCalendar({
           {calendarDays.map((day) => {
             const isCurrentMonth = day.getMonth() === currentDate.getMonth();
             const isToday =
-              format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+              format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
             const dayAppointments = getAppointmentsForDate(day);
-            const dayKey = format(day, "yyyy-MM-dd");
+            const dayKey = format(day, 'yyyy-MM-dd');
 
             return (
               <div
@@ -310,24 +324,28 @@ export function AppointmentCalendar({
                 role="button"
                 tabIndex={0}
                 className={`min-h-[100px] border rounded-md p-1 text-left ${
-                  isCurrentMonth ? "bg-background" : "bg-muted/30"
-                } ${isToday ? "border-primary" : ""} cursor-pointer hover:bg-muted/50 transition-colors`}
+                  isCurrentMonth ? 'bg-background' : 'bg-muted/30'
+                } ${
+                  isToday ? 'border-primary' : ''
+                } cursor-pointer hover:bg-muted/50 transition-colors`}
                 onClick={() => onDateChange(day)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     onDateChange(day);
                   }
                 }}
-                aria-label={`${format(day, "EEEE, d 'de' MMMM", { locale: es })}, ${dayAppointments.length} citas`}
+                aria-label={`${format(day, "EEEE, d 'de' MMMM", {
+                  locale: es,
+                })}, ${dayAppointments.length} citas`}
               >
                 <div className="text-right mb-1">
                   <span
                     className={`inline-block rounded-full w-6 h-6 text-center ${
-                      isToday ? "bg-primary text-primary-foreground" : ""
+                      isToday ? 'bg-primary text-primary-foreground' : ''
                     }`}
                   >
-                    {format(day, "d")}
+                    {format(day, 'd')}
                   </span>
                 </div>
                 <div className="space-y-1">
@@ -335,27 +353,30 @@ export function AppointmentCalendar({
                     <button
                       key={appointment.id}
                       type="button"
-                      className={`text-xs p-1 rounded truncate w-full text-left ${
-                        appointment.status === "Confirmada"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                          : appointment.status === "Cancelada"
-                            ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
-                            : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                      className={`text-xs p-1 rounded truncate w-full text-left border shadow-sm hover:shadow-md transition-all ${
+                        appointment.status === 'Confirmada'
+                          ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                          : appointment.status === 'Cancelada'
+                          ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
+                          : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                       } hover:opacity-80`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleAppointmentClick(appointment, e);
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
+                        if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           e.stopPropagation();
                           handleAppointmentClick(appointment, e);
                         }
                       }}
-                      aria-label={`Cita a las ${format(appointment.start_datetime, "HH:mm")}, estado: ${appointment.status}`}
+                      aria-label={`Cita a las ${format(
+                        appointment.start_datetime,
+                        'HH:mm'
+                      )}, estado: ${appointment.status}`}
                     >
-                      {format(appointment.start_datetime, "HH:mm")}
+                      {format(appointment.start_datetime, 'HH:mm')}
                     </button>
                   ))}
                   {dayAppointments.length > 3 && (
@@ -376,28 +397,28 @@ export function AppointmentCalendar({
     <div>
       <div className="flex gap-2 mb-4">
         <Button
-          onClick={() => onViewChange && onViewChange("month")}
-          variant={view === "month" ? "gold" : "outline"}
+          onClick={() => onViewChange && onViewChange('month')}
+          variant={view === 'month' ? 'gold' : 'outline'}
         >
           Mes
         </Button>
         <Button
-          onClick={() => onViewChange && onViewChange("week")}
-          variant={view === "week" ? "gold" : "outline"}
+          onClick={() => onViewChange && onViewChange('week')}
+          variant={view === 'week' ? 'gold' : 'outline'}
         >
           Semana
         </Button>
         <Button
-          onClick={() => onViewChange && onViewChange("day")}
-          variant={view === "day" ? "gold" : "outline"}
+          onClick={() => onViewChange && onViewChange('day')}
+          variant={view === 'day' ? 'gold' : 'outline'}
         >
           Día
         </Button>
       </div>
       {renderHeader()}
-      {view === "month" && renderMonthView()}
-      {view === "week" && renderWeekView()}
-      {view === "day" && renderDayView()}
+      {view === 'month' && renderMonthView()}
+      {view === 'week' && renderWeekView()}
+      {view === 'day' && renderDayView()}
     </div>
   );
 }
