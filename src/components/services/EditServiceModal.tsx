@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import type { Service } from "@/interfaces/services/Service";
-import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import type { Service } from '@/interfaces/services/Service';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 import {
   Form,
   FormControl,
@@ -24,22 +24,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { serviceCategories } from "@/schemas/servicesSchemas/serviceSchema";
+} from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { serviceCategories } from '@/schemas/servicesSchemas/serviceSchema';
 
 export const serviceFormSchema = z.object({
-  title: z.string().min(1, "El título es requerido"),
+  title: z.string().min(1, 'El título es requerido'),
   description: z.string().optional(),
-  price: z.coerce.number().min(0, "El precio debe ser mayor o igual a 0"),
-  duration_minutes: z.coerce.number().min(1, "La duración debe ser mayor a 0"),
-  category: z.string().min(1, "La categoría es requerida"),
+  price: z.coerce.number().min(0, 'El precio debe ser mayor o igual a 0'),
+  duration_minutes: z.coerce.number().min(1, 'La duración debe ser mayor a 0'),
+  category: z.string().min(1, 'La categoría es requerida'),
+  sessions_count: z.coerce.number().min(1, 'Debe haber al menos 1 sesión'),
+  target_audience: z.enum(['Niños', 'Adultos', 'Para todos'], {
+    required_error: 'Selecciona el público objetivo',
+  }),
 });
 
 type ServiceFormData = z.infer<typeof serviceFormSchema>;
@@ -63,11 +68,15 @@ export function EditServiceModal({
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
-      title: service?.title || "",
-      description: service?.description || "",
+      title: service?.title || '',
+      description: service?.description || '',
       price: service?.price || 0,
       duration_minutes: service?.duration_minutes || 30,
-      category: service?.category || "Barbería",
+      category: service?.category || 'Barbería',
+      sessions_count: service?.sessions_count || 1,
+      target_audience:
+        (service?.target_audience as 'Niños' | 'Adultos' | 'Para todos') ||
+        'Para todos',
     },
   });
 
@@ -75,52 +84,58 @@ export function EditServiceModal({
     // Reset form when service changes
     form.reset({
       title: service.title,
-      description: service.description || "",
+      description: service.description || '',
       price: service.price,
       duration_minutes: service.duration_minutes || 30,
-      category: service.category || "Barbería",
+      category: service.category || 'Barbería',
+      sessions_count: service.sessions_count || 1,
+      target_audience:
+        (service.target_audience as 'Niños' | 'Adultos' | 'Para todos') ||
+        'Para todos',
     });
   }, [service, form]);
 
   const onSubmit = async (data: ServiceFormData) => {
     try {
       const response = await fetch(`/api/services/${service.id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...data,
           price: Number(data.price),
           duration_minutes: Number(data.duration_minutes),
           category: data.category,
+          sessions_count: Number(data.sessions_count),
+          target_audience: data.target_audience,
         }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Error al actualizar el servicio");
+        throw new Error(result.error || 'Error al actualizar el servicio');
       }
 
       toast({
-        title: "¡Éxito!",
-        description: "El servicio se ha actualizado correctamente.",
-        variant: "success",
+        title: '¡Éxito!',
+        description: 'El servicio se ha actualizado correctamente.',
+        variant: 'success',
       });
 
       onServiceUpdated();
       onOpenChange(false);
       router.refresh();
     } catch (error) {
-      console.error("Error updating service:", error);
+      console.error('Error updating service:', error);
       toast({
-        title: "Error",
+        title: 'Error',
         description:
           error instanceof Error
             ? error.message
-            : "No se pudo actualizar el servicio",
-        variant: "destructive",
+            : 'No se pudo actualizar el servicio',
+        variant: 'destructive',
       });
     }
   };
@@ -144,7 +159,7 @@ export function EditServiceModal({
                       placeholder="Título del servicio"
                       {...field}
                       className={
-                        form.formState.errors.title ? "border-red-500" : ""
+                        form.formState.errors.title ? 'border-red-500' : ''
                       }
                     />
                   </FormControl>
@@ -185,7 +200,7 @@ export function EditServiceModal({
                         placeholder="0.00"
                         {...field}
                         className={
-                          form.formState.errors.price ? "border-red-500" : ""
+                          form.formState.errors.price ? 'border-red-500' : ''
                         }
                       />
                     </FormControl>
@@ -206,10 +221,76 @@ export function EditServiceModal({
                         {...field}
                         className={
                           form.formState.errors.duration_minutes
-                            ? "border-red-500"
-                            : ""
+                            ? 'border-red-500'
+                            : ''
                         }
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="sessions_count"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Número de Sesiones</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="1"
+                        step="1"
+                        placeholder="1"
+                        {...field}
+                        className={
+                          form.formState.errors.sessions_count
+                            ? 'border-red-500'
+                            : ''
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="target_audience"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Público Objetivo</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="Niños" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Niños</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="Adultos" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Adultos</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="Para todos" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Para todos
+                          </FormLabel>
+                        </FormItem>
+                      </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -261,7 +342,7 @@ export function EditServiceModal({
                     Guardando...
                   </>
                 ) : (
-                  "Guardar cambios"
+                  'Guardar cambios'
                 )}
               </Button>
             </div>

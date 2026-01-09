@@ -47,7 +47,7 @@ export default function NotFound() {
                 <Compass className="h-full w-full text-primary" />
               </div>
               <h1 className="text-2xl font-bold tracking-tight">
-                Psychotracker - Página no encontrada
+                Ortoestetik - Página no encontrada
               </h1>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function NotFound() {
                       href="mailto:contacto@larochellestetica.com"
                       className="text-primary hover:underline"
                     >
-                      contacto@larochellestetica.com
+                      contacto@ortoestetik.com
                     </a>
                   </div>
                   <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export default function NotFound() {
                       href="tel:2461003603"
                       className="text-primary hover:underline"
                     >
-                      2461003603
+                      924610036
                     </a>
                   </div>
                 </div>

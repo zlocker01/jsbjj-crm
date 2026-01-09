@@ -21,13 +21,16 @@ import type { GalleryItem } from "@/interfaces/galleryItems/GalleryItem";
 import { useEffect, useState } from "react";
 
 const categories: Category[] = [
-  "Cabello",
-  "Uñas",
-  "Facial",
-  "Barbería",
-  'Colorimetría',
-  'Tratamientos capilares',
-  'Maquillaje',
+  "Ortodoncia",
+  "Endodoncia",
+  "Periodoncia",
+  "Odontopediatría",
+  "Implantes",
+  "Estética Dental",
+  "Blanqueamiento",
+  "Cirugía",
+  "Prótesis",
+  "General",
 ];
 
 interface EditGalleryItemModalProps {

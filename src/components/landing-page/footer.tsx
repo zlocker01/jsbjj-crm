@@ -1,26 +1,27 @@
-import Link from "next/link";
-import { Instagram, Facebook } from "lucide-react";
-import { getContactSections } from "@/data/contactSections/getContactSections";
-import { getHeroSection } from "@/data/heroSection/getHeroSection";
-import { getServices } from "@/data/services/getServices";
-import { getLandingId } from "@/data/getLandingId";
+import Link from 'next/link';
+import { Instagram, Facebook } from 'lucide-react';
+import { getContactSections } from '@/data/contactSections/getContactSections';
+import { getHeroSection } from '@/data/heroSection/getHeroSection';
+import { getServices } from '@/data/services/getServices';
+import { getLandingId } from '@/data/getLandingId';
 
 export default async function Footer() {
   const landingId = await getLandingId();
   const [{ data: contactSections }, { data: heroSections }, services] =
     await Promise.all([
-      getContactSections(landingId || ""),
-      getHeroSection(landingId || ""),
+      getContactSections(landingId || ''),
+      getHeroSection(landingId || ''),
       landingId ? getServices(landingId) : Promise.resolve([]),
     ]);
 
   const contactInfo = contactSections?.[0];
-  const heroTitle = heroSections?.[0]?.title || "Bella Estética";
+  const heroTitle = heroSections?.[0]?.title || 'Bella Estética';
   // Tomar solo los primeros 6 servicios
   const displayedServices = services?.slice(0, 6) || [];
 
   return (
-    <footer className="bg-muted py-12">
+    <footer className="relative py-12 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-blue-50/40 to-secondary/30 dark:from-blue-700/40 dark:via-transparent dark:to-white/20 -z-10" />
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
@@ -138,7 +139,7 @@ export default async function Footer() {
               {contactInfo?.phone && (
                 <p>
                   <a
-                    href={`tel:${contactInfo.phone.replace(/\s+/g, "")}`}
+                    href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`}
                     className="hover:text-primary"
                   >
                     Tel: {contactInfo.phone}
@@ -161,7 +162,7 @@ export default async function Footer() {
 
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
           <p>
-            {" "}
+            {' '}
             {new Date().getFullYear()} {heroTitle}. Todos los derechos
             reservados.
           </p>

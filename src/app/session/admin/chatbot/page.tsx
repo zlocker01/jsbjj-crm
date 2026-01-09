@@ -1,24 +1,23 @@
-"use client";
+'use client';
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from "react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/components/ui/use-toast";
-import { Power, PowerOff } from "lucide-react";
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/use-toast';
+import { Power, PowerOff } from 'lucide-react';
 
 export default function ChatbotPage() {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("context");
+  const [activeTab, setActiveTab] = useState('context');
   const [qrVisible, setQrVisible] = useState(false);
   const [chatbotEnabled, setChatbotEnabled] = useState(false);
 
@@ -45,7 +44,7 @@ export default function ChatbotPage() {
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-4">
               <Button
-                variant={chatbotEnabled ? "default" : "outline"}
+                variant={chatbotEnabled ? 'default' : 'outline'}
                 onClick={() => setChatbotEnabled(!chatbotEnabled)}
                 className="w-full"
               >
@@ -54,12 +53,12 @@ export default function ChatbotPage() {
                 ) : (
                   <PowerOff className="mr-2 h-4 w-4" />
                 )}
-                {chatbotEnabled ? "Apagar Chatbot" : "Encender Chatbot"}
+                {chatbotEnabled ? 'Apagar Chatbot' : 'Encender Chatbot'}
               </Button>
               {/* Mostrar QR */}
               <div className="flex flex-col items-center gap-4">
                 <div className="border rounded-lg p-4 inline-block bg-white">
-                  <Image
+                  <img
                     src="/placeholder.svg?height=200&width=200&text=QR+Code"
                     alt="QR Code"
                     width={200}

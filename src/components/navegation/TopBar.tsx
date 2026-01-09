@@ -39,11 +39,11 @@ export function TopBar() {
       }`}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-14">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-                PsychoTracker
+                Ortoestetika
               </span>
             </Link>
           </div>

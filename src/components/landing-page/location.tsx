@@ -1,11 +1,11 @@
 import { useId } from 'react';
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { MapPin, Phone, Clock, Mail, Instagram, Facebook } from "lucide-react";
-import type { ContactSection } from "@/interfaces/contactSections/ContactSection";
-import type { Schedule } from "@/interfaces/schedule/Schedule";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { MapPin, Phone, Clock, Mail, Instagram, Facebook } from 'lucide-react';
+import type { ContactSection } from '@/interfaces/contactSections/ContactSection';
+import type { Schedule } from '@/interfaces/schedule/Schedule';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface LocationProps {
   data: ContactSection;
@@ -30,7 +30,7 @@ export default function Location({ data, schedules }: LocationProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="h-[400px] rounded-xl overflow-hidden">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3765.028462151418!2d-98.23600822282489!3d19.32457119755882!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfd92ff33d1219%3A0x87e7da066c69b985!2sGuillermo%20Valle%2066%2C%20Centro%2C%2090000%20Tlaxcala%20de%20Xicoht%C3%A9ncatl%2C%20Tlax.!5e0!3m2!1ses-419!2smx!4v1749530941591!5m2!1ses-419!2smx"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d941.3541828998782!2d-98.24230133045572!3d19.30771486454816!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cfd941b58ee7ff%3A0xdd2c4693b089280b!2sC.%2023%2023%2C%20La%20Loma%20Xicohtencatl%2C%20San%20Isidro%2C%2090062%20Tlaxcala%20de%20Xicoht%C3%A9ncatl%2C%20Tlax.!5e0!3m2!1ses-419!2smx!4v1767839257001!5m2!1ses-419!2smx"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -75,80 +75,121 @@ export default function Location({ data, schedules }: LocationProps) {
                   <h3 className="font-medium text-lg">Horario de Atención</h3>
                 </div>
                 <div className="space-y-2">
-                  {schedules
-                    ?.map((schedule) => {
-                      type DayKey =
-                        | "monday"
-                        | "tuesday"
-                        | "wednesday"
-                        | "thursday"
-                        | "friday"
-                        | "saturday"
-                        | "sunday";
+                  {(() => {
+                    if (!schedules?.length) return null;
 
-                      const dayMap: Record<DayKey, number> = {
-                        monday: 1,
-                        tuesday: 2,
-                        wednesday: 3,
-                        thursday: 4,
-                        friday: 5,
-                        saturday: 6,
-                        sunday: 0,
+                    const formatTime = (
+                      timeString: string | null | undefined
+                    ): string => {
+                      if (!timeString) return '';
+                      const [hours, minutes] = timeString.split(':');
+                      const date = new Date();
+                      date.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+                      return format(date, 'h:mma', {
+                        locale: es,
+                      }).toLowerCase();
+                    };
+
+                    const normalizeDay = (day: string): string => {
+                      const d = day.toLowerCase().trim();
+                      const map: Record<string, string> = {
+                        lunes: 'monday',
+                        martes: 'tuesday',
+                        miércoles: 'wednesday',
+                        miercoles: 'wednesday',
+                        jueves: 'thursday',
+                        viernes: 'friday',
+                        sábado: 'saturday',
+                        sabado: 'saturday',
+                        domingo: 'sunday',
+                        monday: 'monday',
+                        tuesday: 'tuesday',
+                        wednesday: 'wednesday',
+                        thursday: 'thursday',
+                        friday: 'friday',
+                        saturday: 'saturday',
+                        sunday: 'sunday',
                       };
+                      return map[d] || d;
+                    };
 
-                      const dayKey =
-                        schedule.day_of_week.toLowerCase() as DayKey;
-                      const dayOrder =
-                        dayMap[dayKey] === 0 ? 7 : dayMap[dayKey];
-                      const dayNumber = dayMap[dayKey] ?? 8;
+                    const dayMap: Record<string, number> = {
+                      monday: 1,
+                      tuesday: 2,
+                      wednesday: 3,
+                      thursday: 4,
+                      friday: 5,
+                      saturday: 6,
+                      sunday: 0,
+                    };
 
-                      const dayName = new Intl.DateTimeFormat("es-ES", {
-                        weekday: "long",
+                    // Agrupar horarios por día
+                    const grouped = schedules.reduce((acc, curr) => {
+                      const day = normalizeDay(curr.day_of_week);
+                      if (!acc[day]) acc[day] = [];
+                      acc[day].push(curr);
+                      return acc;
+                    }, {} as Record<string, typeof schedules>);
+
+                    return Object.entries(grouped)
+                      .map(([dayKey, daySchedules]) => {
+                        const dayNumber = dayMap[dayKey] ?? 8;
+                        // Ordenar lunes(1) a domingo(7)
+                        const sortOrder =
+                          dayMap[dayKey] === 0 ? 7 : dayMap[dayKey];
+
+                        const dayName = new Intl.DateTimeFormat('es-ES', {
+                          weekday: 'long',
+                        })
+                          .format(new Date(2023, 0, dayNumber + 1))
+                          .replace(/^\w/, (c) => c.toUpperCase());
+
+                        return {
+                          dayKey,
+                          dayName,
+                          sortOrder,
+                          schedules: daySchedules,
+                        };
                       })
-                        .format(new Date(2023, 0, dayNumber + 1))
-                        .replace(/^\w/, (c) => c.toUpperCase());
-
-                      return {
-                        ...schedule,
-                        dayNumber: dayOrder,
-                        dayName,
-                      };
-                    })
-                    .sort((a, b) => a.dayNumber - b.dayNumber)
-                    .map((schedule) => {
-                      const formatTime = (
-                        timeString: string | null | undefined,
-                      ): string => {
-                        if (!timeString) {
-                          return "";
-                        }
-                        const [hours, minutes] = timeString.split(":");
-                        const date = new Date();
-                        date.setHours(
-                          parseInt(hours, 10),
-                          parseInt(minutes, 10),
+                      .sort((a, b) => a.sortOrder - b.sortOrder)
+                      .map(({ dayKey, dayName, schedules }) => {
+                        const workingSchedules = schedules.filter(
+                          (s) => s.is_working_day
                         );
-                        return format(date, "h:mma", {
-                          locale: es,
-                        }).toLowerCase();
-                      };
 
-                      return (
-                        <div
-                          key={schedule.day_of_week}
-                          className="flex justify-between items-center"
-                        >
-                          <span className="font-medium">
-                            {schedule.dayName}
-                          </span>
-                          <span className="text-foreground">
-                            {schedule.is_working_day
-                              ? `${formatTime(schedule.start_time)} - ${formatTime(schedule.end_time)}`
-                              : "Cerrado"}
-                          </span>
-                        </div>
-                      );
-                    })}
+                        let timeContent;
+                        if (workingSchedules.length > 0) {
+                          // Ordenar por hora de inicio
+                          workingSchedules.sort((a, b) =>
+                            (a.start_time || '').localeCompare(
+                              b.start_time || ''
+                            )
+                          );
+
+                          timeContent = workingSchedules.map((s, index) => (
+                            <span key={index}>
+                              {index > 0 && ', '}
+                              {formatTime(s.start_time)} -{' '}
+                              {formatTime(s.end_time)}
+                            </span>
+                          ));
+                        } else {
+                          timeContent = 'Cerrado';
+                        }
+
+                        return (
+                          <div
+                            key={dayKey}
+                            className="flex justify-between items-start"
+                          >
+                            <span className="font-medium">{dayName}</span>
+                            <span className="text-foreground text-right">
+                              {timeContent}
+                            </span>
+                          </div>
+                        );
+                      });
+                  })()}
                 </div>
               </div>
 
@@ -173,7 +214,12 @@ export default function Location({ data, schedules }: LocationProps) {
             <div className="bg-background p-6 rounded-xl shadow-sm">
               <h3 className="font-medium mb-4">Redes Sociales</h3>
               <div className="flex gap-4">
-                <Button variant="outline" size="icon" className='hover:bg-goldHover' asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="hover:bg-goldHover"
+                  asChild
+                >
                   <Link
                     href={`${data.instagram}`}
                     target="_blank"
@@ -182,7 +228,12 @@ export default function Location({ data, schedules }: LocationProps) {
                     <Instagram className="h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="icon"  className='hover:bg-goldHover'asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="hover:bg-goldHover"
+                  asChild
+                >
                   <Link
                     href={`${data.facebook}`}
                     target="_blank"
@@ -191,7 +242,12 @@ export default function Location({ data, schedules }: LocationProps) {
                     <Facebook className="h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="icon" className='hover:bg-goldHover' asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="hover:bg-goldHover"
+                  asChild
+                >
                   <Link
                     href={`${data.tik_tok}`}
                     target="_blank"
@@ -214,7 +270,13 @@ export default function Location({ data, schedules }: LocationProps) {
             </div>
 
             <Button size="lg" asChild className="w-full">
-              <a href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita" target="_blank" rel="noopener noreferrer">Agendar Cita</a>
+              <a
+                href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Agendar Cita
+              </a>
             </Button>
           </div>
         </div>

@@ -1,32 +1,32 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import type { Promotion } from "@/interfaces/promotions/Promotion";
-import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import type { Promotion } from '@/interfaces/promotions/Promotion';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2, CalendarIcon } from "lucide-react";
-import { useEffect } from "react";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { Loader2, CalendarIcon } from 'lucide-react';
+import { useEffect } from 'react';
+import { format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { es } from "date-fns/locale";
-import { serviceCategories } from "@/schemas/promotionSchemas/promotionSchema";
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { es } from 'date-fns/locale';
+import { serviceCategories } from '@/schemas/promotionSchemas/promotionSchema';
 import {
   Form,
   FormControl,
@@ -34,31 +34,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export const promotionFormSchema = z.object({
-  title: z.string().min(1, "El título es requerido"),
+  title: z.string().min(1, 'El título es requerido'),
   description: z.string().optional(),
   category: z
     .string()
-    .max(50, "La categoría no puede exceder los 50 caracteres")
+    .max(50, 'La categoría no puede exceder los 50 caracteres')
     .optional(),
-  price: z.coerce.number().min(0, "El precio debe ser mayor o igual a 0"),
+  price: z.coerce.number().min(0, 'El precio debe ser mayor o igual a 0'),
   discount_price: z.coerce
     .number()
-    .min(0, "El precio con descuento debe ser mayor o igual a 0"),
+    .min(0, 'El precio con descuento debe ser mayor o igual a 0'),
   duration_minutes: z.coerce
     .number()
-    .min(0, "La duración no puede ser negativa"),
+    .min(0, 'La duración no puede ser negativa'),
   valid_until: z.date({
-    required_error: "La fecha de vencimiento es requerida",
+    required_error: 'La fecha de vencimiento es requerida',
+  }),
+  sessions_count: z.coerce.number().min(1, 'Debe haber al menos 1 sesión'),
+  target_audience: z.enum(['Niños', 'Adultos', 'Para todos'], {
+    required_error: 'Selecciona el público objetivo',
   }),
 });
 
@@ -84,7 +89,7 @@ export function EditPromotionModal({
     resolver: zodResolver(promotionFormSchema),
     defaultValues: {
       title: promotion.title,
-      description: promotion.description || "",
+      description: promotion.description || '',
       price: promotion.price,
       discount_price: promotion.discount_price,
       duration_minutes: promotion.duration_minutes,
@@ -94,14 +99,14 @@ export function EditPromotionModal({
   });
 
   // Watch for price changes to validate discount
-  const price = form.watch("price");
-  const discountPrice = form.watch("discount_price");
+  const price = form.watch('price');
+  const discountPrice = form.watch('discount_price');
 
   useEffect(() => {
     // Reset form when promotion changes
     form.reset({
       title: promotion.title,
-      description: promotion.description || "",
+      description: promotion.description || '',
       price: promotion.price,
       discount_price: promotion.discount_price,
       duration_minutes: promotion.duration_minutes,
@@ -113,50 +118,51 @@ export function EditPromotionModal({
   const onSubmit = async (data: PromotionFormData) => {
     if (data.discount_price >= data.price) {
       toast({
-        title: "Error",
+        title: 'Error',
         description:
-          "El precio con descuento debe ser menor al precio original",
-        variant: "destructive",
+          'El precio con descuento debe ser menor al precio original',
+        variant: 'destructive',
       });
       return;
     }
 
     try {
       const response = await fetch(`/api/promotions/${promotion.id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...data,
           valid_until: data.valid_until.toISOString(),
+          sessions_count: Number(data.sessions_count),
         }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Error al actualizar la promoción");
+        throw new Error(result.error || 'Error al actualizar la promoción');
       }
 
       toast({
-        title: "¡Éxito!",
-        description: "La promoción se ha actualizado correctamente.",
-        variant: "success",
+        title: '¡Éxito!',
+        description: 'La promoción se ha actualizado correctamente.',
+        variant: 'success',
       });
 
       onPromotionUpdated();
       onOpenChange(false);
       router.refresh();
     } catch (error) {
-      console.error("Error updating promotion:", error);
+      console.error('Error updating promotion:', error);
       toast({
-        title: "Error",
+        title: 'Error',
         description:
           error instanceof Error
             ? error.message
-            : "No se pudo actualizar la promoción",
-        variant: "destructive",
+            : 'No se pudo actualizar la promoción',
+        variant: 'destructive',
       });
     }
   };
@@ -180,7 +186,7 @@ export function EditPromotionModal({
                       placeholder="Título de la promoción"
                       {...field}
                       className={
-                        form.formState.errors.title ? "border-red-500" : ""
+                        form.formState.errors.title ? 'border-red-500' : ''
                       }
                     />
                   </FormControl>
@@ -220,7 +226,7 @@ export function EditPromotionModal({
                         step="0.01"
                         {...field}
                         className={
-                          form.formState.errors.price ? "border-red-500" : ""
+                          form.formState.errors.price ? 'border-red-500' : ''
                         }
                       />
                     </FormControl>
@@ -242,15 +248,15 @@ export function EditPromotionModal({
                         {...field}
                         className={
                           form.formState.errors.discount_price
-                            ? "border-red-500"
-                            : ""
+                            ? 'border-red-500'
+                            : ''
                         }
                       />
                     </FormControl>
                     <FormMessage />
                     {price > 0 && discountPrice > 0 && (
                       <p className="text-xs text-green-600 mt-1">
-                        Ahorra{" "}
+                        Ahorra{' '}
                         {Math.round(((price - discountPrice) / price) * 100)}%
                       </p>
                     )}
@@ -273,8 +279,8 @@ export function EditPromotionModal({
                         {...field}
                         className={
                           form.formState.errors.duration_minutes
-                            ? "border-red-500"
-                            : ""
+                            ? 'border-red-500'
+                            : ''
                         }
                       />
                     </FormControl>
@@ -291,13 +297,13 @@ export function EditPromotionModal({
                     <FormLabel>Categoría</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      value={field.value || ""}
+                      value={field.value || ''}
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecciona una categoría">
-                            {field.value || ""}
+                            {field.value || ''}
                           </SelectValue>
                         </SelectTrigger>
                       </FormControl>
@@ -309,6 +315,72 @@ export function EditPromotionModal({
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="sessions_count"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Número de Sesiones</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="1"
+                        step="1"
+                        placeholder="1"
+                        {...field}
+                        className={
+                          form.formState.errors.sessions_count
+                            ? 'border-red-500'
+                            : ''
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="target_audience"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Público Objetivo</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="Niños" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Niños</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="Adultos" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Adultos</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="Para todos" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Para todos
+                          </FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -327,13 +399,13 @@ export function EditPromotionModal({
                         <Button
                           variant="outline"
                           className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
+                            'pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value ? (
-                            format(field.value, "PPP", { locale: es })
+                            format(field.value, 'PPP', { locale: es })
                           ) : (
                             <span>Selecciona una fecha</span>
                           )}
@@ -371,7 +443,7 @@ export function EditPromotionModal({
                     Guardando...
                   </>
                 ) : (
-                  "Guardar cambios"
+                  'Guardar cambios'
                 )}
               </Button>
             </div>

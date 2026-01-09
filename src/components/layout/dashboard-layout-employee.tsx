@@ -64,7 +64,7 @@ export function DashboardLayoutEmployee({
       icon: Calendar,
     },
     {
-      title: "Clientes",
+      title: "Pacientes",
       href: "/session/employee/clients",
       icon: Users,
     },
@@ -98,8 +98,8 @@ export function DashboardLayoutEmployee({
           >
             <img
               src="/landing-page/logo.png"
-              alt="estetica y barberia en Tlaxcala"
-              className="max-h-20 flex justify-center"
+              alt="odontologo Tlaxcala"
+              className="max-h-44 flex justify-center"
             />
           </Link>
         </div>
@@ -129,7 +129,7 @@ export function DashboardLayoutEmployee({
               <Users className="h-4 w-4 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium">La Rochelle</p>
+              <p className="text-sm font-medium">Ortoestetik</p>
               <p className="text-xs text-muted-foreground">Empleado</p>
             </div>
             <ThemeToggle />
@@ -181,7 +181,7 @@ export function DashboardLayoutEmployee({
                 <Users className="h-4 w-4 text-primary" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium">La Rochelle</p>
+                <p className="text-sm font-medium">Ortoestetik</p>
                 <p className="text-xs text-muted-foreground">Empleado</p>
               </div>
               <ThemeToggle />
@@ -208,7 +208,7 @@ export function DashboardLayoutEmployee({
             asChild
             className="self-start sm:self-auto"
           >
-            <Link href="/" target="_blank" className="mt-3 md:mt-0 bg-gold hover:bg-goldHover text-white">
+            <Link href="/" target="_blank" className="mt-3 md:mt-0">
               <ExternalLink className="mr-2 h-4 w-4" />
               Ver Landing Page en Vivo
             </Link>

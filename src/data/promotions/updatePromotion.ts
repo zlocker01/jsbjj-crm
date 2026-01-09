@@ -45,6 +45,8 @@ export async function updatePromotion(
     if (promotionData.category !== undefined) updateObject.category = promotionData.category;
     if (promotionData.duration_minutes !== undefined) updateObject.duration_minutes = promotionData.duration_minutes;
     if (promotionData.active !== undefined) updateObject.active = promotionData.active;
+    if (promotionData.sessions_count !== undefined) updateObject.sessions_count = Number(promotionData.sessions_count);
+    if (promotionData.target_audience !== undefined) updateObject.target_audience = promotionData.target_audience;
     
     // Check if we have any fields to update
     if (Object.keys(updateObject).length === 0) {

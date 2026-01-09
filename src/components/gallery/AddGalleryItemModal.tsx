@@ -24,13 +24,16 @@ import { galleryItemFormSchema } from "@/schemas/gallerySchemas/galleryItemSchem
 import type { GalleryFormData } from "@/interfaces/galleryItems/GalleryFormData";
 
 const categories: Category[] = [
-  "Barbería",
-  "Cabello",
-  "Uñas",
-  "Facial",
-  "Colorimetría",
-  'Tratamientos capilares',
-  'Maquillaje',
+  "Ortodoncia",
+  "Endodoncia",
+  "Periodoncia",
+  "Odontopediatría",
+  "Implantes",
+  "Estética Dental",
+  "Blanqueamiento",
+  "Cirugía",
+  "Prótesis",
+  "General",
 ];
 
 export default function AddGalleryItemModal({
@@ -58,7 +61,7 @@ export default function AddGalleryItemModal({
       title: "",
       description: "",
       image: "",
-      category: "Cabello",
+      category: categories[0],
       is_before_after: false,
       landing_page_id: landingId,
     },

@@ -1,25 +1,35 @@
-"use client";
+'use client';
 
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash, Upload } from "lucide-react";
-import React, { useId } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { promotionItemSchema } from "@/schemas/promotionSchemas/promotionSchema";
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Plus, Trash, Upload } from 'lucide-react';
+import React, { useId } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { promotionItemSchema } from '@/schemas/promotionSchemas/promotionSchema';
 
 interface PromotionItem {
   id?: string | number; // id can be string from DB or number for new items
   title: string;
   description: string;
   image: string;
+  sessions_count: number;
+  target_audience: 'Niños' | 'Adultos' | 'Para todos';
 }
 
 interface PromotionsFormData {
@@ -57,15 +67,15 @@ export function LandingPromotionsEditor({
   } = useForm<PromotionsFormData>({
     resolver: zodResolver(promotionItemSchema) as any,
     defaultValues: promotionsContent,
-    mode: "onBlur",
+    mode: 'onBlur',
   });
 
   const onSubmit = async (data: PromotionsFormData) => {
     try {
       onChange(data);
-      console.log("Formulario enviado:", data);
+      console.log('Formulario enviado:', data);
     } catch (error) {
-      console.error("Error al enviar el formulario:", error);
+      console.error('Error al enviar el formulario:', error);
     }
   };
 
@@ -79,7 +89,7 @@ export function LandingPromotionsEditor({
   const handlePromotionItemChange = (
     index: number,
     field: string,
-    value: string,
+    value: string
   ) => {
     const newItems = [...(promotionsContent?.items || [])];
     newItems[index] = {
@@ -97,9 +107,11 @@ export function LandingPromotionsEditor({
       ...(promotionsContent?.items || []),
       {
         id: Date.now(),
-        title: "Nueva Promoción",
-        description: "Descripción de la promoción",
-        image: "",
+        title: 'Nueva Promoción',
+        description: 'Descripción de la promoción',
+        image: '',
+        sessions_count: 1,
+        target_audience: 'Para todos' as const,
       },
     ];
     onChange({
@@ -136,8 +148,8 @@ export function LandingPromotionsEditor({
             </Label>
             <Input
               id={`${baseId}-promotions-title`}
-              value={promotionsContent?.title || ""}
-              onChange={(e) => handlePromotionsChange("title", e.target.value)}
+              value={promotionsContent?.title || ''}
+              onChange={(e) => handlePromotionsChange('title', e.target.value)}
               className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
             />
           </div>
@@ -150,9 +162,9 @@ export function LandingPromotionsEditor({
             </Label>
             <Textarea
               id={`${baseId}-promotions-description`}
-              value={promotionsContent?.description || ""}
+              value={promotionsContent?.description || ''}
               onChange={(e) =>
-                handlePromotionsChange("description", e.target.value)
+                handlePromotionsChange('description', e.target.value)
               }
               className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
             />
@@ -176,6 +188,7 @@ export function LandingPromotionsEditor({
                     <Trash className="h-4 w-4" />
                   </Button>
                 </div>
+
                 <div className="space-y-2">
                   <Label
                     htmlFor={`${baseId}-promotion-item-title-${index}`}
@@ -185,9 +198,9 @@ export function LandingPromotionsEditor({
                   </Label>
                   <Input
                     id={`${baseId}-promotion-item-title-${index}`}
-                    value={item.title || ""}
+                    value={item.title || ''}
                     onChange={(e) =>
-                      handlePromotionItemChange(index, "title", e.target.value)
+                      handlePromotionItemChange(index, 'title', e.target.value)
                     }
                     className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                   />
@@ -201,16 +214,71 @@ export function LandingPromotionsEditor({
                   </Label>
                   <Textarea
                     id={`${baseId}-promotion-item-description-${index}`}
-                    value={item.description || ""}
+                    value={item.description || ''}
                     onChange={(e) =>
                       handlePromotionItemChange(
                         index,
-                        "description",
-                        e.target.value,
+                        'description',
+                        e.target.value
                       )
                     }
                     className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor={`${baseId}-promotion-item-sessions-${index}`}
+                      className="text-sm font-medium"
+                    >
+                      Número de Sesiones
+                    </Label>
+                    <Input
+                      id={`${baseId}-promotion-item-sessions-${index}`}
+                      type="number"
+                      min="1"
+                      value={item.sessions_count || 1}
+                      onChange={(e) =>
+                        handlePromotionItemChange(
+                          index,
+                          'sessions_count',
+                          e.target.value
+                        )
+                      }
+                      className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor={`${baseId}-promotion-item-audience-${index}`}
+                      className="text-sm font-medium"
+                    >
+                      Público Objetivo
+                    </Label>
+                    <Select
+                      value={item.target_audience || 'Para todos'}
+                      onValueChange={(value) =>
+                        handlePromotionItemChange(
+                          index,
+                          'target_audience',
+                          value
+                        )
+                      }
+                    >
+                      <SelectTrigger
+                        id={`${baseId}-promotion-item-audience-${index}`}
+                        className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
+                      >
+                        <SelectValue placeholder="Selecciona público" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Niños">Niños</SelectItem>
+                        <SelectItem value="Adultos">Adultos</SelectItem>
+                        <SelectItem value="Para todos">Para todos</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label
@@ -228,7 +296,7 @@ export function LandingPromotionsEditor({
                         onChange={(e) => {
                           if (e.target.files && e.target.files[0]) {
                             handleFileUpload(e.target.files[0], (value) =>
-                              handlePromotionItemChange(index, "image", value),
+                              handlePromotionItemChange(index, 'image', value)
                             );
                           }
                         }}
@@ -241,7 +309,7 @@ export function LandingPromotionsEditor({
                     {item.image && (
                       <div className="relative h-16 w-16 overflow-hidden rounded-md border border-gray-300 dark:border-gray-700 shadow-sm">
                         <img
-                          src={item.image || "/placeholder.svg"}
+                          src={item.image || '/placeholder.svg'}
                           alt="Vista previa"
                           className="h-full w-full object-cover"
                         />
@@ -250,7 +318,7 @@ export function LandingPromotionsEditor({
                   </div>
                 </div>
               </div>
-            ),
+            )
           )}
           <div className="mt-4 flex justify-end space-x-2">
             <Button
@@ -264,9 +332,11 @@ export function LandingPromotionsEditor({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className={`${isSubmitting ? "opacity-50" : ""} bg-green-600 hover:bg-green-700 text-white font-medium`}
+              className={`${
+                isSubmitting ? 'opacity-50' : ''
+              } bg-green-600 hover:bg-green-700 text-white font-medium`}
             >
-              {isSubmitting ? "Actualizando..." : "Actualizar Promociones"}
+              {isSubmitting ? 'Actualizando...' : 'Actualizar Promociones'}
             </Button>
           </div>
         </form>

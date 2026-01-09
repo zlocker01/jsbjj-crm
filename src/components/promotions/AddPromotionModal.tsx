@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import type { ChangeEvent } from "react";
-import { useEffect, useState, useRef } from "react";
+import type { ChangeEvent } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,35 +9,37 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, Loader2, Upload, X } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { promotionItemSchema, serviceCategories } from "@/schemas/promotionSchemas/promotionSchema";
-import type { Promotion } from "@/interfaces/promotions/Promotion";
-import type { Category } from "@/interfaces/landingPages/Category";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import Image from "next/image";
-import { useToast } from "@/components/ui/use-toast";
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon, Loader2, Upload, X } from 'lucide-react';
+import { createClient } from '@/utils/supabase/client';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
+  promotionItemSchema,
+  serviceCategories,
+} from '@/schemas/promotionSchemas/promotionSchema';
+import type { Promotion } from '@/interfaces/promotions/Promotion';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { useToast } from '@/components/ui/use-toast';
 import {
   Form,
   FormControl,
@@ -45,7 +47,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 // Eliminamos las importaciones de funciones de servidor y usaremos fetch API
 
 export type PromotionFormData = z.infer<typeof promotionItemSchema>;
@@ -54,17 +56,15 @@ interface AddPromotionModalProps {
   isOpen: boolean;
   onClose: () => void;
   promotion?: Promotion;
-  categories: Category[];
-  landingId?: string; 
-  onPromotionAdded?: () => void; 
-  onOpenChange?: (open: boolean) => void; 
+  landingId?: string;
+  onPromotionAdded?: () => void;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function AddPromotionModal({
   isOpen,
   onClose,
   promotion,
-  categories,
   landingId,
   onPromotionAdded,
   onOpenChange,
@@ -86,37 +86,41 @@ export function AddPromotionModal({
           price: promotion.price,
           discount_price: promotion.discount_price,
           duration_minutes: promotion.duration_minutes,
-          category: promotion.category as Category,
+          category: promotion.category as any,
           valid_until: new Date(promotion.valid_until).toISOString(),
+          sessions_count: (promotion as any).sessions_count || 1,
+          target_audience: (promotion as any).target_audience || 'Para todos',
           image: promotion.image,
         }
       : {
-          title: "",
-          description: "",
+          title: '',
+          description: '',
           price: 0,
           discount_price: 0,
           duration_minutes: 30,
-          category: "Cabello", 
+          category: 'Prevención y cuidado', // Default category
+          sessions_count: 1,
+          target_audience: 'Para todos',
           valid_until: new Date().toISOString(),
-          image: "",
+          image: '',
         },
   });
 
-  const price = form.watch("price") || 0;
-  const discountPrice = form.watch("discount_price") || 0;
+  const price = form.watch('price') || 0;
+  const discountPrice = form.watch('discount_price') || 0;
 
   const handleFileUpload = async (file: File) => {
     if (!file) return;
-    
+
     setIsUploading(true);
     try {
       // Crear un nombre de archivo limpio para evitar problemas
-      const cleanName = file.name.replace(/\s+/g, "-").toLowerCase();
+      const cleanName = file.name.replace(/\s+/g, '-').toLowerCase();
       const fileName = `landing/${landingId}/promotions/${Date.now()}-${cleanName}`;
 
       // Subir el archivo al bucket 'landing-images' en Supabase
       const { error: uploadError } = await supabase.storage
-        .from("landing-images")
+        .from('landing-images')
         .upload(fileName, file);
 
       if (uploadError) {
@@ -125,31 +129,33 @@ export function AddPromotionModal({
 
       // Obtener la URL pública del archivo
       const { data: urlData } = supabase.storage
-        .from("landing-images")
+        .from('landing-images')
         .getPublicUrl(fileName);
 
       const publicUrl = urlData.publicUrl;
-      
+
       // Establecer la URL en el formulario
-      form.setValue("image", publicUrl, { shouldValidate: true });
-      
+      form.setValue('image', publicUrl, { shouldValidate: true });
+
       toast({
-        title: "Imagen subida",
-        description: "La imagen se ha subido correctamente.",
-        variant: "success",
+        title: 'Imagen subida',
+        description: 'La imagen se ha subido correctamente.',
+        variant: 'success',
       });
-      
+
       return publicUrl;
     } catch (error) {
       setPreviewUrl(null);
-      form.setValue("image", "", { shouldValidate: true });
+      form.setValue('image', '', { shouldValidate: true });
       if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+        fileInputRef.current.value = '';
       }
       toast({
-        title: "Error de carga",
-        description: `Error al subir la imagen: ${error instanceof Error ? error.message : "Error desconocido"}`,
-        variant: "destructive",
+        title: 'Error de carga',
+        description: `Error al subir la imagen: ${
+          error instanceof Error ? error.message : 'Error desconocido'
+        }`,
+        variant: 'destructive',
       });
       return null;
     } finally {
@@ -161,7 +167,7 @@ export function AddPromotionModal({
     const file = e.target.files?.[0];
     if (!file) {
       setPreviewUrl(null);
-      form.setValue("image", "", { shouldValidate: true });
+      form.setValue('image', '', { shouldValidate: true });
       return;
     }
 
@@ -181,9 +187,9 @@ export function AddPromotionModal({
 
   const removeImage = () => {
     setPreviewUrl(null);
-    form.setValue("image", "", { shouldValidate: true });
+    form.setValue('image', '', { shouldValidate: true });
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
   };
 
@@ -191,9 +197,9 @@ export function AddPromotionModal({
     try {
       if (!data.image) {
         toast({
-          title: "Error de validación",
-          description: "Por favor, sube una imagen para la promoción.",
-          variant: "destructive",
+          title: 'Error de validación',
+          description: 'Por favor, sube una imagen para la promoción.',
+          variant: 'destructive',
         });
         return;
       }
@@ -207,48 +213,50 @@ export function AddPromotionModal({
         category: data.category,
         valid_until: new Date(data.valid_until).toISOString(),
         image: data.image,
-        landing_page_id: landingId
+        landing_page_id: landingId,
       };
 
       if (isEditing && promotion) {
         // Actualizar usando la API
         const response = await fetch(`/api/promotions/${promotion.id}`, {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(promotionData),
         });
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Error al actualizar la promoción");
+          throw new Error(
+            errorData.error || 'Error al actualizar la promoción'
+          );
         }
 
         toast({
-          title: "Promoción actualizada",
-          description: "La promoción se ha actualizado con éxito.",
-          variant: "success",
+          title: 'Promoción actualizada',
+          description: 'La promoción se ha actualizado con éxito.',
+          variant: 'success',
         });
       } else {
         // Crear usando la API
-        const response = await fetch("/api/promotions", {
-          method: "POST",
+        const response = await fetch('/api/promotions', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(promotionData),
         });
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Error al crear la promoción");
+          throw new Error(errorData.error || 'Error al crear la promoción');
         }
 
         toast({
-          title: "Promoción añadida",
-          description: "La promoción se ha añadido con éxito.",
-          variant: "success",
+          title: 'Promoción añadida',
+          description: 'La promoción se ha añadido con éxito.',
+          variant: 'success',
         });
       }
 
@@ -257,22 +265,25 @@ export function AddPromotionModal({
       }
 
       form.reset({
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         price: 0,
         discount_price: 0,
         duration_minutes: 30,
-        category: "Facial", 
+        category: 'Endodoncia',
         valid_until: new Date().toISOString(),
-        image: "",
+        image: '',
       });
       setPreviewUrl(null);
       onClose();
     } catch (error) {
       toast({
-        title: "Error al guardar",
-        description: error instanceof Error ? error.message : "No se pudo guardar la promoción.",
-        variant: "destructive",
+        title: 'Error al guardar',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'No se pudo guardar la promoción.',
+        variant: 'destructive',
       });
     }
   };
@@ -285,21 +296,25 @@ export function AddPromotionModal({
         price: promotion.price,
         discount_price: promotion.discount_price,
         duration_minutes: promotion.duration_minutes,
-        category: promotion.category as Category,
+        category: promotion.category as any,
         valid_until: new Date(promotion.valid_until).toISOString(),
+        sessions_count: (promotion as any).sessions_count || 1,
+        target_audience: (promotion as any).target_audience || 'Para todos',
         image: promotion.image,
       });
       setPreviewUrl(promotion.image || null);
     } else {
       form.reset({
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         price: 0,
         discount_price: 0,
         duration_minutes: 30,
-        category: "Cabello", 
+        category: 'Prevención y cuidado',
         valid_until: new Date().toISOString(),
-        image: "",
+        sessions_count: 1,
+        target_audience: 'Para todos',
+        image: '',
       });
       setPreviewUrl(null);
     }
@@ -310,18 +325,22 @@ export function AddPromotionModal({
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Editar Promoción" : "Añadir Nueva Promoción"}
+            {isEditing ? 'Editar Promoción' : 'Añadir Nueva Promoción'}
           </DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Edita los detalles de la promoción."
-              : "Añade una nueva promoción a tu lista."}
+              ? 'Edita los detalles de la promoción.'
+              : 'Añade una nueva promoción a tu lista.'}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div>
           <Form {...form}>
-            <form id="promotion-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              id="promotion-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="title"
@@ -329,10 +348,7 @@ export function AddPromotionModal({
                   <FormItem>
                     <FormLabel>Título</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Ej. Corte de Verano"
-                        {...field}
-                      />
+                      <Input placeholder="Ej. Corte de Verano" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -349,7 +365,7 @@ export function AddPromotionModal({
                       <Textarea
                         placeholder="Describe la promoción"
                         {...field}
-                        value={field.value ?? ""}
+                        value={field.value ?? ''}
                       />
                     </FormControl>
                     <FormMessage />
@@ -371,7 +387,9 @@ export function AddPromotionModal({
                           min="0"
                           placeholder="0.00"
                           {...field}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value) || 0)
+                          }
                           value={field.value ?? 0}
                         />
                       </FormControl>
@@ -392,17 +410,24 @@ export function AddPromotionModal({
                           min="0"
                           placeholder="0.00"
                           {...field}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value) || 0)
+                          }
                           value={field.value ?? 0}
                         />
                       </FormControl>
                       <FormMessage />
-                      {price > 0 && discountPrice > 0 && discountPrice < price && (
-                        <p className="text-sm text-green-600 mt-1">
-                          Descuento:{" "}
-                          {Math.round(((price - discountPrice) / price) * 100)}%
-                        </p>
-                      )}
+                      {price > 0 &&
+                        discountPrice > 0 &&
+                        discountPrice < price && (
+                          <p className="text-sm text-green-600 mt-1">
+                            Descuento:{' '}
+                            {Math.round(
+                              ((price - discountPrice) / price) * 100
+                            )}
+                            %
+                          </p>
+                        )}
                     </FormItem>
                   )}
                 />
@@ -422,8 +447,10 @@ export function AddPromotionModal({
                           step="15"
                           placeholder="30"
                           {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value, 10) || null)}
-                          value={field.value ?? ""}
+                          onChange={(e) =>
+                            field.onChange(parseInt(e.target.value, 10) || null)
+                          }
+                          value={field.value ?? ''}
                         />
                       </FormControl>
                       <FormMessage />
@@ -460,6 +487,75 @@ export function AddPromotionModal({
                 />
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="sessions_count"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Número de Sesiones</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          step="1"
+                          placeholder="1"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value ? parseInt(e.target.value) : ''
+                            )
+                          }
+                          value={field.value ?? ''}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="target_audience"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Público Objetivo</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col space-y-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="Niños" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Niños</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="Adultos" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Adultos
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="Para todos" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Para todos
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
                 name="valid_until"
@@ -470,15 +566,15 @@ export function AddPromotionModal({
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant={'outline'}
                             className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !field.value && "text-muted-foreground"
+                              'w-full justify-start text-left font-normal',
+                              !field.value && 'text-muted-foreground'
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {field.value ? (
-                              format(new Date(field.value), "PPP")
+                              format(new Date(field.value), 'PPP')
                             ) : (
                               <span>Elige una fecha</span>
                             )}
@@ -520,12 +616,10 @@ export function AddPromotionModal({
                         />
                         {previewUrl ? (
                           <div className="relative mt-2 w-full h-48">
-                            <Image
+                            <img
                               src={previewUrl}
                               alt="Vista previa"
-                              layout="fill"
-                              objectFit="cover"
-                              className="rounded-md"
+                              className="absolute inset-0 h-full w-full rounded-md object-cover"
                             />
                             <Button
                               type="button"
@@ -572,17 +666,17 @@ export function AddPromotionModal({
             </form>
           </Form>
         </div>
-        
+
         <DialogFooter className="mt-4 flex justify-between gap-3">
           <Button
-            type="button" 
-            variant="outline" 
+            type="button"
+            variant="outline"
             onClick={onClose}
             disabled={form.formState.isSubmitting}
           >
             Cancelar
           </Button>
-          <Button 
+          <Button
             type="submit"
             form="promotion-form"
             disabled={form.formState.isSubmitting || !form.formState.isValid}
@@ -592,7 +686,11 @@ export function AddPromotionModal({
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Guardando...
               </>
-            ) : isEditing ? "Actualizar Promoción" : "Crear Promoción"}
+            ) : isEditing ? (
+              'Actualizar Promoción'
+            ) : (
+              'Crear Promoción'
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

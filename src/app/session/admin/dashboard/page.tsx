@@ -822,7 +822,7 @@ export default async function DashboardPage() {
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
-          title="Clientes Totales"
+          title="Pacientes Totales"
           value={clientSummary.total}
           changePercent={clientSummary.growthPercent}
           icon={<Users className="h-4 w-4 text-muted-foreground" />}
@@ -833,7 +833,7 @@ export default async function DashboardPage() {
           changePercent={clientSummary.retentionGrowth}
         />
         <SummaryCard
-          title="Valor Promedio Cliente"
+          title="Valor Promedio Paciente"
           value={`$${clientSummary.avgValue}`}
           changePercent={clientSummary.avgValueGrowth}
         />
@@ -850,7 +850,7 @@ export default async function DashboardPage() {
         <div>
           <h3 className="text-lg font-semibold mb-2">Métricas Generales</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            Resumen de citas, clientes e ingresos
+            Resumen de citas, pacientes e ingresos
           </p>
           <MetricsOverviewChart data={metricsData} />
         </div>
@@ -869,7 +869,7 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Ingresos por servicio y Clientes */}
+      {/* Ingresos por servicio y Pacientes */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
@@ -885,9 +885,9 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Resumen de Clientes</CardTitle>
+            <CardTitle>Resumen de Pacientes</CardTitle>
             <CardDescription>
-              Distribución de clientes por categoría
+              Distribución de pacientes por categoría
             </CardDescription>
           </CardHeader>
           <CardContent>

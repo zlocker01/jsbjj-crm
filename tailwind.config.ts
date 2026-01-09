@@ -1,19 +1,19 @@
 const config = {
-  darkMode: ["class"],
+  darkMode: ['class'],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
   ],
-  prefix: "",
+  prefix: '',
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: '2rem',
       screens: {
-        xs: "480px",
-        "2xl": "1400px",
+        xs: '480px',
+        '2xl': '1400px',
       },
     },
     extend: {
@@ -21,41 +21,59 @@ const config = {
         '8': '2rem', // Añadimos explícitamente el spacing-8
       },
       backgroundImage: {
-        "gold-gradient":
-          "linear-gradient(135deg, rgba(198, 169, 97, 0.1) 0%, rgba(255, 255, 255, 0) 100%)",
-        "dark-gold-gradient":
-          "linear-gradient(135deg, rgba(198, 169, 97, 0.1) 0%, rgba(14, 14, 14, 0) 100%)",
+        'gold-gradient':
+          'linear-gradient(135deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--secondary) / 0.12) 100%)',
+        'dark-gold-gradient':
+          'linear-gradient(135deg, hsl(var(--primary) / 0.4) 0%, hsl(var(--secondary) / 0.15) 100%)',
       },
       colors: {
-        primaryColor: "#C6A961",
-        secondaryColor: "#D4AF37",
-        primaryText: "#1A1A1A",
-        secondaryText: "#5A5A5A",
-        accentColor: "#D4AF37",
-        facebook: "#3b5998",
-        gold: "#C6A961",
-        goldAccent: "#D4AF37",
-        silver: "#808080",
-        bronze: "#bf8970",
-        goldHover: "#D4AF37",
-        silverHover: "#a0a0a0",
-        bronzeHover: "#d19a7f",
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        primaryColor: 'hsl(var(--primary))',
+        secondaryColor: 'hsl(var(--secondary))',
+        primaryText: 'hsl(var(--foreground))',
+        secondaryText: 'hsl(var(--muted-foreground))',
+        accentColor: 'hsl(var(--accent))',
+
+        // Mapeo de compatibilidad
+        gold: 'hsl(var(--primary))',
+        goldAccent: 'hsl(var(--secondary))',
+        silver: 'hsl(var(--muted))',
+        bronze: 'hsl(var(--muted-foreground))',
+        goldHover: 'hsl(var(--primary) / 0.9)',
+        silverHover: 'hsl(var(--muted) / 0.9)',
+        bronzeHover: 'hsl(var(--muted-foreground) / 0.9)',
+
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
         },
       },
     },

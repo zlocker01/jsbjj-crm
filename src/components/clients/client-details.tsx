@@ -81,7 +81,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center text-muted-foreground">
         <User className="h-12 w-12 mb-4 opacity-20" />
-        <p>Selecciona un cliente para ver sus detalles</p>
+        <p>Selecciona un paciente para ver sus detalles</p>
       </div>
     );
   }
@@ -98,26 +98,26 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
 
   const handleSave = async (data: ClientFormValues) => {
     try {
-      const response = await fetch(`/api/clients/${client.id}`, {
+      const response = await fetch(`/api/clients/${client.id}`, { 
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        throw new Error("Error al actualizar el cliente");
+        throw new Error("Error al actualizar el paciente");
       }
       setIsEditing(false);
       toast({
-        title: "Cliente actualizado",
+        title: "Paciente actualizado",
         description:
-          "La información del cliente ha sido actualizada correctamente.",
+          "La información del paciente ha sido actualizada correctamente.",
         variant: "success",
       });
       // Consider re-fetching or updating client data in parent state if needed
     } catch (error) {
       toast({
         title: "Error",
-        description: "No se pudo actualizar el cliente.",
+        description: "No se pudo actualizar el paciente.",
         variant: "destructive",
       });
     }
@@ -132,12 +132,12 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
       if (!response.ok) {
         const errorData = await response
           .json()
-          .catch(() => ({ message: "Error al eliminar el cliente" }));
-        throw new Error(errorData.message || "Error al eliminar el cliente");
+          .catch(() => ({ message: "Error al eliminar el paciente" }));
+        throw new Error(errorData.message || "Error al eliminar el paciente");
       }
       toast({
-        title: "Cliente eliminado",
-        description: `El cliente ${client.name} ha sido eliminado correctamente.`,
+        title: "Paciente eliminado",
+        description: `El paciente ${client.name} ha sido eliminado correctamente.`,
         variant: "success",
       });
       setIsDeleteDialogOpen(false);
@@ -221,7 +221,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
       <div className="flex items-center gap-4">
         <Avatar className="h-16 w-16">
           <AvatarImage
-            src="/app/avatar.png"
+            src="/app/avatar.jpg"
             alt={client.name}
             className="object-cover"
           />
@@ -230,7 +230,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
         <div>
           <h3 className="text-lg font-medium">{client.name}</h3>
           <p className="text-sm text-muted-foreground">
-            Cliente desde{" "}
+            Paciente desde{" "}
             {client.registration_date &&
             !isNaN(new Date(client.registration_date).getTime())
               ? formatDate(client.registration_date)
@@ -294,7 +294,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
           {/* ... Citas pro cliente ... */}
         <TabsContent value="appointments" className="pt-4">
           <div className="space-y-4">
-            <h4 className="text-sm font-medium">Citas del cliente</h4>
+            <h4 className="text-sm font-medium">Citas del paciente</h4>
             {clientAppointments.length > 0 ? (
               <div className="space-y-3">
                 {clientAppointments.map((appointment) => (
@@ -316,7 +316,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Este cliente no tiene citas registradas.
+                Este paciente no tiene citas registradas.
               </p>
             )}
             <Button size="sm" className="w-full mt-2" onClick={onNewAppointmentClick} disabled={!onNewAppointmentClick}>
@@ -348,7 +348,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
                 <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                 <AlertDialogDescription>
                   Esta acción no se puede deshacer. Esto eliminará
-                  permanentemente al cliente &quot;{client.name}&quot; de tus
+                  permanentemente al paciente &quot;{client.name}&quot; de tus
                   registros.
                 </AlertDialogDescription>
               </AlertDialogHeader>

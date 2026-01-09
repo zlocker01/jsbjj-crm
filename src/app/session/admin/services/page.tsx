@@ -1,15 +1,11 @@
 export const dynamic = 'force-dynamic';
 
-import { getLandingId } from "@/data/getLandingId";
-import { getServices } from "@/data/services/getServices";
-import { createClient } from "@/utils/supabase/server";
-import type { Service } from "@/interfaces/services/Service";
-import { ServiceCard } from "@/components/services/ServiceCard";
-import { AddServiceButton } from "@/components/services/AddServiceButton";
-import { AddPromotionButton } from "@/components/promotions/AddPromotionButton";
-import { getPromotions } from "@/data/promotions/getPromotion";
-import { PromotionCard } from "@/components/promotions/PromotionCard";
-import type { Promotion } from "@/interfaces/promotions/Promotion";
+import { getLandingId } from '@/data/getLandingId';
+import { getServices } from '@/data/services/getServices';
+import { createClient } from '@/utils/supabase/server';
+import type { Service } from '@/interfaces/services/Service';
+import { ServiceCard } from '@/components/services/ServiceCard';
+import { AddServiceButton } from '@/components/services/AddServiceButton';
 
 export default async function ServicesPage() {
   const supabase = await createClient();
@@ -41,7 +37,6 @@ export default async function ServicesPage() {
   }
 
   const services: Service[] | null = await getServices(landingId);
-  const promotions: Promotion[] | null = await getPromotions();
 
   if (!services) {
     return (
@@ -74,27 +69,6 @@ export default async function ServicesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services?.map((service) => (
             <ServiceCard key={service.id} service={service} />
-          ))}
-        </div>
-      )}
-      <div className="flex justify-between items-center mb-8 flex-col md:flex-row gap-4">
-        <div>
-          <h2 className="text-3xl font-bold">Promociones</h2>
-          <p className="text-muted-foreground">
-            Administra las promociones de tu negocio
-          </p>
-        </div>
-        <AddPromotionButton landingId={landingId} />
-      </div>
-
-      {promotions?.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed rounded-lg">
-          <p className="text-muted-foreground mb-4">No hay promociones aún</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {promotions?.map((promotion) => (
-            <PromotionCard key={promotion.id} promotion={promotion} />
           ))}
         </div>
       )}

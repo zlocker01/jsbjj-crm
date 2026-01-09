@@ -20,7 +20,7 @@ interface FeatureItem {
   description: string;
   price: number;
   duration: number;
-  image: string;
+  image: string;  
 }
 
 interface LandingFeaturesEditorProps {

@@ -10,5 +10,7 @@ export interface Promotion {
   landing_page_id?: string;
   duration_minutes: number;
   category: string;
+  sessions_count?: number;
+  target_audience?: string;
   active?: boolean;
 }

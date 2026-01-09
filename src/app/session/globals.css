@@ -4,97 +4,113 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%; /* #1A1A1A - Texto principal */
+    /* Light Mode - Clean, Modern, Vibrant (Synced with main globals) */
+    --background: 210 40% 98%; /* Slate 50 */
+    --foreground: 222.2 84% 4.9%; /* Slate 950 */
+    
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 222.2 84% 4.9%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 35%; /* #5A5A5A - Texto secundario */
-    --accent: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --radius: 0.5rem;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    --primary: 221.2 83.2% 53.3%; /* Blue 600 */
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 173.4 80.4% 40%; /* Teal 500/600 */
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --accent: 199 89% 48%; /* Sky 500 */
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    
+    --radius: 0.75rem;
 
-    /* Sidebar variables */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 10%;
-    --sidebar-primary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 44 45% 57% / 0.1; /* Dorado con transparencia */
-    --sidebar-accent-foreground: 0 0% 10%;
-    --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
+    /* Sidebar variables - Updated to match new palette */
+    --sidebar-background: 0 0% 100%; /* White sidebar for contrast against Slate-50 BG */
+    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96.1%; /* Subtle hover for sidebar items */
+    --sidebar-accent-foreground: 221.2 83.2% 53.3%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
   }
 
   .dark {
-    --background: 0 0% 5%; /* #0E0E0E - Fondo oscuro */
-    --foreground: 0 0% 96%; /* #F5F5F5 - Texto principal modo oscuro */
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 96%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 44 45% 50%; /* Variante ligeramente más oscura para contraste */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 80%; /* #CCCCCC - Texto secundario modo oscuro */
-    --accent: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 44 45% 57%; /* #C6A961 - Dorado principal */
+    /* Dark Mode - Deep, Rich, Glowing */
+    --background: 224 71% 4%; /* Slate 950+ */
+    --foreground: 210 40% 98%;
+    
+    --card: 222.2 47.4% 11.2%; /* Slate 900 */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 217.2 91.2% 59.8%; /* Blue 500 */
+    --primary-foreground: 222.2 47.4% 11.2%;
+    
+    --secondary: 173 80% 40%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
 
     /* Sidebar variables - Modo oscuro */
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 0 0% 96%;
-    --sidebar-primary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 44 45% 57% / 0.15; /* Dorado con transparencia */
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
+    --sidebar-background: 222.2 47.4% 11.2%; /* Match card/popover for unified sidebar */
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
 @layer base {
   * {
-    
   }
   body {
     @apply bg-background text-foreground;
-    transition:
-      background-color 0.3s,
-      color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
   }
 }
 
-/* Degradados sutiles con dorado */
+/* Modern Gradients using variables */
 .bg-gold-gradient {
   background: linear-gradient(
     135deg,
-    rgba(198, 169, 97, 0.1) 0%,
-    rgba(255, 255, 255, 0) 100%
+    hsl(var(--primary) / 0.1) 0%,
+    hsl(var(--secondary) / 0.1) 100%
   );
 }
 
 .dark .bg-gold-gradient {
   background: linear-gradient(
     135deg,
-    rgba(198, 169, 97, 0.1) 0%,
-    rgba(14, 14, 14, 0) 100%
+    hsl(var(--primary) / 0.2) 0%,
+    hsl(var(--secondary) / 0.15) 100%
   );
 }
 

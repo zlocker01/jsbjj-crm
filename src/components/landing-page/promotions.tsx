@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import Link from "next/link";
-import useSWR from "swr";
+import Link from 'next/link';
+import useSWR from 'swr';
 import {
   Card,
   CardContent,
@@ -11,22 +11,29 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { CalendarPlus, Loader2, AlertCircle, Clock } from "lucide-react";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  CalendarPlus,
+  Loader2,
+  AlertCircle,
+  Clock,
+  Layers,
+  Users,
+} from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from '@/components/ui/carousel';
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => {
     if (!res.ok) {
-      throw new Error("Failed to fetch promotions");
+      throw new Error('Failed to fetch promotions');
     }
     return res.json();
   });
@@ -35,7 +42,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
   const [isMounted, setIsMounted] = useState(false);
   const { data, error, isLoading } = useSWR<{ promotions: any[] }>(
     `/api/promotions?landingPageId=${landingId}`,
-    fetcher,
+    fetcher
   );
 
   const promotions = data?.promotions || [];
@@ -97,7 +104,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
         {isMounted && (
           <Carousel
             opts={{
-              align: "start",
+              align: 'start',
               loop: true,
             }}
             className="w-full relative"
@@ -112,7 +119,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
                     <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col relative h-[500px] gap-3">
                       {/* Imagen de fondo */}
                       <img
-                        src={promo.image || "/placeholder.svg"}
+                        src={promo.image || '/placeholder.svg'}
                         alt={promo.title}
                         className="object-cover absolute inset-0 z-0 w-full h-full"
                         loading="lazy"
@@ -120,17 +127,28 @@ export default function Promotions({ landingId }: { landingId: string }) {
                       {/* Overlay de gradiente para legibilidad */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
 
-                      {/* Discount Badge */}
-                      <div className="absolute top-4 right-4 z-20">
-                        <Badge variant="destructive" className="text-sm px-3 py-1">
+                      {/* Badges Container */}
+                      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2 items-end">
+                        <Badge
+                          variant="destructive"
+                          className="text-sm px-3 py-1"
+                        >
                           {Math.round(
                             ((parseFloat(promo.price) -
                               parseFloat(promo.discount_price)) /
                               parseFloat(promo.price)) *
-                              100,
-                          )}%
-                          OFF
+                              100
+                          )}
+                          % OFF
                         </Badge>
+                        {promo.category && (
+                          <Badge 
+                            variant="secondary" 
+                            className="text-sm px-3 py-1 bg-primary/90 text-primary-foreground hover:bg-primary/100 border-none"
+                          >
+                            {promo.category}
+                          </Badge>
+                        )}
                       </div>
 
                       {/* Contenido encima de la imagen */}
@@ -154,17 +172,39 @@ export default function Promotions({ landingId }: { landingId: string }) {
                                 ${promo.price}
                               </p>
                             </div>
+
+                            {/* Sessions */}
+                            {promo.sessions_count && (
+                              <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
+                                <Layers className="h-4 w-4" />
+                                <span>
+                                  {promo.sessions_count}{' '}
+                                  {promo.sessions_count === 1
+                                    ? 'sesión'
+                                    : 'sesiones'}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Target Audience */}
+                            {promo.target_audience && (
+                              <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
+                                <Users className="h-4 w-4" />
+                                <span>{promo.target_audience}</span>
+                              </div>
+                            )}
+
                             {/* Validity */}
                             <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
                               <CalendarPlus className="h-4 w-4" />
                               <span>
-                                Válido hasta{" "}
+                                Válido hasta{' '}
                                 {new Date(promo.valid_until).toLocaleDateString(
-                                  "es-ES",
+                                  'es-ES',
                                   {
-                                    day: "numeric",
-                                    month: "long",
-                                  },
+                                    day: 'numeric',
+                                    month: 'long',
+                                  }
                                 )}
                               </span>
                             </div>

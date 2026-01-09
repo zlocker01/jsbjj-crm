@@ -1,8 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Category } from "@/interfaces/landingPages/Category";
-import { serviceCategories } from "@/schemas/promotionSchemas/promotionSchema";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -27,8 +25,6 @@ export function AddPromotionButton({ landingId }: AddPromotionButtonProps) {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  // Convert readonly array to mutable Category array
-const categoriesList: Category[] = [...serviceCategories];
 
   // Solo renderizar en el cliente
   useEffect(() => {
@@ -51,13 +47,12 @@ const categoriesList: Category[] = [...serviceCategories];
       <Button onClick={() => setIsOpen(true)}>Agregar Promoción</Button>
       {isMounted && (
         <AddPromotionModal
-        landingId={landingId}
-        onPromotionAdded={handlePromotionAdded}
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        onClose={() => setIsOpen(false)}
-        categories={categoriesList}
-      />
+          landingId={landingId}
+          onPromotionAdded={handlePromotionAdded}
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          onClose={() => setIsOpen(false)}
+        />
       )}
     </>
   );

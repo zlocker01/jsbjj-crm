@@ -68,13 +68,13 @@ export function ClientsTable({
 
   return (
     <div className="space-y-4">
-      <div style={{ width: '100%', overflowX: 'auto' }}>
-        <Table className="min-w-[900px] w-max">
+      <div className="w-full overflow-x-auto rounded-md border">
+        <Table className="min-w-[600px]">
           <TableHeader>
             <TableRow>
               <TableHead>Nombre</TableHead>
-              <TableHead >Email</TableHead>
-              <TableHead >Teléfono</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Teléfono</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

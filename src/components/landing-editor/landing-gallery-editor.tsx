@@ -59,7 +59,7 @@ export function LandingGalleryEditor({
       title: "Nuevo Título de Galería",
       description: "Nueva Descripción de Galería",
       image: "",
-      category: "Cabello",
+      category: "General",
       is_before_after: false,
     };
     append(newItem);

@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import type { ChangeEvent } from "react";
-import { useState, useRef } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@/utils/supabase/client";
-import { Button } from "@/components/ui/button";
+import type { ChangeEvent } from 'react';
+import { useState, useRef } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createClient } from '@/utils/supabase/client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Upload, X } from "lucide-react";
-import type { ServiceFormData } from "@/schemas/servicesSchemas/serviceSchema";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { Loader2, Upload, X } from 'lucide-react';
+import type { ServiceFormData } from '@/schemas/servicesSchemas/serviceSchema';
 import {
   serviceFormSchema,
   serviceCategories,
-} from "@/schemas/servicesSchemas/serviceSchema";
+} from '@/schemas/servicesSchemas/serviceSchema';
 import {
   Form,
   FormControl,
@@ -29,14 +29,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface AddServiceModalProps {
   landingId: string;
@@ -60,12 +61,14 @@ export function AddServiceModal({
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: '',
+      description: '',
       price: 0,
       duration_minutes: 15,
-      image: "",
-      category: "Barbería",
+      sessions_count: 1,
+      target_audience: 'Para todos',
+      image: '',
+      category: 'Prevención y cuidado',
       landing_page_id: landingId,
     },
   });
@@ -87,12 +90,12 @@ export function AddServiceModal({
     try {
       setIsUploading(true);
 
-      const cleanName = file.name.replace(/\s+/g, "-").toLowerCase();
+      const cleanName = file.name.replace(/\s+/g, '-').toLowerCase();
       const fileName = `landing/${landingId}/services/${Date.now()}-${cleanName}`;
 
       // Subir el archivo al bucket 'landing-images'
       const { error: uploadError } = await supabase.storage
-        .from("landing-images")
+        .from('landing-images')
         .upload(fileName, file);
 
       if (uploadError) {
@@ -101,25 +104,25 @@ export function AddServiceModal({
 
       // Obtener la URL pública
       const { data: urlData } = supabase.storage
-        .from("landing-images")
+        .from('landing-images')
         .getPublicUrl(fileName);
 
       const publicUrl = urlData.publicUrl;
 
       // Establecer la URL en el formulario
-      form.setValue("image", publicUrl, { shouldValidate: true });
+      form.setValue('image', publicUrl, { shouldValidate: true });
 
       toast({
-        title: "Imagen cargada",
-        description: "La imagen se ha cargado correctamente.",
-        variant: "success",
+        title: 'Imagen cargada',
+        description: 'La imagen se ha cargado correctamente.',
+        variant: 'success',
       });
     } catch (error) {
-      console.error("Error al subir la imagen:", error);
+      console.error('Error al subir la imagen:', error);
       toast({
-        title: "Error",
-        description: "No se pudo subir la imagen. Inténtalo de nuevo.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'No se pudo subir la imagen. Inténtalo de nuevo.',
+        variant: 'destructive',
       });
     } finally {
       setIsUploading(false);
@@ -132,9 +135,9 @@ export function AddServiceModal({
 
   const removeImage = () => {
     setPreviewUrl(null);
-    form.setValue("image", "", { shouldValidate: true });
+    form.setValue('image', '', { shouldValidate: true });
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
   };
 
@@ -142,29 +145,31 @@ export function AddServiceModal({
     try {
       if (!data.image) {
         toast({
-          title: "Error",
-          description: "Por favor, sube una imagen para el servicio",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Por favor, sube una imagen para el servicio',
+          variant: 'destructive',
         });
         return;
       }
 
-      console.log("Enviando datos:", {
+      console.log('Enviando datos:', {
         ...data,
         price: Number(data.price),
         duration_minutes: data.duration_minutes,
+        sessions_count: Number(data.sessions_count),
         landing_page_id: landingId,
       });
 
-      const response = await fetch("/api/services", {
-        method: "POST",
+      const response = await fetch('/api/services', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...data,
           price: Number(data.price),
           duration_minutes: data.duration_minutes,
+          sessions_count: Number(data.sessions_count),
           landing_page_id: landingId,
         }),
       });
@@ -172,24 +177,26 @@ export function AddServiceModal({
       const responseData = await response.json();
 
       if (!response.ok) {
-        console.error("Error en la respuesta de la API:", responseData);
-        throw new Error(responseData.error || "Error al crear el servicio");
+        console.error('Error en la respuesta de la API:', responseData);
+        throw new Error(responseData.error || 'Error al crear el servicio');
       }
 
       toast({
-        title: "¡Servicio creado!",
-        description: "El servicio se ha añadido correctamente.",
-        variant: "success",
+        title: '¡Servicio creado!',
+        description: 'El servicio se ha añadido correctamente.',
+        variant: 'success',
       });
 
       // Resetear el formulario
       form.reset({
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         price: 0,
         duration_minutes: undefined,
-        image: "",
-        category: "Barbería",
+        sessions_count: 1,
+        target_audience: 'Para todos',
+        image: '',
+        category: 'Prevención y cuidado',
         landing_page_id: landingId,
       });
 
@@ -199,14 +206,14 @@ export function AddServiceModal({
       // Recargar la página o actualizar la lista de servicios
       onServiceAdded?.();
     } catch (error) {
-      console.error("Error al crear el servicio:", error);
+      console.error('Error al crear el servicio:', error);
       toast({
-        title: "Error",
+        title: 'Error',
         description:
           error instanceof Error
             ? error.message
-            : "No se pudo crear el servicio. Inténtalo de nuevo.",
-        variant: "destructive",
+            : 'No se pudo crear el servicio. Inténtalo de nuevo.',
+        variant: 'destructive',
       });
     }
   };
@@ -220,7 +227,11 @@ export function AddServiceModal({
 
         <div>
           <Form {...form}>
-            <form id="service-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              id="service-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="title"
@@ -243,7 +254,7 @@ export function AddServiceModal({
                     <FormLabel>Descripción</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Describe el servicio a detalle"
+                        placeholder="Describe el servicio"
                         rows={3}
                         {...field}
                       />
@@ -269,7 +280,7 @@ export function AddServiceModal({
                           {...field}
                           onChange={(e) =>
                             field.onChange(
-                              e.target.value ? parseFloat(e.target.value) : "",
+                              e.target.value ? parseFloat(e.target.value) : ''
                             )
                           }
                         />
@@ -291,13 +302,81 @@ export function AddServiceModal({
                           min="15"
                           step="15"
                           placeholder="15"
-                          value={field.value ?? ""}
+                          value={field.value ?? ''}
                           onChange={(e) =>
                             field.onChange(
-                              e.target.value ? parseInt(e.target.value) : null,
+                              e.target.value ? parseInt(e.target.value) : null
                             )
                           }
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="sessions_count"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Número de Sesiones</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          step="1"
+                          placeholder="1"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value ? parseInt(e.target.value) : ''
+                            )
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="target_audience"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Público Objetivo</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col space-y-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="Niños" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Niños</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="Adultos" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Adultos
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="Para todos" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Para todos
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -407,9 +486,9 @@ export function AddServiceModal({
           >
             Cancelar
           </Button>
-          <Button 
-            type="submit" 
-            form="service-form" 
+          <Button
+            type="submit"
+            form="service-form"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? (
@@ -418,7 +497,7 @@ export function AddServiceModal({
                 Guardando...
               </>
             ) : (
-              "Guardar Servicio"
+              'Guardar Servicio'
             )}
           </Button>
         </DialogFooter>

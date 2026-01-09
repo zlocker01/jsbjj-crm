@@ -1,43 +1,45 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Image from "next/image";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
-import type { GalleryItem } from "@/interfaces/galleryItems/GalleryItem";
+} from '@/components/ui/carousel';
+import type { GalleryItem } from '@/interfaces/galleryItems/GalleryItem';
 
 const categories = [
-  { id: "all", label: "Todos" },
-  { id: "barber", label: "Barbería" },
-  { id: "hair", label: "Cabello" },
-  { id: "nails", label: "Uñas" },
-  { id: "face", label: "Facial" },
-  { id: "color", label: "Colorimetría" },
-  { id: "treatment", label: "Tratamientos capilares" },
-  { id: "makeup", label: "Maquillaje" },
+  { id: 'all', label: 'Todos' },
+  { id: 'orthodontics', label: 'Ortodoncia' },
+  { id: 'endodontics', label: 'Endodoncia' },
+  { id: 'periodontics', label: 'Periodoncia' },
+  { id: 'pediatric', label: 'Odontopediatría' },
+  { id: 'implants', label: 'Implantes' },
+  { id: 'esthetic', label: 'Estética Dental' },
+  { id: 'whitening', label: 'Blanqueamiento' },
+  { id: 'surgery', label: 'Cirugía' },
+  { id: 'prosthesis', label: 'Prótesis' },
+  { id: 'general', label: 'General' },
 ];
 
 export default function Gallery({ data }: { data: GalleryItem[] }) {
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const filteredItems =
-    category === "all"
+    category === 'all'
       ? data
       : data.filter((item) => item.category === category);
 
   // Extraer categorías únicas de los datos
   const uniqueCategories = [
-    { id: "all", label: "Todos" },
+    { id: 'all', label: 'Todos' },
     ...Array.from(new Set(data.map((item) => item.category)))
       .filter((cat) => cat) // Filtrar valores nulos o undefined
       .map((cat) => ({
@@ -54,7 +56,9 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
             Nuestra Galería
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Explora algunos de nuestros mejores trabajos en estética y barbería en Tlaxcala centro. Cada imagen refleja nuestro compromiso con la calidad, el detalle y la satisfacción de quienes confían en nuestros servicios de belleza, uñas y barbería.
+            Explora algunos de nuestros mejores trabajos odontológicos. Cada
+            imagen refleja nuestro compromiso con la salud bucal, la estética y
+            la satisfacción de nuestros pacientes.
           </p>
         </div>
 
@@ -67,8 +71,8 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
           <div className="flex justify-center my-8">
             <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full max-w-3xl">
               {uniqueCategories.map((cat) => (
-                <TabsTrigger 
-                  key={cat.id} 
+                <TabsTrigger
+                  key={cat.id}
                   value={cat.id}
                   className="flex flex-col items-center justify-center py-2 px-1 text-xs sm:text-sm bg-gold hover:bg-goldHover rounded-2xl"
                 >
@@ -82,7 +86,7 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
             {filteredItems.length > 0 ? (
               <Carousel
                 opts={{
-                  align: "start",
+                  align: 'start',
                   loop: true,
                 }}
                 className="w-full"
@@ -98,11 +102,10 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
                           <DialogTrigger asChild>
                             <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-all">
                               <div className="relative h-64 w-full">
-                                <Image
-                                  src={item.image || "/placeholder.svg"}
-                                  alt={item.title || "Imagen de galería"}
-                                  fill
-                                  className="object-cover"
+                                <img
+                                  src={item.image || '/placeholder.svg'}
+                                  alt={item.title || 'Imagen de galería'}
+                                  className="absolute inset-0 h-full w-full object-cover"
                                 />
                                 {item.is_before_after && (
                                   <Badge className="absolute top-2 right-2 bg-primary">
@@ -122,15 +125,16 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
                           </DialogTrigger>
                           <DialogContent className="max-w-3xl">
                             <div className="relative h-[60vh] w-full">
-                              <Image
-                                src={item.image || "/placeholder.svg"}
-                                alt={item.title || "Imagen ampliada"}
-                                fill
-                                className="object-contain"
+                              <img
+                                src={item.image || '/placeholder.svg'}
+                                alt={item.title || 'Imagen ampliada'}
+                                className="absolute inset-0 h-full w-full object-contain"
                               />
                             </div>
                             <div className="text-center">
-                              <h3 className="text-xl font-medium">{item.title}</h3>
+                              <h3 className="text-xl font-medium">
+                                {item.title}
+                              </h3>
                               {item.description && (
                                 <p className="text-muted-foreground">
                                   {item.description}

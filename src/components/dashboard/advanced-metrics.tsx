@@ -113,7 +113,7 @@ export function AdvancedMetrics({
                   </ResponsiveContainer>
                 </div>
                 <p className="text-sm text-muted-foreground text-center">
-                  Comparativa de satisfacción del cliente entre este mes y el mes
+                  Comparativa de satisfacción del paciente entre este mes y el mes
                   anterior
                 </p>
               </>

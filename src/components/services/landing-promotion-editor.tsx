@@ -1,24 +1,30 @@
-"use client";
+'use client';
 
-import React, { useId } from "react";
+import React, { useId } from 'react';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash, Upload } from "lucide-react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Plus, Trash, Upload } from 'lucide-react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   landingPromotionEditorFormSchema,
   PromotionItemData,
   type LandingPromotionEditorFormData,
-} from "@/schemas/promotionSchemas/promotionSchema";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+} from '@/schemas/promotionSchemas/promotionSchema';
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form';
 
 interface LandingPromotionEditorProps {
   promotionContent: LandingPromotionEditorFormData;
@@ -41,15 +47,15 @@ export default function LandingPromotionEditor({
   } = useForm<LandingPromotionEditorFormData>({
     resolver: zodResolver(landingPromotionEditorFormSchema),
     defaultValues: {
-      title: promotionContent.title || "",
-      description: promotionContent.description || "",
+      title: promotionContent.title || '',
+      description: promotionContent.description || '',
       items: promotionContent.items || [],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "items",
+    name: 'items',
   });
 
   const onSubmit = (data: LandingPromotionEditorFormData) => {
@@ -64,14 +70,16 @@ export default function LandingPromotionEditor({
 
   const addPromotion = () => {
     const newItem: PromotionItemData = {
-      title: "Nueva Promoción",
-      description: "Descripción de la nueva promoción",
-      image: "",
-      category: "Facial", // Default category
+      title: 'Nueva Promoción',
+      description: 'Descripción de la nueva promoción',
+      image: '',
+      category: 'Prevención y cuidado', // Default category
       price: 0,
       discount_price: 0,
       valid_until: new Date().toISOString().split('T')[0], // Today's date
       duration_minutes: 60,
+      sessions_count: 1,
+      target_audience: 'Para todos',
     };
     append(newItem);
   };
@@ -87,13 +95,18 @@ export default function LandingPromotionEditor({
       <AccordionContent className="space-y-4 p-4 bg-gray-50 dark:bg-gray-700/30">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor={`${baseId}-promotion-title`} className="text-sm font-medium">
+            <Label
+              htmlFor={`${baseId}-promotion-title`}
+              className="text-sm font-medium"
+            >
               Título Principal
             </Label>
             <Input
               id={`${baseId}-promotion-title`}
-              {...register("title")}
-              className={`rounded-md border ${errors.title ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+              {...register('title')}
+              className={`rounded-md border ${
+                errors.title ? 'border-red-500' : 'border-gray-300'
+              } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
             />
             {errors.title && (
               <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -111,8 +124,10 @@ export default function LandingPromotionEditor({
             </Label>
             <Textarea
               id={`${baseId}-promotion-description`}
-              {...register("description")}
-              className={`rounded-md border ${errors.description ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+              {...register('description')}
+              className={`rounded-md border ${
+                errors.description ? 'border-red-500' : 'border-gray-300'
+              } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
             />
             {errors.description && (
               <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -163,7 +178,11 @@ export default function LandingPromotionEditor({
                     <Input
                       id={`${baseId}-${field.id}-title`}
                       {...register(`items.${index}.title`)}
-                      className={`rounded-md border ${errors.items?.[index]?.title ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+                      className={`rounded-md border ${
+                        errors.items?.[index]?.title
+                          ? 'border-red-500'
+                          : 'border-gray-300'
+                      } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
                     />
                     {errors.items?.[index]?.title && (
                       <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -180,7 +199,11 @@ export default function LandingPromotionEditor({
                     <Input
                       id={`${baseId}-${field.id}-category`}
                       {...register(`items.${index}.category`)}
-                      className={`rounded-md border ${errors.items?.[index]?.category ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+                      className={`rounded-md border ${
+                        errors.items?.[index]?.category
+                          ? 'border-red-500'
+                          : 'border-gray-300'
+                      } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
                     />
                     {errors.items?.[index]?.category && (
                       <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -198,7 +221,11 @@ export default function LandingPromotionEditor({
                   <Textarea
                     id={`${baseId}-${field.id}-description`}
                     {...register(`items.${index}.description`)}
-                    className={`rounded-md border ${errors.items?.[index]?.description ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+                    className={`rounded-md border ${
+                      errors.items?.[index]?.description
+                        ? 'border-red-500'
+                        : 'border-gray-300'
+                    } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
                   />
                   {errors.items?.[index]?.description && (
                     <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -217,7 +244,11 @@ export default function LandingPromotionEditor({
                       id={`${baseId}-${field.id}-price`}
                       type="number"
                       {...register(`items.${index}.price`)}
-                      className={`rounded-md border ${errors.items?.[index]?.price ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+                      className={`rounded-md border ${
+                        errors.items?.[index]?.price
+                          ? 'border-red-500'
+                          : 'border-gray-300'
+                      } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
                     />
                     {errors.items?.[index]?.price && (
                       <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -235,7 +266,11 @@ export default function LandingPromotionEditor({
                       id={`${baseId}-${field.id}-discount_price`}
                       type="number"
                       {...register(`items.${index}.discount_price`)}
-                      className={`rounded-md border ${errors.items?.[index]?.discount_price ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+                      className={`rounded-md border ${
+                        errors.items?.[index]?.discount_price
+                          ? 'border-red-500'
+                          : 'border-gray-300'
+                      } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
                     />
                     {errors.items?.[index]?.discount_price && (
                       <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -255,7 +290,11 @@ export default function LandingPromotionEditor({
                       id={`${baseId}-${field.id}-valid_until`}
                       type="date"
                       {...register(`items.${index}.valid_until`)}
-                      className={`rounded-md border ${errors.items?.[index]?.valid_until ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+                      className={`rounded-md border ${
+                        errors.items?.[index]?.valid_until
+                          ? 'border-red-500'
+                          : 'border-gray-300'
+                      } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
                     />
                     {errors.items?.[index]?.valid_until && (
                       <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -273,7 +312,11 @@ export default function LandingPromotionEditor({
                       id={`${baseId}-${field.id}-duration_minutes`}
                       type="number"
                       {...register(`items.${index}.duration_minutes`)}
-                      className={`rounded-md border ${errors.items?.[index]?.duration_minutes ? "border-red-500" : "border-gray-300"} focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
+                      className={`rounded-md border ${
+                        errors.items?.[index]?.duration_minutes
+                          ? 'border-red-500'
+                          : 'border-gray-300'
+                      } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
                     />
                     {errors.items?.[index]?.duration_minutes && (
                       <p className="text-sm font-medium text-red-600 dark:text-red-400">
@@ -337,9 +380,11 @@ export default function LandingPromotionEditor({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className={`${isSubmitting ? "opacity-50" : ""} bg-green-600 hover:bg-green-700 text-white font-medium`}
+              className={`${
+                isSubmitting ? 'opacity-50' : ''
+              } bg-green-600 hover:bg-green-700 text-white font-medium`}
             >
-              {isSubmitting ? "Actualizando..." : "Actualizar Sección"}
+              {isSubmitting ? 'Actualizando...' : 'Actualizar Sección'}
             </Button>
           </div>
         </form>

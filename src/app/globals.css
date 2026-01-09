@@ -4,55 +4,78 @@
 
 @layer base {
   :root {
-    --font-sans:
-      "Poppins", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-      "Noto Color Emoji";
-    --font-serif: "Playfair Display", ui-serif, Georgia, Cambria,
-      "Times New Roman", Times, serif;
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%; /* #1A1A1A - Texto principal */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+      'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: var(--font-lora), 'Lora', 'Playfair Display', ui-serif,
+      Georgia, Cambria, 'Times New Roman', Times, serif;
+    
+    /* Light Mode - Clean, Modern, Vibrant */
+    --background: 210 40% 98%; /* Slate 50 - Suave, no blanco puro */
+    --foreground: 222.2 84% 4.9%; /* Slate 950 - Azul muy oscuro */
+    
+    --card: 0 0% 100%; /* Blanco puro para tarjetas */
+    --card-foreground: 222.2 84% 4.9%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 35%; /* #5A5A5A - Texto secundario */
-    --accent: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --radius: 0.5rem;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    /* Primary: Vibrant Royal Blue (Inter/System Blue style) */
+    --primary: 221.2 83.2% 53.3%; /* #2563EB - Blue 600 */
+    --primary-foreground: 210 40% 98%; /* Blanco suave */
+    
+    /* Secondary: Refreshing Teal/Cyan */
+    --secondary: 173.4 80.4% 40%; /* #14b8a6 - Teal 500/600 mix */
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --accent: 199 89% 48%; /* Sky 500 - Acento complementario */
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%; /* Match primary */
+    
+    --radius: 0.75rem; /* Rounder corners for modern feel */
   }
 
   .dark {
-    --background: 0 0% 5%; /* #0E0E0E - Fondo oscuro */
-    --foreground: 0 0% 96%; /* #F5F5F5 - Texto principal modo oscuro */
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 96%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 44 45% 57%; /* #C6A961 - Dorado principal */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 44 45% 50%; /* Variante ligeramente más oscura para contraste */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 80%; /* #CCCCCC - Texto secundario modo oscuro */
-    --accent: 44 75% 52%; /* #D4AF37 - Dorado acentuado */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 44 45% 57%; /* #C6A961 - Dorado principal */
+    /* Dark Mode - Deep, Rich, Glowing */
+    --background: 224 71% 4%; /* Slate 950+ - Casi negro azulado */
+    --foreground: 210 40% 98%;
+    
+    --card: 222.2 47.4% 11.2%; /* Slate 900 - Elevación sutil */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary: Lighter, Glowing Blue */
+    --primary: 217.2 91.2% 59.8%; /* Blue 500 - Brilla sobre fondo oscuro */
+    --primary-foreground: 222.2 47.4% 11.2%;
+    
+    /* Secondary: Glowing Teal */
+    --secondary: 173 80% 40%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -70,6 +93,12 @@
     font-family: var(--font-serif);
     font-weight: 700;
     line-height: 1.2;
+    color: hsl(var(--foreground)); /* Mejor legibilidad general */
+  }
+  
+  /* Títulos destacados con color primario opcionalmente */
+  .text-title-primary {
+    color: hsl(var(--primary));
   }
 
   h1 {
@@ -86,46 +115,28 @@
 
   body {
     @apply bg-background text-foreground;
-    transition:
-      background-color 0.3s,
-      color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
   }
 }
 
-/* Degradados sutiles con dorado */
+/* Modern Gradients */
+.bg-vibrant-gradient {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--secondary)) 100%
+  );
+}
+
+.bg-subtle-gradient {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.1) 0%,
+    hsl(var(--secondary) / 0.1) 100%
+  );
+}
+
+/* Mantener compatibilidad con clases antiguas pero actualizadas */
 .bg-gold-gradient {
-  background: linear-gradient(
-    135deg,
-    rgba(198, 169, 97, 0.1) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-
-.dark .bg-gold-gradient {
-  background: linear-gradient(
-    135deg,
-    rgba(198, 169, 97, 0.1) 0%,
-    rgba(14, 14, 14, 0) 100%
-  );
-}
-
-/* Animaciones */
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in-out forwards;
-  opacity: 0;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.cell-size-8 {
-  --cell-size: var(--spacing-8);
+  @apply bg-subtle-gradient;
 }

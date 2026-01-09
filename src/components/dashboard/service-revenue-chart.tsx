@@ -52,7 +52,11 @@ const CustomTooltip = ({ active, payload }: any) => {
       <div className="bg-background p-2 rounded-md shadow-md border border-border">
         <p className="font-medium">{data.name}</p>
         <p className="text-sm text-muted-foreground">
-          Ingresos: {data.value.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
+          Ingresos:{' '}
+          {data.value.toLocaleString('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+          })}
         </p>
       </div>
     );
@@ -60,7 +64,9 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-export function ServiceRevenueChart({ data: propData }: ServiceRevenueChartProps) {
+export function ServiceRevenueChart({
+  data: propData,
+}: ServiceRevenueChartProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [data, setData] = useState<ServiceRevenueData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,14 +75,14 @@ export function ServiceRevenueChart({ data: propData }: ServiceRevenueChartProps
 
   useEffect(() => {
     setIsMounted(true);
-    
+
     // Si se proporcionan datos como prop, úsalos
     if (propData && propData.length > 0) {
       setData(propData);
       setLoading(false);
       return;
     }
-    
+
     // De lo contrario, obtén datos de Supabase
     const fetchData = async () => {
       try {
@@ -85,13 +91,13 @@ export function ServiceRevenueChart({ data: propData }: ServiceRevenueChartProps
           setData(serviceData);
         } else {
           // Si no hay datos de Supabase, usa datos de ejemplo
-          setData([
-            { name: "Corte para caballero", value: 48, color: '#8884d8' },
-            { name: "Corte para dama", value: 44, color: '#82ca9d' },
-            { name: "Perfilado de Cejas", value: 13, color: '#ffc658' },
-            { name: "Esmaltado Gelish", value: 11, color: '#ff8042' },
-            { name: "Corte Infantil", value: 9, color: '#0088fe' },
-          ]);
+          // setData([
+          //   { name: "Corte para caballero", value: 48, color: '#8884d8' },
+          //   { name: "Corte para dama", value: 44, color: '#82ca9d' },
+          //   { name: "Perfilado de Cejas", value: 13, color: '#ffc658' },
+          //   { name: "Esmaltado Gelish", value: 11, color: '#ff8042' },
+          //   { name: "Corte Infantil", value: 9, color: '#0088fe' },
+          // ]);
         }
       } catch (err) {
         console.error('Error fetching service data:', err);
@@ -100,7 +106,7 @@ export function ServiceRevenueChart({ data: propData }: ServiceRevenueChartProps
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, [propData]);
 

@@ -1,33 +1,35 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import type React from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Calendar,
   CameraIcon,
   Clock,
   ExternalLink,
+  IdCardLanyard,
   LayoutDashboard,
   Menu,
   MessageSquare,
   Pencil,
+  ShoppingBasket,
   Tag,
   User,
   Users,
   X,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetHeader,
-} from "@/components/ui/sheet";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { useMediaQuery } from "@/hooks/use-media-query";
+} from '@/components/ui/sheet';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 export function DashboardLayout({
   children,
@@ -38,7 +40,7 @@ export function DashboardLayout({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -50,10 +52,10 @@ export function DashboardLayout({
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -64,48 +66,48 @@ export function DashboardLayout({
       icon: LayoutDashboard,
     },
     {
-      title: "Editor de Landing",
-      href: "/session/admin/landing-editor",
+      title: 'Editor de Landing',
+      href: '/session/admin/landing-editor',
       icon: Pencil,
     },
     {
-      title: "Personal",
-      href: "/session/admin/employees",
+      title: 'Personal',
+      href: '/session/admin/employees',
       icon: Users,
     },
     {
-      title: "Galeria de Imagenes",
-      href: "/session/admin/images-gallery",
+      title: 'Galeria de Imagenes',
+      href: '/session/admin/images-gallery',
       icon: CameraIcon,
     },
     {
-      title: "Gestión de Horarios",
-      href: "/session/admin/schedule",
+      title: 'Gestión de Horarios',
+      href: '/session/admin/schedule',
       icon: Clock,
     },
     {
-      title: "Servicios y Promos",
-      href: "/session/admin/services",
-      icon: Tag,
+      title: 'Servicios',
+      href: '/session/admin/services',
+      icon: ShoppingBasket,
     },
     {
-      title: "Calendario de Citas",
+      title: 'Promociones', 
+      href: "/session/admin/promotions",
+      icon:  Tag,
+    },
+    {
+      title: 'Calendario de Citas',
       href: `/session/admin/calendar/${landingId}`,
       icon: Calendar,
     },
     {
-      title: "Clientes",
-      href: "/session/admin/clients",
-      icon: Users,
+      title: 'Pacientes',
+      href: '/session/admin/clients',
+      icon: IdCardLanyard,
     },
-    // {
-    //   title: "Chatbot",
-    //   href: "/session/admin/chatbot",
-    //   icon: MessageSquare,
-    // },
     {
-      title: "Perfil",
-      href: "/session/admin/profile",
+      title: 'Perfil',
+      href: '/session/admin/profile',
       icon: User,
     },
   ];
@@ -128,13 +130,13 @@ export function DashboardLayout({
       <div className="hidden w-64 flex-col border-r bg-card md:flex">
         <div className="flex h-14 items-center border-b px-4">
           <Link
-            href="session/admin/dashboard"
+            href="/session/admin/dashboard"
             className="flex items-center gap-2 font-semibold justify-center"
           >
             <img
               src="/landing-page/logo.png"
-              alt="estetica y barberia en Tlaxcala"
-              className="max-h-20 flex justify-center"
+              alt="Odontologo Tlaxcala"
+              className="max-h-44 flex justify-center"
             />
           </Link>
         </div>
@@ -143,10 +145,10 @@ export function DashboardLayout({
             {routes.map((route) => (
               <Button
                 key={route.href}
-                variant={pathname === route.href ? "secondary" : "ghost"}
+                variant={pathname === route.href ? 'secondary' : 'ghost'}
                 className={cn(
-                  "justify-start gap-2",
-                  pathname === route.href && "font-medium",
+                  'justify-start gap-2',
+                  pathname === route.href && 'font-medium'
                 )}
                 asChild
               >
@@ -164,7 +166,7 @@ export function DashboardLayout({
               <Users className="h-4 w-4 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium">La Rochelle</p>
+              <p className="text-sm font-medium">Ortoestetik</p>
               <p className="text-xs text-muted-foreground">Administrador</p>
             </div>
             <ThemeToggle />
@@ -183,8 +185,8 @@ export function DashboardLayout({
               >
                 <img
                   src="/landing-page/logo.png"
-                  alt="estetica y barberia en Tlaxcala"
-                  className="max-h-20"
+                  alt="odontologia Tlaxcala"
+                  className="max-h-20 min-w-38 -my-38"
                 />
               </Link>
             </SheetTitle>
@@ -194,10 +196,10 @@ export function DashboardLayout({
               {routes.map((route) => (
                 <Button
                   key={route.href}
-                  variant={pathname === route.href ? "secondary" : "ghost"}
+                  variant={pathname === route.href ? 'secondary' : 'ghost'}
                   className={cn(
-                    "justify-start gap-2",
-                    pathname === route.href && "font-medium",
+                    'justify-start gap-2',
+                    pathname === route.href && 'font-medium'
                   )}
                   asChild
                   onClick={() => setOpen(false)}
@@ -216,7 +218,7 @@ export function DashboardLayout({
                 <Users className="h-4 w-4 text-primary" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium">La Rochelle</p>
+                <p className="text-sm font-medium">Ortoestetik</p>
                 <p className="text-xs text-muted-foreground">Administrador</p>
               </div>
               <ThemeToggle />
@@ -227,7 +229,11 @@ export function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col">
-        <header className={`sticky top-0 z-10 flex h-14 items-center gap-4 border-b px-4 md:px-6 transition-colors duration-300 ${scrolled ? "bg-black/90 shadow-lg" : "bg-card"}`}>
+        <header
+          className={`sticky top-0 z-10 flex h-14 items-center gap-4 border-b px-4 md:px-6 transition-colors duration-300 ${
+            scrolled ? 'bg-secondary/90 shadow-lg' : 'bg-card'
+          }`}
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -243,7 +249,11 @@ export function DashboardLayout({
             asChild
             className="self-start sm:self-auto"
           >
-            <Link href="/" target="_blank" className="mt-3 md:mt-0 bg-gold hover:bg-goldHover text-white">
+            <Link
+              href="/"
+              target="_blank"
+              className="mt-3 md:mt-0"
+            >
               <ExternalLink className="mr-2 h-4 w-4" />
               Ver Landing Page en Vivo
             </Link>

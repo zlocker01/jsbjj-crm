@@ -116,9 +116,9 @@ export function ClientsDetailedAnalysis() {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Análisis de Clientes</h2>
+          <h2 className="text-2xl font-bold">Análisis de Pacientes</h2>
           <p className="text-muted-foreground">
-            Información detallada sobre tu base de clientes
+            Información detallada sobre tu base de pacientes
           </p>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>

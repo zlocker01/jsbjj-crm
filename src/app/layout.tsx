@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import { Poppins, Playfair_Display } from 'next/font/google';
+import { Poppins, Lora } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 const poppins = Poppins({
@@ -12,20 +12,20 @@ const poppins = Poppins({
   display: 'swap',
 });
 
-const playfairDisplay = Playfair_Display({
-  weight: ['700', '800'],
+const lora = Lora({
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-lora',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'La Rochelle - Estetica & Barberia',
-  description: 'Servicios de estética y barberia en Tlaxcala',
+  title: 'La Rochelle - Odontología Integral',
+  description: 'Servicios odontológicos profesionales',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
-  }
+  },
 };
 
 export default function RootLayout({
@@ -41,7 +41,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={cn(
           poppins.variable,
-          playfairDisplay.variable,
+          lora.variable,
           'min-h-screen bg-background antialiased font-sans'
         )}
       >

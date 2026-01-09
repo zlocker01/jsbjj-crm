@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Tag, Clock } from "lucide-react";
+import { useState } from 'react';
+import { Tag, Clock, Layers, Users } from 'lucide-react';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { DeletePromotionButton } from "./DeletePromotionButton";
-import { EditPromotionButton } from "./EditPromotionButton";
-import { EditPromotionModal } from "./EditPromotionModal";
-import { TogglePromotionButton } from "./TogglePromotionButton";
-import type { Promotion } from "@/interfaces/promotions/Promotion";
-import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/card';
+import { DeletePromotionButton } from './DeletePromotionButton';
+import { EditPromotionButton } from './EditPromotionButton';
+import { EditPromotionModal } from './EditPromotionModal';
+import { TogglePromotionButton } from './TogglePromotionButton';
+import type { Promotion } from '@/interfaces/promotions/Promotion';
+import { toast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 interface PromotionCardProps {
   promotion: Promotion;
@@ -31,32 +31,36 @@ export function PromotionCard({
 
   const calculateDiscount = () => {
     return Math.round(
-      ((promotion.price - promotion.discount_price) / promotion.price) * 100,
+      ((promotion.price - promotion.discount_price) / promotion.price) * 100
     );
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     });
   };
 
   const handlePromotionDeleted = (deletedPromotionId: number) => {
     toast({
-      title: "Promoción eliminada",
-      description: "La promoción ha sido eliminada correctamente.",
-      variant: "success",
+      title: 'Promoción eliminada',
+      description: 'La promoción ha sido eliminada correctamente.',
+      variant: 'success',
     });
     router.refresh();
   };
 
   return (
-    <Card className={`w-full overflow-hidden transition-all duration-300 hover:shadow-lg bg-gray-700 text-white ${promotion.active === false ? 'opacity-60' : ''}`}>
+    <Card
+      className={`w-full overflow-hidden transition-all duration-300 hover:shadow-lg bg-gray-700 text-white ${
+        promotion.active === false ? 'opacity-60' : ''
+      }`}
+    >
       <div className="relative">
         <img
-          src={promotion.image || "/placeholder-promotion.jpg"}
+          src={promotion.image || '/placeholder-promotion.jpg'}
           alt={promotion.title}
           className="w-full h-48 object-cover"
         />
@@ -96,6 +100,19 @@ export function PromotionCard({
           <div className="flex items-center text-sm text-gray-300 mt-1">
             <Clock className="h-4 w-4 mr-1" />
             {promotion.duration_minutes} minutos
+          </div>
+        )}
+        {promotion.sessions_count && (
+          <div className="flex items-center text-sm text-gray-300 mt-1">
+            <Layers className="h-4 w-4 mr-1" />
+            {promotion.sessions_count}{' '}
+            {promotion.sessions_count === 1 ? 'sesión' : 'sesiones'}
+          </div>
+        )}
+        {promotion.target_audience && (
+          <div className="flex items-center text-sm text-gray-300 mt-1">
+            <Users className="h-4 w-4 mr-1" />
+            {promotion.target_audience}
           </div>
         )}
       </CardHeader>

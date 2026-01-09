@@ -49,7 +49,7 @@ export default function Header() {
             <img
               src="/landing-page/logo.png"
               alt="la rochelle estetica y barberia en Tlaxcala"
-              className="h-20 w-auto"
+              className="h-14 md:h-20 w-auto"
             />
           </Link>
 

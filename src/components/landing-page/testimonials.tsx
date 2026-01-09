@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -100,11 +99,10 @@ export default function Testimonials() {
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-4">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                    <Image
+                    <img
                       src={testimonial.image || "/placeholder.svg"}
                       alt={testimonial.name}
-                      fill
-                      className="object-cover"
+                      className="absolute inset-0 h-full w-full object-cover"
                     />
                   </div>
                   <div>
@@ -115,7 +113,7 @@ export default function Testimonials() {
               </CardHeader>
               <CardContent className="flex-grow">
                 <div className="flex mb-2">
-                  {Array.from({ length: 5 }).map((_, i) => (
+                  {Array.from({ length: 5 }).map((_: unknown, i: number) => (
                     <Star
                       key={i}
                       className={`h-4 w-4 ${i < testimonial.rating ? "text-yellow-500 fill-yellow-500" : "text-muted"}`}

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -49,11 +48,10 @@ export default function GraduationCarousel() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Image
+                    <img
                         src={graduationImages[currentImage].src}
                         alt={graduationImages[currentImage].alt}
-                        fill
-                        className="object-contain"
+                        className="h-full w-full object-contain"
                     />
                 </motion.div>
             </AnimatePresence>

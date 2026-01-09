@@ -1,41 +1,63 @@
-
-"use client";
+'use client';
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { WorkingHours } from "@/components/schedule/working-hours";
-import { NonWorkingDays } from "@/components/schedule/non-working-days";
-import { useToast } from "@/components/ui/use-toast";
-import type { Schedule } from "@/interfaces/schedule/Schedule";
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { WorkingHours } from '@/components/schedule/working-hours';
+import { NonWorkingDays } from '@/components/schedule/non-working-days';
+import { useToast } from '@/components/ui/use-toast';
+import type { Schedule } from '@/interfaces/schedule/Schedule';
 
 const dayIds = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
 ];
 
-// Función para transformar la lista de horarios al formato Record
+const normalizeDay = (day: string): string => {
+  const d = day.toLowerCase().trim();
+  const map: Record<string, string> = {
+    lunes: 'monday',
+    martes: 'tuesday',
+    miércoles: 'wednesday',
+    miercoles: 'wednesday',
+    jueves: 'thursday',
+    viernes: 'friday',
+    sábado: 'saturday',
+    sabado: 'saturday',
+    domingo: 'sunday',
+    monday: 'monday',
+    tuesday: 'tuesday',
+    wednesday: 'wednesday',
+    thursday: 'thursday',
+    friday: 'friday',
+    saturday: 'saturday',
+    sunday: 'sunday',
+  };
+  return map[d] || d;
+};
+
+// Función para normalizar el nombre del día a inglés de forma robusta
 const transformSchedulesToRecord = (
-  schedulesFromApi: Schedule[],
+  schedulesFromApi: Schedule[]
 ): Record<string, Schedule | undefined> => {
   const record: Record<string, Schedule | undefined> = {};
   dayIds.forEach((dayId) => {
     // Asegúrate que 'day_of_week' en tu BD coincida con estos identificadores (ej: 'monday')
     const scheduleForDay = schedulesFromApi.find(
-      (s) => s.day_of_week.toLowerCase() === dayId,
+      (s) => normalizeDay(s.day_of_week) === dayId
     );
     record[dayId] = scheduleForDay;
   });
@@ -64,25 +86,25 @@ export default function SchedulePage() {
     const fetchSchedules = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("/api/schedule");
+        const response = await fetch('/api/schedule');
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to fetch schedules");
+          throw new Error(errorData.error || 'Failed to fetch schedules');
         }
         const data = await response.json();
         const transformedData = transformSchedulesToRecord(
-          data.schedules || [],
+          data.schedules || []
         );
         setWorkingHours(transformedData);
       } catch (error) {
-        console.error("Error fetching schedules:", error);
+        console.error('Error fetching schedules:', error);
         toast({
-          title: "Error al cargar horarios",
+          title: 'Error al cargar horarios',
           description:
             error instanceof Error
               ? error.message
-              : "No se pudieron obtener los horarios.",
-          variant: "destructive",
+              : 'No se pudieron obtener los horarios.',
+          variant: 'destructive',
         });
       } finally {
         setIsLoading(false);
@@ -93,15 +115,15 @@ export default function SchedulePage() {
   }, [toast]); // toast como dependencia si se usa dentro del catch para mostrar errores
 
   const [nonWorkingDays, setNonWorkingDays] = useState([
-    { date: "2023-12-25", description: "Navidad" },
-    { date: "2024-01-01", description: "Año Nuevo" },
-    { date: "2024-04-19", description: "Viernes Santo" },
+    { date: '2023-12-25', description: 'Navidad' },
+    { date: '2024-01-01', description: 'Año Nuevo' },
+    { date: '2024-04-19', description: 'Viernes Santo' },
   ]);
 
   // Renombrado a handleLocalScheduleChange y ajustado para la interfaz Schedule
   const handleLocalScheduleChange = (
     dayId: string,
-    changedData: Partial<Schedule>,
+    changedData: Partial<Schedule>
   ) => {
     setWorkingHours((prevSchedules) => {
       const currentDayData = prevSchedules[dayId];
@@ -110,7 +132,7 @@ export default function SchedulePage() {
       const updatedDayData = {
         ...(currentDayData || {
           day_of_week: dayId,
-          user_id: "",
+          user_id: '',
           is_working_day: false,
         }), // Proporciona un esqueleto si no existe
         ...changedData,
@@ -131,9 +153,9 @@ export default function SchedulePage() {
     // La lógica de guardado para WorkingHours ya ocurre en tiempo real dentro del componente.
     // Este botón podría usarse para guardar NonWorkingDays o realizar otras acciones globales.
     toast({
-      title: "Configuración guardada",
+      title: 'Configuración guardada',
       description:
-        "La configuración de horarios ha sido guardada correctamente.",
+        'La configuración de horarios ha sido guardada correctamente.',
     });
   };
 

@@ -212,10 +212,10 @@ export function AppointmentCalendar({
                 type="button"
                 className={`absolute p-2 rounded-lg text-left text-sm z-10 border shadow-sm hover:shadow-md transition-all ${
                   appointment.status === 'Confirmada'
-                    ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                    ? 'bg-green-800 text-white border-green-600 hover:bg-green-600 dark:bg-green-700/60 dark:text-white dark:border-green-600 dark:hover:bg-green-700/80'
                     : appointment.status === 'Cancelada'
-                    ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
-                    : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                    ? 'bg-red-800 text-white border-red-600 hover:bg-red-600 dark:bg-red-700/60 dark:text-white dark:border-red-600 dark:hover:bg-red-700/80'
+                    : 'bg-green-800 text-white border-green-600 hover:bg-green-600 dark:bg-green-700/60 dark:text-white dark:border-green-600 dark:hover:bg-green-700/80'
                 }`}
                 style={{
                   top: `${top}px`,
@@ -355,10 +355,10 @@ export function AppointmentCalendar({
                       type="button"
                       className={`text-xs p-1 rounded truncate w-full text-left border shadow-sm hover:shadow-md transition-all ${
                         appointment.status === 'Confirmada'
-                          ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                          ? 'bg-green-200 text-green-800 border-green-400 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                           : appointment.status === 'Cancelada'
-                          ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
-                          : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                          ? 'bg-red-200 text-red-800 border-red-400 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
+                          : 'bg-green-200 text-green-800 border-green-400 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                       } hover:opacity-80`}
                       onClick={(e) => {
                         e.stopPropagation();

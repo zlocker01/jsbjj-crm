@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import useSWR from "swr";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from 'react';
+import useSWR from 'swr';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Card,
   CardContent,
@@ -10,9 +10,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import { Button } from '@/components/ui/button';
 import {
   Scissors,
   Sparkles,
@@ -23,41 +29,102 @@ import {
   Loader2,
   AlertCircle,
   EyeClosed,
-} from "lucide-react";
-import Link from "next/link";
-import { Badge } from "../ui/badge";
-import type { Service } from "@/interfaces/services/Service";
-import { MagicWandIcon } from "@radix-ui/react-icons";
+  Layers,
+  Users,
+  ShieldCheck,
+  Activity,
+  Baby,
+  HeartPulse,
+  Siren,
+  Stethoscope,
+  Smile,
+} from 'lucide-react';
+import Link from 'next/link';
+import { Badge } from '../ui/badge';
+import type { Service } from '@/interfaces/services/Service';
+
+const ToothIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M7 2c-2.76 0-5 2.24-5 5 0 2.2 1.5 4.08 3.5 4.74.5 1.76.5 4.26.5 6.26 0 2.2 1.8 4 4 4s2-.5 2-2c0-1 1-1 1 0s-.2 2 2 2 2.2-1.8 2.2-4c0-2 0-4.5.5-6.26C19.5 11.08 21 9.2 21 7c0-2.76-2.24-5-5-5-1.5 0-2.83.67-3.79 1.73-.24.26-.6.26-.84 0C10.43 2.67 9.1 2 7.6 2h-.6z" />
+  </svg>
+);
 
 const serviceCategories = [
-  { id: "all", label: "Todos" },
-  { id: "Barbería", label: "Barbería", icon: <Scissors className="h-4 w-4" /> },
-  { id: "Cabello", label: "Cabello", icon: <Scissors className="h-4 w-4" /> },
-  { id: "Facial", label: "Facial", icon: <Sparkles className="h-4 w-4" /> },
-  { id: "Uñas", label: "Uñas", icon: <Brush className="h-4 w-4" /> },
-  { id: "Colorimetría", label: "Colorimetría", icon: <Droplet className="h-4 w-4" /> },
-  { id: "Maquillaje", label: "Maquillaje", icon: <EyeClosed className="h-4 w-4" /> },
-  { id: "Tratamientos capilares", label: "Tratamientos capilares", icon: <MagicWandIcon className="h-4 w-4" /> },
+  { id: 'all', label: 'Todos' },
+  { 
+    id: 'Prevención y cuidado', 
+    label: 'Prevención', 
+    icon: <ShieldCheck className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Estética dental', 
+    label: 'Estética', 
+    icon: <Sparkles className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Ortodoncia', 
+    label: 'Ortodoncia', 
+    icon: <Smile className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Rehabilitación y restauración dental', 
+    label: 'Rehabilitación', 
+    icon: <Stethoscope className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Endodoncia', 
+    label: 'Endodoncia', 
+    icon: <Activity className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Periodoncia (encías)', 
+    label: 'Periodoncia', 
+    icon: <HeartPulse className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Odontopediatría', 
+    label: 'Odontopediatría', 
+    icon: <Baby className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Cirugía dental', 
+    label: 'Cirugía', 
+    icon: <Scissors className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Urgencias dentales', 
+    label: 'Urgencias', 
+    icon: <Siren className="h-4 w-4" /> 
+  },
 ];
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => {
     if (!res.ok) {
-      throw new Error("Failed to fetch services");
+      throw new Error('Failed to fetch services');
     }
     return res.json();
   });
 
 export default function Services({ landingId }: { landingId: string }) {
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState('all');
 
   const { data, error, isLoading } = useSWR<{ services: Service[] }>(
     `/api/services?landingPageId=${landingId}`,
-    fetcher,
+    fetcher
   );
 
   const filteredServices =
-    category === "all"
+    category === 'all'
       ? data?.services || []
       : data?.services.filter((service) => service.category === category) || [];
 
@@ -132,7 +199,7 @@ export default function Services({ landingId }: { landingId: string }) {
             ) : (
               <Carousel
                 opts={{
-                  align: "start",
+                  align: 'start',
                   loop: filteredServices.length > 3, // Loop only if there are enough items
                 }}
                 className="w-full max-w-sm md:max-w-xl lg:max-w-6xl mx-auto"
@@ -149,13 +216,24 @@ export default function Services({ landingId }: { landingId: string }) {
                             <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col relative h-[500px] gap-3">
                               {/* Imagen de fondo */}
                               <img
-                                src={service.image || "/placeholder.svg"}
+                                src={service.image || '/placeholder.svg'}
                                 alt={service.title}
                                 className="object-cover absolute inset-0 z-0 w-full h-full"
                                 loading="lazy"
                               />
                               {/* Overlay de gradiente para legibilidad */}
                               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/35 to-transparent z-10" />
+                              
+                              {/* Category Badge */}
+                              <div className="absolute top-4 right-4 z-20">
+                                <Badge 
+                                  variant="secondary" 
+                                  className="text-sm px-3 py-1 bg-primary/90 text-primary-foreground hover:bg-primary/100 border-none capitalize"
+                                >
+                                  {service.category.toLowerCase()}
+                                </Badge>
+                              </div>
+
                               {/* Contenido encima de la imagen */}
                               <div className="relative z-20 flex flex-col h-full justify-end p-6">
                                 <div className="space-y-2">
@@ -173,9 +251,14 @@ export default function Services({ landingId }: { landingId: string }) {
                                     </p>
                                     <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
                                       <Clock className="h-4 w-4" />
-                                      <span>{service.duration_minutes} minutos</span>
+                                      <span>
+                                        {service.duration_minutes} minutos
+                                      </span>
                                     </div>
-                                    <Badge variant="gold" className="capitalize">
+                                    <Badge
+                                      variant="gold"
+                                      className="capitalize"
+                                    >
                                       {service.category.toLowerCase()}
                                     </Badge>
                                   </CardContent>

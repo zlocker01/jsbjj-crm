@@ -18,10 +18,15 @@ export const getPromotion = async (id: number): Promise<Promotion | null> => {
   return data as Promotion;
 };
 
-export const getPromotions = async (): Promise<Promotion[] | null> => {
+export const getPromotions = async (
+  landingId: string
+): Promise<Promotion[] | null> => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("promotions").select("*");
+  const { data, error } = await supabase
+    .from("promotions")
+    .select("*")
+    .eq("landing_page_id", landingId);
 
   if (error) {
     console.error("Error getting promotions:", error.message);
