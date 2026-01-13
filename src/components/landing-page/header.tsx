@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);}
   const [isScrolled, setIsScrolled] = useState(false);
   const isMobile = useIsMobile();
 
@@ -17,30 +17,30 @@ export default function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
 
   const navLinks = [
-    { name: "Inicio", href: "#hero" },
-    { name: "Servicios", href: "#services" },
-    { name: "Nosotros", href: "#about" },
-    { name: "Galería", href: "#gallery" },
-    { name: "Promociones", href: "#promotions" },
-    { name: "Contacto", href: "#location" },
-    { name: "FAQ", href: "#faq" },
+    { name: 'Inicio', href: '/#hero' },
+    { name: 'Servicios', href: '/#services' },
+    { name: 'Nosotros', href: '/#about' },
+    { name: 'Galería', href: '/#gallery' },
+    { name: 'Promociones', href: '/#promotions' },
+    { name: 'Contacto', href: '/#location' },
+    { name: 'FAQ', href: '/#faq' },
   ];
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
-          ? "bg-background/80 backdrop-blur-md shadow-sm"
-          : "bg-transparent",
+          ? 'bg-background/80 backdrop-blur-md shadow-sm'
+          : 'bg-transparent'
       )}
     >
       <div className="container mx-auto px-4 py-4">
@@ -66,7 +66,7 @@ export default function Header() {
             ))}
             <ThemeToggle />
             <Button asChild>
-              <a href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita" target="_blank" rel="noopener noreferrer">Agendar Cita</a>
+              <Link href="/citas">Agendar Cita</Link>
             </Button>
           </nav>
 
@@ -115,9 +115,9 @@ export default function Header() {
                 </Link>
               ))}
               <Button asChild size="lg" className="mt-6 w-full">
-                <a href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita" onClick={closeMenu} target="_blank" rel="noopener noreferrer">
+                <Link href="/citas" onClick={closeMenu}>
                   Agendar Cita
-                </a>
+                </Link>
               </Button>
             </nav>
           </div>

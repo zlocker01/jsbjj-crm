@@ -1,12 +1,24 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { Calendar } from "@/components/ui/calendar";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  endOfMonth,
+  format,
+  isBefore,
+  isSameMonth,
+  isSameDay,
+  parseISO,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+} from 'date-fns';
+import { es } from 'date-fns/locale';
 import {
   Card,
   CardContent,
@@ -14,7 +26,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -22,106 +34,117 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { CalendarIcon, CheckCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { CheckCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import type { Schedule } from '@/interfaces/schedule/Schedule';
 
 const formSchema = z.object({
-  service: z.string({
-    required_error: "Por favor selecciona un servicio",
-  }).or(
-    z.literal("")
-  ),
-  promotion: z.string({
-    required_error: "Por favor selecciona una promoción",
-  }).or(
-    z.literal("")
-  ),
+  service: z
+    .string({
+      required_error: 'Por favor selecciona un servicio',
+    })
+    .or(z.literal('')),
+  promotion: z
+    .string({
+      required_error: 'Por favor selecciona una promoción',
+    })
+    .or(z.literal('')),
   // stylist: z.string({
   //   required_error: "Por favor selecciona un estilista",
   // }),
   date: z.date({
-    required_error: "Por favor selecciona una fecha",
+    required_error: 'Por favor selecciona una fecha',
   }),
   time: z.string({
-    required_error: "Por favor selecciona una hora",
+    required_error: 'Por favor selecciona una hora',
   }),
   name: z.string().min(2, {
-    message: "El nombre debe tener al menos 2 caracteres",
+    message: 'El nombre debe tener al menos 2 caracteres',
   }),
   email: z.string().email({
-    message: "Por favor ingresa un correo electrónico válido",
+    message: 'Por favor ingresa un correo electrónico válido',
   }),
   phone: z.string().min(10, {
-    message: "Por favor ingresa un número de teléfono válido",
+    message: 'Por favor ingresa un número de teléfono válido',
   }),
   notes: z.string().optional(),
-  paymentMethod: z.enum(["card", "cash"], {
-    required_error: "Por favor selecciona un método de pago",
-  }),
 });
 
-export default function Booking({landingId = ""}: {landingId?: string}) {
+export default function Booking({ landingId = '' }: { landingId?: string }) {
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [services, setServices] = useState<any[]>([]);
   const [promotions, setPromotions] = useState<any[]>([]);
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [isLoadingTimeSlots, setIsLoadingTimeSlots] = useState(false);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [isLoadingPromotions, setIsLoadingPromotions] = useState(true);
   const { toast } = useToast();
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
+  const [selectedWeekStart, setSelectedWeekStart] = useState<Date | null>(null);
   // const [stylists, setStylists] = useState<any[]>([]); // No implementado
 
   // Cargar servicios, promociones y citas al montar
   React.useEffect(() => {
     console.log('LandingId recibido en component:', landingId);
     if (!landingId) {
-      console.warn('landingId no proporcionado o inválido. Algunos datos no estarán disponibles.');
+      console.warn(
+        'landingId no proporcionado o inválido. Algunos datos no estarán disponibles.'
+      );
       setIsLoadingServices(false);
       setIsLoadingPromotions(false);
       return;
     }
-    
+
     const fetchData = async () => {
       try {
         setIsLoadingServices(true);
         // Cargar servicios
         try {
           console.log('Solicitando servicios con landingId:', landingId);
-          const resServices = await fetch(`/api/services?landingPageId=${landingId}`);
-          console.log('Respuesta de API servicios:', resServices.status, resServices.statusText);
-          
+          const resServices = await fetch(
+            `/api/services?landingPageId=${landingId}`
+          );
+          console.log(
+            'Respuesta de API servicios:',
+            resServices.status,
+            resServices.statusText
+          );
+
           if (!resServices.ok) {
             const errorText = await resServices.text();
             console.error('Error al cargar servicios:', errorText);
-            toast({ title: "Error cargando servicios", variant: "destructive" });
+            toast({
+              title: 'Error cargando servicios',
+              variant: 'destructive',
+            });
           } else {
             const dataServices = await resServices.json();
             console.log('Servicios recibidos (datos brutos):', dataServices);
             if (dataServices && Array.isArray(dataServices.services)) {
-              console.log('Número de servicios encontrados:', dataServices.services.length);
+              console.log(
+                'Número de servicios encontrados:',
+                dataServices.services.length
+              );
               setServices(dataServices.services);
             } else {
-              console.warn('La estructura de datos de servicios no es la esperada:', dataServices);
+              console.warn(
+                'La estructura de datos de servicios no es la esperada:',
+                dataServices
+              );
             }
           }
         } catch (serviceErr) {
@@ -133,21 +156,39 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
         // Cargar promociones
         try {
           console.log('Solicitando promociones con landingId:', landingId);
-          const resPromotions = await fetch(`/api/promotions?landingPageId=${landingId}`);
-          console.log('Respuesta de API promociones:', resPromotions.status, resPromotions.statusText);
-          
+          const resPromotions = await fetch(
+            `/api/promotions?landingPageId=${landingId}`
+          );
+          console.log(
+            'Respuesta de API promociones:',
+            resPromotions.status,
+            resPromotions.statusText
+          );
+
           if (!resPromotions.ok) {
             const errorText = await resPromotions.text();
             console.error('Error al cargar promociones:', errorText);
-            toast({ title: "Error cargando promociones", variant: "destructive" });
+            toast({
+              title: 'Error cargando promociones',
+              variant: 'destructive',
+            });
           } else {
             const dataPromotions = await resPromotions.json();
-            console.log('Promociones recibidas (datos brutos):', dataPromotions);
+            console.log(
+              'Promociones recibidas (datos brutos):',
+              dataPromotions
+            );
             if (dataPromotions && Array.isArray(dataPromotions.promotions)) {
-              console.log('Número de promociones encontradas:', dataPromotions.promotions.length);
+              console.log(
+                'Número de promociones encontradas:',
+                dataPromotions.promotions.length
+              );
               setPromotions(dataPromotions.promotions);
             } else {
-              console.warn('La estructura de datos de promociones no es la esperada:', dataPromotions);
+              console.warn(
+                'La estructura de datos de promociones no es la esperada:',
+                dataPromotions
+              );
               console.log('Usando datos de prueba para promociones');
             }
           }
@@ -156,24 +197,26 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
         }
         setIsLoadingPromotions(false);
 
-        // Cargar todas las citas existentes
+        // Cargar horarios
         try {
-          const resAppointments = await fetch(`/api/appointments`);
-          if (!resAppointments.ok) {
-            console.error('Error al cargar citas:', await resAppointments.text());
-            toast({ title: "Error cargando citas", variant: "destructive" });
+          const resSchedules = await fetch('/api/schedule');
+          if (resSchedules.ok) {
+            const dataSchedules = await resSchedules.json();
+            if (dataSchedules && Array.isArray(dataSchedules.schedules)) {
+              setSchedules(dataSchedules.schedules);
+            }
           } else {
-            const dataAppointments = await resAppointments.json();
-            console.log('Citas recibidas:', dataAppointments);
-            setAppointments(dataAppointments.data || []);
+            console.error('Error fetching schedules:', resSchedules.statusText);
           }
-        } catch (err) {
-          console.error('Error general:', err);
-          toast({ title: "Error cargando datos necesarios", variant: "destructive" });
+        } catch (schedErr) {
+          console.error('Exception fetching schedules:', schedErr);
         }
       } catch (err) {
         console.error('Error general:', err);
-        toast({ title: "Error cargando datos necesarios", variant: "destructive" });
+        toast({
+          title: 'Error cargando datos necesarios',
+          variant: 'destructive',
+        });
         setIsLoadingServices(false);
         setIsLoadingPromotions(false);
       }
@@ -184,104 +227,357 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      service: "",
-      promotion: "",
-      notes: "",
+      notes: '',
+      name: '',
+      email: '',
+      phone: '',
+      time: '',
     },
-    mode: "onChange", // Validar al cambiar los campos
+    mode: 'onChange', // Validar al cambiar los campos
   });
 
-  const watchService = form.watch("service");
-  const watchPromotion = form.watch("promotion");
-  const watchPaymentMethod = form.watch("paymentMethod");
+  const watchService = form.watch('service');
+  const watchPromotion = form.watch('promotion');
+  const watchDate = form.watch('date');
 
-  // Generar timeSlots disponibles cuando cambie la fecha seleccionada
-  React.useEffect(() => {
-    const selectedDate = form.watch("date");
-    if (selectedDate) {
-      generateAvailableTimeSlots(selectedDate);
-    }
-  }, [form.watch("date"), appointments]);
-
-  // Función para generar horarios disponibles basados en fecha seleccionada
-  const generateAvailableTimeSlots = (selectedDate: Date) => {
-    setIsLoadingTimeSlots(true);
-    
-    // Definir horario de apertura (9am) y cierre (7pm)
+  const generateAvailableTimeSlots = (bookedTimes: string[]) => {
     const openingHour = 9;
     const closingHour = 19;
-    
-    // Duración promedio de cada servicio en minutos (puede ajustarse según tus necesidades)
-    const appointmentDuration = 60;
-    
-    // Generar todos los posibles slots de tiempo por hora
     const allPossibleSlots: string[] = [];
     for (let hour = openingHour; hour < closingHour; hour++) {
       allPossibleSlots.push(`${hour}:00`);
-      // También podríamos agregar slots cada media hora
       if (hour < closingHour - 1) {
         allPossibleSlots.push(`${hour}:30`);
       }
     }
-    
-    // Filtrar horarios ya ocupados para la fecha seleccionada
-    const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
-    const bookedAppointments = appointments.filter(appointment => {
-      const appointmentDate = new Date(appointment.date);
-      return format(appointmentDate, "yyyy-MM-dd") === selectedDateStr;
-    });
-    
-    // Extraer horas reservadas
-    const bookedTimes = bookedAppointments.map(appointment => {
-      // Asumiendo que appointment.time está en formato "HH:mm"
-      return appointment.time;
-    });
-    
-    // Filtrar slots disponibles
-    const availableSlots = allPossibleSlots.filter(slot => !bookedTimes.includes(slot));
-    
-    // Actualizar estado con slots disponibles
-    setAvailableTimeSlots(availableSlots);
-    setIsLoadingTimeSlots(false);
+    return allPossibleSlots.filter((slot) => !bookedTimes.includes(slot));
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  React.useEffect(() => {
+    let cancelled = false;
+    const loadAvailableSlots = async () => {
+      if (!watchDate) {
+        setAvailableTimeSlots([]);
+        return;
+      }
+
+      setIsLoadingTimeSlots(true);
+      try {
+        const resAppointments = await fetch(`/api/appointments`);
+        if (!resAppointments.ok) {
+          toast({ title: 'Error cargando citas', variant: 'destructive' });
+          setAvailableTimeSlots([]);
+          return;
+        }
+
+        const dataAppointments = await resAppointments.json();
+        const allAppointments = dataAppointments?.data ?? [];
+
+        const selectedDateStr = format(watchDate, 'yyyy-MM-dd');
+
+        // Obtener duración del servicio seleccionado para calcular el fin del slot candidato
+        const currentServiceId = watchService;
+        const currentService = services.find(
+          (s: any) => s.id.toString() === currentServiceId
+        );
+        const serviceDurationMinutes = currentService?.duration_minutes || 30; // Default 30 min
+
+        // 1. Filtrar citas del día seleccionado
+        const dayAppointments = allAppointments.filter((appointment: any) => {
+          if (!appointment.start_datetime || appointment.status === 'Cancelada')
+            return false;
+          const appointmentDate = new Date(appointment.start_datetime);
+          return format(appointmentDate, 'yyyy-MM-dd') === selectedDateStr;
+        });
+
+        // 2. Generar slots y verificar COLISIÓN DE RANGOS (Overlap)
+
+        // --- Integración con Working Hours ---
+        const daysMap = [
+          'sunday',
+          'monday',
+          'tuesday',
+          'wednesday',
+          'thursday',
+          'friday',
+          'saturday',
+        ];
+        const dayName = daysMap[watchDate.getDay()];
+
+        // Buscar horario del día
+        const daySchedule =
+          schedules.length > 0
+            ? schedules.find((s) => s.day_of_week === dayName)
+            : null;
+
+        // Defaults si no hay schedules cargados (fallback a 9-19)
+        let startH = 9,
+          startM = 0;
+        let endH = 19,
+          endM = 0;
+        let isWorkingDay = true;
+
+        let breakStartMs = 0;
+        let breakEndMs = 0;
+
+        const parseTimeStr = (timeStr: string) => {
+          const [h, m] = timeStr.split(':').map(Number);
+          return { h, m };
+        };
+
+        // Asegurar que partimos de la medianoche local del día seleccionado
+        const watchDateStart = startOfDay(watchDate);
+
+        if (schedules.length > 0) {
+          if (!daySchedule || !daySchedule.is_working_day) {
+            isWorkingDay = false;
+          } else {
+            const start = parseTimeStr(daySchedule.start_time || '09:00');
+            startH = start.h;
+            startM = start.m;
+
+            const end = parseTimeStr(daySchedule.end_time || '19:00');
+            endH = end.h;
+            endM = end.m;
+
+            if (daySchedule.break_start_time && daySchedule.break_end_time) {
+              const bStart = parseTimeStr(daySchedule.break_start_time);
+              const bEnd = parseTimeStr(daySchedule.break_end_time);
+
+              const bsDate = new Date(watchDateStart);
+              bsDate.setHours(bStart.h, bStart.m, 0, 0);
+              breakStartMs = bsDate.getTime();
+
+              const beDate = new Date(watchDateStart);
+              beDate.setHours(bEnd.h, bEnd.m, 0, 0);
+              breakEndMs = beDate.getTime();
+            }
+          }
+        }
+
+        if (!isWorkingDay) {
+          setAvailableTimeSlots([]);
+          setIsLoadingTimeSlots(false);
+          return;
+        }
+
+        const openingHour = startH;
+        // Si termina 19:30, iterar hasta 20 para que el bucle cubra la hora 19
+        const closingHour = endH + (endM > 0 ? 1 : 0);
+        const availableSlots: string[] = [];
+
+        // Límite absoluto de cierre para hoy
+        const closingDate = new Date(watchDateStart);
+        closingDate.setHours(endH, endM, 0, 0);
+        const closingTimeMs = closingDate.getTime();
+
+        // Límite absoluto de inicio
+        const openingDate = new Date(watchDateStart);
+        openingDate.setHours(startH, startM, 0, 0);
+        const openingTimeMs = openingDate.getTime();
+
+        for (let hour = openingHour; hour < closingHour; hour++) {
+          const slotsToCheck = [`${hour}:00`, `${hour}:30`];
+
+          slotsToCheck.forEach((slotTime) => {
+            // Definir rango del SLOT CANDIDATO
+            const [h, m] = slotTime.split(':').map(Number);
+            const slotStart = new Date(watchDateStart);
+            slotStart.setHours(h, m, 0, 0);
+            const slotStartTime = slotStart.getTime();
+
+            // Duración del servicio que se quiere agendar
+            const slotEndTime =
+              slotStartTime + serviceDurationMinutes * 60 * 1000;
+
+            // 1. Validaciones de Horario Laboral
+            if (slotStartTime < openingTimeMs) return; // Antes de abrir
+            if (slotEndTime > closingTimeMs) return; // Después de cerrar
+
+            // Chequeo de descanso
+            if (breakStartMs && breakEndMs) {
+              if (slotStartTime < breakEndMs && slotEndTime > breakStartMs) {
+                return; // Choca con descanso
+              }
+            }
+
+            // 2. Regla de negocio: No chocar con citas existentes
+            const isOccupied = dayAppointments.some((app: any) => {
+              const appStart = new Date(app.start_datetime).getTime();
+
+              // Calcular fin de la cita existente de forma robusta
+              let appEnd: number;
+              if (app.end_datetime) {
+                appEnd = new Date(app.end_datetime).getTime();
+              } else if (app.actual_duration_minutes) {
+                appEnd = appStart + app.actual_duration_minutes * 60 * 1000;
+              } else {
+                // Intentar buscar duración del servicio original si está disponible en 'services'
+                // Nota: app.service_id debe coincidir con el tipo de ID en services (string vs number)
+                const originalService = services.find(
+                  (s) => s.id == app.service_id
+                );
+                const duration = originalService?.duration_minutes || 30;
+                appEnd = appStart + duration * 60 * 1000;
+              }
+
+              // Fórmula de superposición: (StartA < EndB) && (EndA > StartB)
+              const overlaps = slotStartTime < appEnd && slotEndTime > appStart;
+
+              if (overlaps) {
+                console.log(
+                  `[DEBUG] Conflicto: Slot ${slotTime} (${new Date(
+                    slotStartTime
+                  ).toLocaleTimeString()} - ${new Date(
+                    slotEndTime
+                  ).toLocaleTimeString()}) choca con cita ${app.id} (${new Date(
+                    appStart
+                  ).toLocaleTimeString()} - ${new Date(
+                    appEnd
+                  ).toLocaleTimeString()})`
+                );
+              }
+
+              return overlaps;
+            });
+
+            if (!isOccupied) {
+              availableSlots.push(slotTime);
+            }
+          });
+        }
+        if (!cancelled) {
+          setAvailableTimeSlots(availableSlots);
+        }
+      } catch {
+        if (!cancelled) {
+          toast({ title: 'Error cargando citas', variant: 'destructive' });
+          setAvailableTimeSlots([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingTimeSlots(false);
+        }
+      }
+    };
+
+    void loadAvailableSlots();
+    return () => {
+      cancelled = true;
+    };
+  }, [toast, watchDate, watchService, services, schedules]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    // Avanzar al paso de confirmación
-    setStep(3);
-    toast({
-      title: "¡Cita agendada con éxito!",
-      description: `Te esperamos el ${format(values.date, "PPP", { locale: es })} a las ${values.time}`,
-      variant: "success",
-    });
-  };
+    try {
+      const res = await fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
 
-  const getServicePrice = (serviceId: string) => {
-    const service = services.find((s) => s.id === serviceId);
-    return service ? service.price : 0;
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Error al agendar la cita');
+      }
+
+      // Avanzar al paso de confirmación
+      setStep(2);
+      toast({
+        title: '¡Cita agendada con éxito!',
+        description: `Te esperamos el ${format(values.date, 'PPP', {
+          locale: es,
+        })} a las ${values.time}`,
+        variant: 'success',
+      });
+    } catch (error: any) {
+      console.error('Error submitting booking:', error);
+      toast({
+        title: 'Error al agendar',
+        description:
+          error.message ||
+          'Hubo un problema al procesar tu solicitud. Intenta nuevamente.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleContinueToStep2 = async () => {
     // Validar todos los campos del paso 1
     const result = await form.trigger(
-      ["service", /* "stylist", */ "date", "time", "name", "email", "phone"],
+      ['service', /* "stylist", */ 'date', 'time', 'name', 'email', 'phone'],
       {
         shouldFocus: true,
-      },
+      }
     );
 
     if (result) {
-      setStep(2);
+      form.handleSubmit(onSubmit)();
     } else {
       // Mostrar mensaje de error
       toast({
-        title: "Por favor completa todos los campos",
+        title: 'Por favor completa todos los campos',
         description:
-          "Todos los campos son obligatorios excepto las notas adicionales.",
-        variant: "destructive",
+          'Todos los campos son obligatorios excepto las notas adicionales.',
+        variant: 'destructive',
       });
     }
   };
+
+  const monthOptions = React.useMemo(() => {
+    const now = startOfMonth(new Date());
+    return Array.from({ length: 12 }).map((_, index) => {
+      const monthDate = startOfMonth(addMonths(now, index));
+      return {
+        key: format(monthDate, 'yyyy-MM'),
+        label: format(monthDate, 'LLLL yyyy', { locale: es }),
+        date: monthDate,
+      };
+    });
+  }, []);
+
+  const weekOptions = React.useMemo(() => {
+    if (!selectedMonth) return [];
+
+    const monthStart = startOfMonth(selectedMonth);
+    const monthEnd = endOfMonth(selectedMonth);
+    const firstWeekStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+    const lastWeekStart = startOfWeek(monthEnd, { weekStartsOn: 1 });
+
+    const weeks: { key: string; label: string; start: Date }[] = [];
+    for (
+      let weekStart = firstWeekStart;
+      weekStart <= lastWeekStart;
+      weekStart = addWeeks(weekStart, 1)
+    ) {
+      const weekEnd = addDays(weekStart, 6);
+      weeks.push({
+        key: format(weekStart, 'yyyy-MM-dd'),
+        label: `${format(weekStart, 'd MMM', { locale: es })} - ${format(
+          weekEnd,
+          'd MMM',
+          { locale: es }
+        )}`,
+        start: weekStart,
+      });
+    }
+    return weeks;
+  }, [selectedMonth]);
+
+  const dayOptions = React.useMemo(() => {
+    if (!selectedMonth || !selectedWeekStart) return [];
+    const today = startOfDay(new Date());
+    return Array.from({ length: 7 })
+      .map((_, index) => addDays(selectedWeekStart, index))
+      .filter((day) => isSameMonth(day, selectedMonth))
+      .map((day) => {
+        const disabled = isBefore(startOfDay(day), today) || day.getDay() === 0;
+        return { day, disabled };
+      });
+  }, [selectedMonth, selectedWeekStart]);
 
   return (
     <section id="booking" className="py-16 md:py-24">
@@ -301,8 +597,8 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
             <div className="flex items-center">
               <div
                 className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center text-white font-bold",
-                  step >= 1 ? "bg-primary" : "bg-muted",
+                  'w-10 h-10 rounded-full flex items-center justify-center text-white font-bold',
+                  step >= 1 ? 'bg-primary' : 'bg-muted'
                 )}
               >
                 1
@@ -315,25 +611,11 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
             <div className="flex items-center">
               <div
                 className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center text-white font-bold",
-                  step >= 2 ? "bg-primary" : "bg-muted",
+                  'w-10 h-10 rounded-full flex items-center justify-center text-white font-bold',
+                  step >= 2 ? 'bg-primary' : 'bg-muted'
                 )}
               >
                 2
-              </div>
-              <div className="ml-2">
-                <p className="font-medium">Pago</p>
-              </div>
-            </div>
-            <div className="h-0.5 w-16 bg-muted flex-grow mx-4" />
-            <div className="flex items-center">
-              <div
-                className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center text-white font-bold",
-                  step >= 3 ? "bg-primary" : "bg-muted",
-                )}
-              >
-                3
               </div>
               <div className="ml-2">
                 <p className="font-medium">Confirmación</p>
@@ -357,15 +639,13 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                       name="service"
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
-                          <FormLabel className="text-white">
-                            Servicio
-                          </FormLabel>
+                          <FormLabel className="text-white">Servicio</FormLabel>
                           <FormControl>
                             <Select
                               onValueChange={(value) => {
                                 field.onChange(value);
                                 // Si selecciona un servicio, resetear promoción
-                                if (value) form.setValue("promotion", "");
+                                if (value) form.setValue('promotion', '');
                               }}
                               value={field.value}
                               disabled={isLoadingServices}
@@ -414,7 +694,7 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                               onValueChange={(value) => {
                                 field.onChange(value);
                                 // Si selecciona una promoción, resetear servicio
-                                if (value) form.setValue("service", "");
+                                if (value) form.setValue('service', '');
                               }}
                               value={field.value}
                               disabled={isLoadingPromotions}
@@ -437,7 +717,10 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                                       key={promotion.id}
                                       value={promotion.id.toString()}
                                     >
-                                      {promotion.title} - {promotion.discount_price || promotion.price}€
+                                      {promotion.title} -{' '}
+                                      {promotion.discount_price ||
+                                        promotion.price}
+                                      €
                                     </SelectItem>
                                   ))
                                 )}
@@ -454,47 +737,110 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                         control={form.control}
                         name="date"
                         render={({ field }) => (
-                          <FormItem className="flex flex-col">
+                          <FormItem className="flex flex-col gap-3">
                             <FormLabel>Fecha</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground",
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "PPP", { locale: es })
-                                    ) : (
-                                      <span>Selecciona una fecha</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
+                            <div className="grid grid-cols-1 gap-3">
+                              <Select
+                                onValueChange={(value) => {
+                                  const nextMonth =
+                                    monthOptions.find((m) => m.key === value)
+                                      ?.date ?? null;
+                                  setSelectedMonth(nextMonth);
+                                  setSelectedWeekStart(null);
+                                  form.resetField('date');
+                                  form.resetField('time');
+                                  setAvailableTimeSlots([]);
+                                }}
+                                value={
+                                  selectedMonth
+                                    ? format(selectedMonth, 'yyyy-MM')
+                                    : ''
+                                }
                               >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={(date) => {
-                                    field.onChange(date);
-                                    // Resetear el horario seleccionado cuando se cambia la fecha
-                                    form.setValue("time", "");
-                                  }}
-                                  disabled={(date) =>
-                                    date < new Date() || date.getDay() === 0
-                                  }
-                                  locale={es}
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Elige un mes" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {monthOptions.map((month) => (
+                                    <SelectItem
+                                      key={month.key}
+                                      value={month.key}
+                                    >
+                                      {month.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                onValueChange={(value) => {
+                                  const nextWeekStart =
+                                    weekOptions.find((w) => w.key === value)
+                                      ?.start ?? null;
+                                  setSelectedWeekStart(nextWeekStart);
+                                  form.resetField('date');
+                                  form.resetField('time');
+                                  setAvailableTimeSlots([]);
+                                }}
+                                value={
+                                  selectedWeekStart
+                                    ? format(selectedWeekStart, 'yyyy-MM-dd')
+                                    : ''
+                                }
+                                disabled={!selectedMonth}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Elige una semana" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {weekOptions.map((week) => (
+                                    <SelectItem key={week.key} value={week.key}>
+                                      {week.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <div className="grid grid-cols-7 gap-2">
+                                {dayOptions.map(({ day, disabled }) => {
+                                  const isSelected =
+                                    field.value &&
+                                    format(field.value, 'yyyy-MM-dd') ===
+                                      format(day, 'yyyy-MM-dd');
+
+                                  return (
+                                    <Button
+                                      key={format(day, 'yyyy-MM-dd')}
+                                      type="button"
+                                      variant={
+                                        isSelected ? 'default' : 'outline'
+                                      }
+                                      className="px-0"
+                                      disabled={disabled}
+                                      onClick={() => {
+                                        field.onChange(day);
+                                        form.resetField('time');
+                                      }}
+                                    >
+                                      <span className="flex flex-col leading-none">
+                                        <span className="text-[10px] uppercase opacity-80">
+                                          {format(day, 'EEE', { locale: es })}
+                                        </span>
+                                        <span className="text-sm font-semibold">
+                                          {format(day, 'd')}
+                                        </span>
+                                      </span>
+                                    </Button>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="text-sm text-muted-foreground">
+                                {field.value
+                                  ? format(field.value, 'PPP', { locale: es })
+                                  : 'Selecciona mes, semana y día'}
+                              </div>
+                            </div>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -506,57 +852,38 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Hora</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Selecciona una hora" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent className="max-h-[300px] overflow-auto">
-                                {isLoadingTimeSlots ? (
-                                  <div className="p-2 text-center text-sm text-muted-foreground">
-                                    Cargando horarios disponibles...
-                                  </div>
-                                ) : availableTimeSlots.length > 0 ? (
-                                  <>
-                                    {/* Agrupar por mañana y tarde */}
-                                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-                                      Mañana
-                                    </div>
-                                    {availableTimeSlots
-                                      .filter((time) => {
-                                        const hour = parseInt(time.split(":")[0]);
-                                        return hour < 12;
-                                      })
-                                      .map((time) => (
-                                        <SelectItem key={time} value={time}>
-                                          {time}
-                                        </SelectItem>
-                                      ))}
-                                    <div className="px-2 py-1.5 mt-2 text-xs font-medium text-muted-foreground">
-                                      Tarde
-                                    </div>
-                                    {availableTimeSlots
-                                      .filter((time) => {
-                                        const hour = parseInt(time.split(":")[0]);
-                                        return hour >= 12;
-                                      })
-                                      .map((time) => (
-                                        <SelectItem key={time} value={time}>
-                                          {time}
-                                        </SelectItem>
-                                      ))}
-                                  </>
-                                ) : (
-                                  <div className="p-2 text-center text-sm text-muted-foreground">
-                                    No hay horarios disponibles para esta fecha. Por favor selecciona otra fecha.
-                                  </div>
-                                )}
-                              </SelectContent>
-                            </Select>
+                            {!watchDate ? (
+                              <div className="text-sm text-muted-foreground">
+                                Selecciona un día para ver horarios disponibles.
+                              </div>
+                            ) : isLoadingTimeSlots ? (
+                              <div className="text-sm text-muted-foreground">
+                                Cargando horarios disponibles...
+                              </div>
+                            ) : availableTimeSlots.length === 0 ? (
+                              <div className="text-sm text-muted-foreground">
+                                No hay horarios disponibles para esta fecha. Por
+                                favor selecciona otra fecha.
+                              </div>
+                            ) : (
+                              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                {availableTimeSlots.map((time) => {
+                                  const isSelected = field.value === time;
+                                  return (
+                                    <Button
+                                      key={time}
+                                      type="button"
+                                      variant={
+                                        isSelected ? 'default' : 'outline'
+                                      }
+                                      onClick={() => field.onChange(time)}
+                                    >
+                                      {time}
+                                    </Button>
+                                  );
+                                })}
+                              </div>
+                            )}
                             <FormMessage />
                           </FormItem>
                         )}
@@ -638,7 +965,7 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
             </Card>
           )}
 
-          {step === 2 && (
+          {/* {step === 2 && (
             <Card>
               <CardHeader>
                 <CardTitle>Método de pago</CardTitle>
@@ -771,9 +1098,9 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                 </Button>
               </CardFooter>
             </Card>
-          )}
+          )} */}
 
-          {step === 3 && (
+          {step === 2 && (
             <Card className="text-center">
               <CardHeader>
                 <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-4">
@@ -789,16 +1116,16 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                   <div className="p-4 bg-muted/50 rounded-lg">
                     <p className="font-medium">
                       {
-                        services.find((s) => s.id === form.getValues("service"))
+                        services.find((s) => s.id === form.getValues('service'))
                           ?.name
                       }
                     </p>
                     <p className="text-muted-foreground">
-                      {form.getValues("date") &&
-                        format(form.getValues("date"), "PPP", {
+                      {form.getValues('date') &&
+                        format(form.getValues('date'), 'PPP', {
                           locale: es,
-                        })}{" "}
-                      a las {form.getValues("time")}
+                        })}{' '}
+                      a las {form.getValues('time')}
                     </p>
                     <p className="text-muted-foreground">
                       {/* Con:{" "}
@@ -807,17 +1134,11 @@ export default function Booking({landingId = ""}: {landingId?: string}) {
                           ?.name
                       } */}
                     </p>
-                    <p className="text-muted-foreground mt-2">
-                      Método de pago:{" "}
-                      {form.getValues("paymentMethod") === "card"
-                        ? "Tarjeta"
-                        : "Efectivo (pago en el local)"}
-                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">
-                      Hemos enviado un correo de confirmación a{" "}
-                      {form.getValues("email")} con los detalles de tu cita.
+                      Hemos enviado un correo de confirmación a{' '}
+                      {form.getValues('email')} con los detalles de tu cita.
                     </p>
                     <p className="text-muted-foreground mt-2">
                       Te recordaremos tu cita un día antes por correo

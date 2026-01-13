@@ -60,7 +60,7 @@ export default async function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#hero"
+                  href="/#hero"
                   className="text-muted-foreground hover:text-primary"
                 >
                   Inicio
@@ -68,7 +68,7 @@ export default async function Footer() {
               </li>
               <li>
                 <Link
-                  href="#services"
+                  href="/#services"
                   className="text-muted-foreground hover:text-primary"
                 >
                   Servicios
@@ -76,7 +76,7 @@ export default async function Footer() {
               </li>
               <li>
                 <Link
-                  href="#about"
+                  href="/#about"
                   className="text-muted-foreground hover:text-primary"
                 >
                   Sobre Nosotros
@@ -84,7 +84,7 @@ export default async function Footer() {
               </li>
               <li>
                 <Link
-                  href="#gallery"
+                  href="/#gallery"
                   className="text-muted-foreground hover:text-primary"
                 >
                   Galería
@@ -92,7 +92,7 @@ export default async function Footer() {
               </li>
               <li>
                 <Link
-                  href="#promotions"
+                  href="/#promotions"
                   className="text-muted-foreground hover:text-primary"
                 >
                   Promociones

@@ -200,7 +200,7 @@ export function AppointmentCalendar({
               <div className="flex-1" />
             </div>
           ))}
-          {laidOutAppointments.map((appointment) => {
+          {laidOutAppointments.map((appointment, index) => {
             const start = new Date(appointment.start_datetime);
             const top = (start.getHours() - 6 + start.getMinutes() / 60) * 64; // 64px per hour, base hour is now 6
             const appointmentWidth = parseFloat(appointment.layout.width);
@@ -208,7 +208,7 @@ export function AppointmentCalendar({
 
             return (
               <button
-                key={appointment.id}
+                key={`${appointment.id}-${index}`}
                 type="button"
                 className={`absolute p-2 rounded-lg text-left text-sm z-10 border shadow-sm hover:shadow-md transition-all ${
                   appointment.status === 'Confirmada'
@@ -263,7 +263,7 @@ export function AppointmentCalendar({
           const laidOutAppointments = layoutAppointmentsForDay(dayAppointments);
           return (
             <div key={format(day, 'yyyy-MM-dd')} className="relative border-t">
-              {laidOutAppointments.map((appointment) => {
+              {laidOutAppointments.map((appointment, index) => {
                 const start = new Date(appointment.start_datetime);
                 const top =
                   ((start.getHours() * 60 + start.getMinutes()) / (24 * 60)) *
@@ -273,7 +273,7 @@ export function AppointmentCalendar({
 
                 return (
                   <button
-                    key={appointment.id}
+                    key={`${appointment.id}-${index}`}
                     type="button"
                     className={`absolute text-xs p-1 rounded truncate text-left border shadow-sm hover:shadow-md transition-all ${
                       appointment.status === 'Confirmada'
@@ -349,9 +349,9 @@ export function AppointmentCalendar({
                   </span>
                 </div>
                 <div className="space-y-1">
-                  {dayAppointments.slice(0, 3).map((appointment) => (
+                  {dayAppointments.slice(0, 3).map((appointment, index) => (
                     <button
-                      key={appointment.id}
+                      key={`${appointment.id}-${index}`}
                       type="button"
                       className={`text-xs p-1 rounded truncate w-full text-left border shadow-sm hover:shadow-md transition-all ${
                         appointment.status === 'Confirmada'

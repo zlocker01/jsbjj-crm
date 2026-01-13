@@ -29,7 +29,7 @@ export default function Hero({ data }: { data: HeroSection }) {
                   </svg></Link>
               </Button> */}
               <Button size="lg" asChild>
-                <Link href="#booking">Agenda tu cita</Link>
+                <Link href="/citas">Agenda tu cita</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="#services">Ver servicios</Link>

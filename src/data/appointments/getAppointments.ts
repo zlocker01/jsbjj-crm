@@ -4,12 +4,7 @@ import type { Appointment } from "@/interfaces/appointments/Appointment";
 
 export const getAppointments = async (): Promise<Appointment[] | undefined> => {
   const supabase = await createClient();
-  const userId = await getUserId();
-
-  if (!userId) {
-    console.error("User ID not found, cannot fetch appointments.");
-    return undefined;
-  }
+  // const userId = await getUserId(); // Permitir acceso público para ver disponibilidad
 
   const { data, error } = await supabase.from("appointments").select("*");
 

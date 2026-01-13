@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Calendar, User, X } from "lucide-react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { Badge } from "@/components/ui/badge";
+import { Button } from '@/components/ui/button';
+import { Calendar, User, X } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
-import type { Appointment } from "@/interfaces/appointments/Appointment";
-import { Client } from "@/interfaces/client/Client";
-import { Promotion } from "@/interfaces/promotions/Promotion";
-import { Service } from "@/interfaces/services/Service";
+} from '@/components/ui/dialog';
+import { useToast } from '@/components/ui/use-toast';
+import { useState } from 'react';
+import type { Appointment } from '@/interfaces/appointments/Appointment';
+import { Client } from '@/interfaces/client/Client';
+import { Promotion } from '@/interfaces/promotions/Promotion';
+import { Service } from '@/interfaces/services/Service';
 
 interface AppointmentDetailsProps {
   appointment: Appointment | null;
@@ -27,6 +27,7 @@ interface AppointmentDetailsProps {
   onEdit: (appointment: Appointment) => void;
   onCreateNew: () => void;
   onClose: () => void;
+  onAppointmentCancelled?: () => void;
 }
 
 export function AppointmentDetails({
@@ -37,6 +38,7 @@ export function AppointmentDetails({
   onEdit,
   onCreateNew,
   onClose,
+  onAppointmentCancelled,
 }: AppointmentDetailsProps) {
   const { toast } = useToast();
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -52,28 +54,35 @@ export function AppointmentDetails({
 
   const handleCancelAppointment = async () => {
     try {
-      await fetch(`/api/appointments/${appointment.id}`, {
-        method: "PUT",
+      const response = await fetch(`/api/appointments/${appointment.id}`, {
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: "Cancelada" }),
+        body: JSON.stringify({ status: 'Cancelada' }),
       });
+
+      if (!response.ok) {
+        throw new Error('Error al cancelar la cita');
+      }
 
       setShowCancelDialog(false);
       onClose();
+      if (onAppointmentCancelled) {
+        onAppointmentCancelled();
+      }
       toast({
-        title: "Cita cancelada",
-        description: "La cita ha sido cancelada correctamente.",
-        variant: "success",
+        title: 'Cita cancelada',
+        description: 'La cita ha sido cancelada correctamente.',
+        variant: 'success',
       });
     } catch (error) {
-      console.error("Error al cancelar la cita:", error);
+      console.error('Error al cancelar la cita:', error);
       toast({
-        title: "Error",
+        title: 'Error',
         description:
-          "No se pudo cancelar la cita. Por favor, inténtalo de nuevo.",
-        variant: "destructive",
+          'No se pudo cancelar la cita. Por favor, inténtalo de nuevo.',
+        variant: 'destructive',
       });
     }
   };
@@ -97,13 +106,22 @@ export function AppointmentDetails({
           <User className="h-5 w-5 text-muted-foreground" />
           <div>
             <p className="font-medium">
-              {clients.find((client) => client.id === appointment?.client_id)?.name}
+              {
+                clients.find((client) => client.id === appointment?.client_id)
+                  ?.name
+              }
             </p>
             <p className="text-sm text-muted-foreground">
-              {clients.find((client) => client.id === appointment?.client_id)?.email}
+              {
+                clients.find((client) => client.id === appointment?.client_id)
+                  ?.email
+              }
             </p>
             <p className="text-sm text-muted-foreground">
-              {clients.find((client) => client.id === appointment?.client_id)?.phone}
+              {
+                clients.find((client) => client.id === appointment?.client_id)
+                  ?.phone
+              }
             </p>
           </div>
         </div>
@@ -115,12 +133,12 @@ export function AppointmentDetails({
               {format(
                 new Date(appointment?.start_datetime),
                 "EEEE d 'de' MMMM",
-                { locale: es },
+                { locale: es }
               )}
             </p>
             <p className="text-sm text-muted-foreground">
-              {format(new Date(appointment.start_datetime), "HH:mm")} -{" "}
-              {format(new Date(appointment.end_datetime), "HH:mm")}
+              {format(new Date(appointment.start_datetime), 'HH:mm')} -{' '}
+              {format(new Date(appointment.end_datetime), 'HH:mm')}
             </p>
           </div>
         </div>
@@ -129,27 +147,38 @@ export function AppointmentDetails({
           <p className="text-sm font-medium">Servicio o Promoción</p>
           {appointment.promotion_id
             ? (() => {
-                const promo = promotions.find((p) => p.id === appointment.promotion_id);
+                const promo = promotions.find(
+                  (p) => p.id === appointment.promotion_id
+                );
                 return promo ? (
                   <>
                     <p>{promo.title}</p>
                     <p>
-                      Precio: <span className="line-through">${promo.price}</span> <span className="font-bold">${promo.discount_price}</span>
+                      Precio:{' '}
+                      <span className="line-through">${promo.price}</span>{' '}
+                      <span className="font-bold">${promo.discount_price}</span>
                     </p>
                     <p>Duración aproximada: {promo.duration_minutes} minutos</p>
-                    <p className="text-xs text-muted-foreground">{promo.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {promo.description}
+                    </p>
                   </>
                 ) : (
                   <p>Sin promoción</p>
                 );
               })()
             : (() => {
-                const service = services.find((s) => s.id === appointment.service_id);
+                const service = services.find(
+                  (s) => s.id === appointment.service_id
+                );
                 return service ? (
                   <>
                     <p>{service.title}</p>
                     <p>Precio: ${service.price}</p>
-                    <p>Duración aproximada: {service.duration_minutes || 0} minutos</p>
+                    <p>
+                      Duración aproximada: {service.duration_minutes || 0}{' '}
+                      minutos
+                    </p>
                   </>
                 ) : (
                   <p>Sin servicio</p>
@@ -161,18 +190,18 @@ export function AppointmentDetails({
           <p className="text-sm font-medium">Estado</p>
           <Badge
             variant={
-              appointment.status === "Confirmada"
-                ? "confirmada"
-                : appointment.status === "Cancelada"
-                  ? "cancelada"
-                  : "proceso"
+              appointment.status === 'Confirmada'
+                ? 'confirmada'
+                : appointment.status === 'Cancelada'
+                ? 'cancelada'
+                : 'proceso'
             }
           >
-            {appointment.status === "Confirmada"
-              ? "Confirmada"
-              : appointment.status === "Cancelada"
-                ? "Cancelada"
-                : "Confirmada"}
+            {appointment.status === 'Confirmada'
+              ? 'Confirmada'
+              : appointment.status === 'Cancelada'
+              ? 'Cancelada'
+              : 'Confirmada'}
           </Badge>
         </div>
 
@@ -189,7 +218,7 @@ export function AppointmentDetails({
           variant="destructive"
           size="sm"
           onClick={() => setShowCancelDialog(true)}
-          disabled={appointment.status === "Cancelada"}
+          disabled={appointment.status === 'Cancelada'}
         >
           Cancelar cita
         </Button>
@@ -206,16 +235,28 @@ export function AppointmentDetails({
           </DialogHeader>
           <div className="py-4 space-y-3">
             <div className="p-3 bg-muted rounded-lg space-y-2">
-              <div className="font-medium">{clients.find((client) => client.id === appointment?.client_id)?.name}</div>
-              <div className="text-sm">Servicio: {services.find((service) => service.id === appointment?.service_id)?.title}</div>
+              <div className="font-medium">
+                {
+                  clients.find((client) => client.id === appointment?.client_id)
+                    ?.name
+                }
+              </div>
+              <div className="text-sm">
+                Servicio:{' '}
+                {
+                  services.find(
+                    (service) => service.id === appointment?.service_id
+                  )?.title
+                }
+              </div>
               <div className="text-sm text-muted-foreground">
                 {format(
                   new Date(appointment.start_datetime),
                   "EEEE d 'de' MMMM",
-                  { locale: es },
-                )}{" "}
-                • {format(new Date(appointment.start_datetime), "HH:mm")} -{" "}
-                {format(new Date(appointment.end_datetime), "HH:mm")}
+                  { locale: es }
+                )}{' '}
+                • {format(new Date(appointment.start_datetime), 'HH:mm')} -{' '}
+                {format(new Date(appointment.end_datetime), 'HH:mm')}
               </div>
             </div>
 

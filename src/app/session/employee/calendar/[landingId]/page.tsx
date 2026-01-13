@@ -167,6 +167,7 @@ export default function CalendarPage() {
               setSelectedAppointment(null);
               setIsFormOpen(true);
             }}
+            onAppointmentCancelled={() => mutate()}
           />
         </div>
       </div>

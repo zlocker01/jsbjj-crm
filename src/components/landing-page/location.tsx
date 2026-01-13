@@ -270,13 +270,9 @@ export default function Location({ data, schedules }: LocationProps) {
             </div>
 
             <Button size="lg" asChild className="w-full">
-              <a
-                href="https://wa.me/522461003603?text=Hola,%20me%20gustaría%20agendar%20una%20cita"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link href="/citas">
                 Agendar Cita
-              </a>
+              </Link>
             </Button>
           </div>
         </div>
