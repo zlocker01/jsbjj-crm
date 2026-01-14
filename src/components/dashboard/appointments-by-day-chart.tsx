@@ -64,7 +64,7 @@ export function AppointmentsByDayChart({ data: initialData }: AppointmentsByDayC
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis type="number" />
+        <XAxis type="number" allowDecimals={false} />
         <YAxis dataKey="day" type="category" />
         <TooltipWrapper formatter={(value) => {
           const numValue = typeof value === 'string' ? parseFloat(value) : value;
