@@ -2,7 +2,14 @@
 
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -124,22 +131,22 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
                             </Card>
                           </DialogTrigger>
                           <DialogContent className="max-w-3xl">
+                            <DialogHeader className="text-center">
+                              <DialogTitle>
+                                {item.title || 'Imagen de galería'}
+                              </DialogTitle>
+                              {item.description && (
+                                <DialogDescription>
+                                  {item.description}
+                                </DialogDescription>
+                              )}
+                            </DialogHeader>
                             <div className="relative h-[60vh] w-full">
                               <img
                                 src={item.image || '/placeholder.svg'}
                                 alt={item.title || 'Imagen ampliada'}
                                 className="absolute inset-0 h-full w-full object-contain"
                               />
-                            </div>
-                            <div className="text-center">
-                              <h3 className="text-xl font-medium">
-                                {item.title}
-                              </h3>
-                              {item.description && (
-                                <p className="text-muted-foreground">
-                                  {item.description}
-                                </p>
-                              )}
                             </div>
                           </DialogContent>
                         </Dialog>
