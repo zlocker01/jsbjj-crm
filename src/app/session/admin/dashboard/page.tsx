@@ -15,6 +15,7 @@ import { ServiceRevenueChart } from '@/components/dashboard/service-revenue-char
 import { ClientsOverviewChart } from '@/components/dashboard/clients-overview-chart';
 import { AppointmentsAnalysis } from '@/components/dashboard/appointments-analysis';
 import { RecentAppointments } from '@/components/dashboard/recent-appointments';
+import { InfoDialog } from '@/components/navegation/InfoDialog';
 
 import { getAppointments } from '@/data/appointments/getAppointments';
 import { getClients } from '@/data/clients/getClients';
@@ -695,6 +696,8 @@ export default async function DashboardPage() {
     computeRevenueSeriesMonthly(appointments);
   const weeklyRevenueData: RevenueData[] =
     computeRevenueSeriesWeekly(appointments);
+  const hasRevenueData =
+    monthlyRevenueData.length > 0 || weeklyRevenueData.length > 0;
   const serviceRevenueData: ServiceRevenueData[] = computeServiceRevenue(
     appointments,
     (services as any) || []
@@ -809,7 +812,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6 h-full">
-      {/* Encabezado */}
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
           Dashboard
@@ -819,7 +821,12 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Tarjetas de resumen */}
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold">Resumen rápido</h2>
+        <InfoDialog description="Aquí ves un resumen rápido: cuántos pacientes tienes, cuántos vuelven y cuánto valor genera cada uno en promedio.">
+          Resumen rápido
+        </InfoDialog>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           title="Pacientes Totales"
@@ -845,10 +852,14 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* Métricas generales y Ingresos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
-          <h3 className="text-lg font-semibold mb-2">Métricas Generales</h3>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <h3 className="text-lg font-semibold">Métricas Generales</h3>
+            <InfoDialog description="Aquí ves, mes a mes, cuántas citas, ingresos y pacientes has tenido, para comparar meses fuertes y meses más tranquilos.">
+              Métricas generales
+            </InfoDialog>
+          </div>
           <p className="text-sm text-muted-foreground mb-4">
             Resumen de citas, pacientes e ingresos
           </p>
@@ -857,26 +868,43 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Ingresos</CardTitle>
-            <CardDescription>Comparativa mensual y semanal</CardDescription>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <CardTitle>Ingresos</CardTitle>
+                <CardDescription>Comparativa mensual y semanal</CardDescription>
+              </div>
+              <InfoDialog description="Muestra cuánto dinero entra a tu consultorio por semana y por mes, para ver si estás ganando más o menos que antes.">
+                Ingresos
+              </InfoDialog>
+            </div>
           </CardHeader>
           <CardContent>
-            <RevenueChart
-              monthlyData={monthlyRevenueData}
-              weeklyData={weeklyRevenueData}
-            />
+            {hasRevenueData ? (
+              <RevenueChart
+                monthlyData={monthlyRevenueData}
+                weeklyData={weeklyRevenueData}
+              />
+            ) : (
+              <RevenueChart />
+            )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Ingresos por servicio y Pacientes */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Ingresos por Servicio</CardTitle>
-            <CardDescription>
-              Distribución de ingresos por tipo de servicio
-            </CardDescription>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <CardTitle>Ingresos por Servicio</CardTitle>
+                <CardDescription>
+                  Distribución de ingresos por tipo de servicio
+                </CardDescription>
+              </div>
+              <InfoDialog description="Te muestra qué tratamientos dejan más dinero para que sepas qué servicios promocionar y si los que más trabajas son los más rentables.">
+                Ingresos por servicio
+              </InfoDialog>
+            </div>
           </CardHeader>
           <CardContent>
             <ServiceRevenueChart data={serviceRevenueData} />
@@ -885,10 +913,17 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Resumen de Pacientes</CardTitle>
-            <CardDescription>
-              Distribución de pacientes por categoría
-            </CardDescription>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <CardTitle>Resumen de Pacientes</CardTitle>
+                <CardDescription>
+                  Distribución de pacientes por categoría
+                </CardDescription>
+              </div>
+              <InfoDialog description="Divide a tus pacientes en nuevos, recurrentes e inactivos para que veas quién sigue viniendo y quién hace tiempo que no agenda.">
+                Resumen de pacientes
+              </InfoDialog>
+            </div>
           </CardHeader>
           <CardContent>
             <ClientsOverviewChart data={clientOverviewData} isLoading={false} />
@@ -896,18 +931,29 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Citas recientes */}
       <Card>
         <CardHeader>
-          <CardTitle>Citas Recientes</CardTitle>
-          <CardDescription>Últimas citas registradas</CardDescription>
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <CardTitle>Citas Recientes</CardTitle>
+              <CardDescription>Últimas citas registradas</CardDescription>
+            </div>
+            <InfoDialog description="Muestra las últimas citas registradas para que veas rápido qué viene en tu agenda y si hubo cambios como cancelaciones o confirmaciones.">
+              Citas recientes
+            </InfoDialog>
+          </div>
         </CardHeader>
         <CardContent>
           <RecentAppointments appointments={recentAppointments as any} />
         </CardContent>
       </Card>
 
-      {/* Análisis detallado de citas */}
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold">Análisis detallado de citas</h2>
+        <InfoDialog description="Aquí tienes gráficas más completas sobre tus citas: días y horarios con más demanda, servicios más reservados y filtros de tiempo para ver distintos periodos.">
+          Análisis de citas
+        </InfoDialog>
+      </div>
       <AppointmentsAnalysis
         appointmentsByDayData={appointmentsByDayData}
         appointmentsByHourData={appointmentsByHourData}
