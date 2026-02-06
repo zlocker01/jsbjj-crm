@@ -1,32 +1,32 @@
-"use client";
+'use client';
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ClientsTable } from "@/components/clients/clients-table";
-import { ClientDetails } from "@/components/clients/client-details";
-import { Download, Plus, Search } from "lucide-react";
-import { NewClientDialog } from "@/components/clients/NewClientDialog";
-import { AppointmentDialog } from "@/components/calendar/AppointmentDialog";
-import { useToast } from "@/components/ui/use-toast";
-import { AdvancedMetrics } from "@/components/dashboard/advanced-metrics";
-import type { ClientFormValues } from "@/schemas/clientSchemas/clientSchema";
-import useSWR, { mutate } from "swr";
-import type { Client } from "@/interfaces/client/Client";
-import type { Service } from "@/interfaces/services/Service";
-import type { Promotion } from "@/interfaces/promotions/Promotion";
+} from '@/components/ui/card';
+import { ClientsTable } from '@/components/clients/clients-table';
+import { ClientDetails } from '@/components/clients/client-details';
+import { Download, Plus, Search } from 'lucide-react';
+import { NewClientDialog } from '@/components/clients/NewClientDialog';
+import { AppointmentDialog } from '@/components/calendar/AppointmentDialog';
+import { useToast } from '@/components/ui/use-toast';
+import { AdvancedMetrics } from '@/components/dashboard/advanced-metrics';
+import type { ClientFormValues } from '@/schemas/clientSchemas/clientSchema';
+import useSWR, { mutate } from 'swr';
+import type { Client } from '@/interfaces/client/Client';
+import type { Service } from '@/interfaces/services/Service';
+import type { Promotion } from '@/interfaces/promotions/Promotion';
 
 export default function ClientsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isNewClientDialogOpen, setIsNewClientDialogOpen] = useState(false);
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
@@ -38,62 +38,68 @@ export default function ClientsPage() {
   // Fetch data required for the appointment form
   const { data: clientsData } = useSWR<Client[]>('/api/clients', fetcher);
   const { data: servicesData } = useSWR<Service[]>('/api/services', fetcher);
-  const { data: promotionsData } = useSWR<Promotion[]>('/api/promotions', fetcher);
+  const { data: promotionsData } = useSWR<Promotion[]>(
+    '/api/promotions',
+    fetcher
+  );
 
   const handleCreateClient = async (data: ClientFormValues) => {
-    const res = await fetch("/api/clients", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('/api/clients', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     if (res.ok) {
       toast({
-        title: "Paciente creado",
+        title: 'Paciente creado',
         description: `El paciente ${data.name} ha sido creado correctamente.`,
-        variant: "success",
+        variant: 'success',
       });
       setIsNewClientDialogOpen(false);
-      mutate("/api/clients"); // <-- Esto recarga la lista automáticamente
+      mutate('/api/clients'); // <-- Esto recarga la lista automáticamente
     } else {
       toast({
-        title: "Error",
-        description: "No se pudo crear el paciente.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'No se pudo crear el paciente.',
+        variant: 'destructive',
       });
     }
   };
 
-  const handleDeleteClientSuccess = (deletedClientId: Client["id"]) => {
+  const handleDeleteClientSuccess = (deletedClientId: Client['id']) => {
     if (selectedClient && selectedClient.id === deletedClientId) {
       setSelectedClient(null); // Limpiar la selección si el cliente eliminado era el seleccionado
     }
-    mutate("/api/clients"); // Actualizar la lista de clientes
+    mutate('/api/clients'); // Actualizar la lista de clientes
   };
 
   const handleAppointmentSubmit = async (data: any) => {
     try {
       const response = await fetch(`/api/appointments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...data }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.details || "Error al guardar la cita");
+        throw new Error(errorData.details || 'Error al guardar la cita');
       }
 
       toast({
-        title: "Cita guardada",
-        description: "La cita se ha guardado correctamente.",
-        variant: "success",
+        title: 'Cita guardada',
+        description: 'La cita se ha guardado correctamente.',
+        variant: 'success',
       });
       setIsAppointmentDialogOpen(false);
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? `No se pudo guardar la cita: ${error.message}` : "No se pudo guardar la cita.",
-        variant: "destructive",
+        title: 'Error',
+        description:
+          error instanceof Error
+            ? `No se pudo guardar la cita: ${error.message}`
+            : 'No se pudo guardar la cita.',
+        variant: 'destructive',
       });
     }
   };
@@ -154,9 +160,7 @@ export default function ClientsPage() {
             </CardContent>
           </Card>
 
-          <div className="mt-4">
-            {/* <AdvancedMetrics /> */}
-          </div>
+          <div className="mt-4">{/* <AdvancedMetrics /> */}</div>
         </div>
 
         <div className="w-full lg:w-80 order-1 lg:order-2">
@@ -165,8 +169,8 @@ export default function ClientsPage() {
               <CardTitle>Paciente</CardTitle>
               <CardDescription>
                 {selectedClient
-                  ? "Información detallada del paciente"
-                  : "Selecciona un paciente para ver detalles"}
+                  ? 'Información detallada del paciente'
+                  : 'Selecciona un paciente para ver detalles'}
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -169,7 +170,14 @@ export function ClientForm({
             Cancelar
           </Button>
           <Button type="submit" className="flex-1" disabled={isSubmitting}>
-            {isSubmitting ? "Guardando..." : "Guardar"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Guardando...
+              </>
+            ) : (
+              "Guardar"
+            )}
           </Button>
         </div>
       </form>

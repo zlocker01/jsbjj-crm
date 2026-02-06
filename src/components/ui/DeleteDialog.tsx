@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DeleteDialogProps {
   onDelete: () => Promise<void> | void;
@@ -26,6 +27,8 @@ interface DeleteDialogProps {
     | "secondary"
     | "ghost"
     | "link";
+  size?: "default" | "sm" | "lg" | "icon";
+  buttonClassName?: string;
 }
 
 export function DeleteDialog({
@@ -36,11 +39,17 @@ export function DeleteDialog({
   cancelText = "Cancelar",
   confirmText = "Eliminar",
   variant = "destructive",
+  size = "default",
+  buttonClassName,
 }: DeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant={variant} className="flex items-center gap-2">
+        <Button
+          variant={variant}
+          size={size}
+          className={cn("flex items-center justify-center gap-2", buttonClassName)}
+        >
           <Trash2 className="h-4 w-4" />
           {buttonText}
         </Button>

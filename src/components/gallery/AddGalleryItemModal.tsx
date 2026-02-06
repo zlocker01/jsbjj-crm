@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import type { ChangeEvent } from "react";
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@/utils/supabase/client";
-import { Button } from "@/components/ui/button";
+import type { ChangeEvent } from 'react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createClient } from '@/utils/supabase/client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -14,26 +14,26 @@ import {
   DialogFooter,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import type { Category } from "@/interfaces/landingPages/Category";
-import { Loader2, Upload } from "lucide-react";
-import { galleryItemFormSchema } from "@/schemas/gallerySchemas/galleryItemSchema";
-import type { GalleryFormData } from "@/interfaces/galleryItems/GalleryFormData";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import type { Category } from '@/interfaces/landingPages/Category';
+import { Loader2, Upload } from 'lucide-react';
+import { galleryItemFormSchema } from '@/schemas/gallerySchemas/galleryItemSchema';
+import type { GalleryFormData } from '@/interfaces/galleryItems/GalleryFormData';
 
 const categories: Category[] = [
-  "Ortodoncia",
-  "Endodoncia",
-  "Periodoncia",
-  "Odontopediatría",
-  "Implantes",
-  "Estética Dental",
-  "Blanqueamiento",
-  "Cirugía",
-  "Prótesis",
-  "General",
+  'Ortodoncia',
+  'Endodoncia',
+  'Periodoncia',
+  'Odontopediatría',
+  'Implantes',
+  'Estética Dental',
+  'Blanqueamiento',
+  'Cirugía',
+  'Prótesis',
+  'General',
 ];
 
 export default function AddGalleryItemModal({
@@ -58,9 +58,9 @@ export default function AddGalleryItemModal({
   } = useForm<GalleryFormData>({
     resolver: zodResolver(galleryItemFormSchema) as any,
     defaultValues: {
-      title: "",
-      description: "",
-      image: "",
+      title: '',
+      description: '',
+      image: '',
       category: categories[0],
       is_before_after: false,
       landing_page_id: landingId,
@@ -84,12 +84,12 @@ export default function AddGalleryItemModal({
     try {
       setIsUploading(true);
 
-      const cleanName = file.name.replace(/\s+/g, "-").toLowerCase();
+      const cleanName = file.name.replace(/\s+/g, '-').toLowerCase();
       const fileName = `landing/${landingId}/gallery/${Date.now()}-${cleanName}`;
 
       // Subir el archivo al bucket 'landing-images'
       const { error: uploadError } = await supabase.storage
-        .from("landing-images")
+        .from('landing-images')
         .upload(fileName, file);
 
       if (uploadError) {
@@ -98,25 +98,25 @@ export default function AddGalleryItemModal({
 
       // Obtener la URL pública
       const { data: urlData } = supabase.storage
-        .from("landing-images")
+        .from('landing-images')
         .getPublicUrl(fileName);
 
       const publicUrl = urlData.publicUrl;
 
       // Establecer la URL en el formulario
-      setValue("image", publicUrl);
+      setValue('image', publicUrl);
 
       toast({
-        title: "Imagen cargada",
-        description: "La imagen se ha subido correctamente.",
-        variant: "success",
+        title: 'Imagen cargada',
+        description: 'La imagen se ha subido correctamente.',
+        variant: 'success',
       });
     } catch (error) {
-      console.error("Error al subir la imagen:", error);
+      console.error('Error al subir la imagen:', error);
       toast({
-        title: "Error",
-        description: "No se pudo subir la imagen. Inténtalo de nuevo.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'No se pudo subir la imagen. Inténtalo de nuevo.',
+        variant: 'destructive',
       });
     } finally {
       setIsUploading(false);
@@ -129,12 +129,12 @@ export default function AddGalleryItemModal({
 
   const onSubmit = async (formData: GalleryFormData) => {
     try {
-      console.log("Enviando datos:", formData);
+      console.log('Enviando datos:', formData);
 
-      const response = await fetch("/api/galleryItems", {
-        method: "POST",
+      const response = await fetch('/api/galleryItems', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...formData,
@@ -145,13 +145,13 @@ export default function AddGalleryItemModal({
       const responseData = await response.json();
 
       if (!response.ok) {
-        throw new Error(responseData.error || "Error al crear el ítem");
+        throw new Error(responseData.error || 'Error al crear el ítem');
       }
 
       toast({
-        title: "¡Éxito!",
-        description: "El ítem se ha creado correctamente.",
-        variant: "success",
+        title: '¡Éxito!',
+        description: 'El ítem se ha creado correctamente.',
+        variant: 'success',
       });
 
       // Resetear el formulario
@@ -160,14 +160,14 @@ export default function AddGalleryItemModal({
       setOpen(false);
       router.refresh();
     } catch (error) {
-      console.error("Error al guardar el ítem:", error);
+      console.error('Error al guardar el ítem:', error);
       toast({
-        title: "Error",
+        title: 'Error',
         description:
           error instanceof Error
             ? error.message
-            : "No se pudo crear el ítem. Inténtalo de nuevo.",
-        variant: "destructive",
+            : 'No se pudo crear el ítem. Inténtalo de nuevo.',
+        variant: 'destructive',
       });
     }
   };
@@ -189,7 +189,7 @@ export default function AddGalleryItemModal({
             >
               Título
             </label>
-            <Input id="title" {...register("title")} className="mt-1" />
+            <Input id="title" {...register('title')} className="mt-1" />
             {errors.title && (
               <p className="mt-1 text-sm text-red-600">
                 {errors.title.message}
@@ -206,7 +206,7 @@ export default function AddGalleryItemModal({
             </label>
             <Textarea
               id="description"
-              {...register("description")}
+              {...register('description')}
               className="mt-1"
               rows={3}
             />
@@ -265,7 +265,7 @@ export default function AddGalleryItemModal({
                             Subiendo...
                           </>
                         ) : (
-                          "Sube una imagen"
+                          'Sube una imagen'
                         )}
                       </Button>
                       <p className="pl-1">o arrástrala aquí</p>
@@ -282,7 +282,7 @@ export default function AddGalleryItemModal({
                 {errors.image.message}
               </p>
             )}
-            <input type="hidden" {...register("image")} />
+            <input type="hidden" {...register('image')} />
           </div>
 
           <div>
@@ -294,7 +294,7 @@ export default function AddGalleryItemModal({
             </label>
             <select
               id="category"
-              {...register("category")}
+              {...register('category')}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             >
               {categories.map((cat) => (
@@ -314,7 +314,7 @@ export default function AddGalleryItemModal({
             <input
               id="is_before_after"
               type="checkbox"
-              {...register("is_before_after")}
+              {...register('is_before_after')}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label
@@ -335,7 +335,14 @@ export default function AddGalleryItemModal({
               Cancelar
             </Button>
             <Button type="submit" disabled={isSubmitting || isUploading}>
-              {isSubmitting ? "Guardando..." : "Guardar"}
+              {isSubmitting || isUploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                'Guardar'
+              )}
             </Button>
           </div>
         </form>

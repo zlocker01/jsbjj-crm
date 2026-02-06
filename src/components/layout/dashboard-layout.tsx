@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   Menu,
   MessageSquare,
+  Package,
   Pencil,
   ShoppingBasket,
   Tag,
@@ -91,9 +92,14 @@ export function DashboardLayout({
       icon: ShoppingBasket,
     },
     {
-      title: 'Promociones', 
-      href: "/session/admin/promotions",
-      icon:  Tag,
+      title: 'Inventario',
+      href: '/session/admin/inventory',
+      icon: Package,
+    },
+    {
+      title: 'Promociones',
+      href: '/session/admin/promotions',
+      icon: Tag,
     },
     {
       title: 'Calendario de Citas',
@@ -249,11 +255,7 @@ export function DashboardLayout({
             asChild
             className="self-start sm:self-auto"
           >
-            <Link
-              href="/"
-              target="_blank"
-              className="mt-3 md:mt-0"
-            >
+            <Link href="/" target="_blank" className="mt-3 md:mt-0">
               <ExternalLink className="mr-2 h-4 w-4" />
               Ver Landing Page en Vivo
             </Link>
