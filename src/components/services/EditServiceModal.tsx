@@ -1,10 +1,12 @@
 'use client';
 
+import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { Service } from '@/interfaces/services/Service';
+import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,9 +17,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, X } from 'lucide-react';
+import { Loader2, Upload, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useEffect } from 'react';
 import {
   Form,
   FormControl,
@@ -34,21 +35,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { serviceLevels } from '@/schemas/servicesSchemas/serviceSchema';
-
-export const serviceFormSchema = z.object({
-  title: z.string().min(1, 'El título es requerido'),
-  description: z.string().optional(),
-  level: z.enum(serviceLevels, {
-    required_error: 'Por favor selecciona un nivel',
-  }),
-  benefits: z
-    .array(z.string())
-    .max(3, 'No puedes agregar más de 3 beneficios')
-    .optional(),
-});
-
-type ServiceFormData = z.infer<typeof serviceFormSchema>;
+import {
+  serviceLevels,
+  serviceFormSchema,
+  type ServiceFormData,
+} from '@/schemas/servicesSchemas/serviceSchema';
 
 interface EditServiceModalProps {
   service: Service;
@@ -65,25 +56,40 @@ export function EditServiceModal({
 }: EditServiceModalProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    service.image || null,
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
 
-  const form = useForm<ServiceFormData>({
-    resolver: zodResolver(serviceFormSchema),
+  // Adaptamos el esquema para hacer landing_page_id opcional en la edición ya que viene del servicio
+  const editServiceSchema = serviceFormSchema.omit({ landing_page_id: true });
+  type EditServiceFormData = z.infer<typeof editServiceSchema>;
+
+  const form = useForm<EditServiceFormData>({
+    resolver: zodResolver(editServiceSchema),
     defaultValues: {
       title: service?.title || '',
       description: service?.description || '',
       level: (service?.level as any) || 'Principiantes',
       benefits: service?.benefits || [],
+      image: service?.image || '',
     },
   });
 
   useEffect(() => {
     // Reset form when service changes
-    form.reset({
-      title: service.title,
-      description: service.description || '',
-      level: (service.level as any) || 'Principiantes',
-      benefits: service.benefits || [],
-    });
+    if (service) {
+      form.reset({
+        title: service.title,
+        description: service.description || '',
+        level: (service.level as any) || 'Principiantes',
+        benefits: service.benefits || [],
+        image: service.image || '',
+      });
+      setPreviewUrl(service.image || null);
+    }
   }, [service, form]);
 
   const normalizeBenefits = (benefits: any): string[] => {
@@ -128,8 +134,87 @@ export function EditServiceModal({
     form.setValue('benefits', currentBenefits, { shouldValidate: true });
   };
 
-  const onSubmit = async (data: ServiceFormData) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    // Mostrar vista previa
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Subir el archivo a Supabase Storage
     try {
+      setIsUploading(true);
+
+      const cleanName = file.name.replace(/\s+/g, '-').toLowerCase();
+      // Usar landing_page_id del servicio o un default si no existe
+      const landingId = service.landing_page_id || 'default';
+      const fileName = `landing/${landingId}/services/${Date.now()}-${cleanName}`;
+
+      // Subir el archivo al bucket 'landing-images'
+      const { error: uploadError } = await supabase.storage
+        .from('landing-images')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Obtener la URL pública
+      const { data: urlData } = supabase.storage
+        .from('landing-images')
+        .getPublicUrl(fileName);
+
+      const publicUrl = urlData.publicUrl;
+
+      // Establecer la URL en el formulario
+      form.setValue('image', publicUrl, { shouldValidate: true });
+
+      toast({
+        title: 'Imagen cargada',
+        description: 'La imagen se ha cargado correctamente.',
+        variant: 'success',
+      });
+    } catch (error) {
+      console.error('Error al subir la imagen:', error);
+      toast({
+        title: 'Error',
+        description: 'No se pudo subir la imagen. Inténtalo de nuevo.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const removeImage = () => {
+    setPreviewUrl(null);
+    form.setValue('image', '', { shouldValidate: true });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const onSubmit = async (data: EditServiceFormData) => {
+    try {
+      if (!data.image) {
+        toast({
+          title: 'Error',
+          description: 'La imagen es obligatoria',
+          variant: 'destructive',
+        });
+        return;
+      }
+
       const response = await fetch(`/api/services/${service.id}`, {
         method: 'PUT',
         headers: {
@@ -139,6 +224,7 @@ export function EditServiceModal({
           ...data,
           level: data.level,
           benefits: data.benefits,
+          image: data.image, // Aseguramos que se envíe la imagen
         }),
       });
 
@@ -172,7 +258,7 @@ export function EditServiceModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Clase</DialogTitle>
         </DialogHeader>
@@ -194,6 +280,69 @@ export function EditServiceModal({
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Imagen de la Clase</FormLabel>
+                  <FormControl>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={triggerFileInput}
+                          disabled={isUploading}
+                        >
+                          {isUploading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Subiendo...
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="mr-2 h-4 w-4" />
+                              Subir Imagen
+                            </>
+                          )}
+                        </Button>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                        />
+                        {previewUrl && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            onClick={removeImage}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+
+                      {previewUrl && (
+                        <div className="relative aspect-video w-full max-w-[200px] overflow-hidden rounded-md border">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={previewUrl}
+                            alt="Vista previa"
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <FormMessage />
+                    </div>
+                  </FormControl>
                 </FormItem>
               )}
             />
