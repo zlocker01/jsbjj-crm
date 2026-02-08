@@ -83,7 +83,7 @@ function groupByMonth(appointments: Appointment[]): MetricData[] {
   return Array.from(map.entries())
     .sort(
       (a, b) =>
-        order.indexOf(a[0].toLowerCase()) - order.indexOf(b[0].toLowerCase())
+        order.indexOf(a[0].toLowerCase()) - order.indexOf(b[0].toLowerCase()),
     )
     .map(([name, v]) => ({
       name,
@@ -94,7 +94,7 @@ function groupByMonth(appointments: Appointment[]): MetricData[] {
 }
 
 function computeRevenueSeriesMonthly(
-  appointments: Appointment[]
+  appointments: Appointment[],
 ): RevenueData[] {
   const byMonth = new Map<string, number>();
   appointments.forEach((a) => {
@@ -119,7 +119,7 @@ function computeRevenueSeriesMonthly(
   return Array.from(byMonth.entries())
     .sort(
       (a, b) =>
-        order.indexOf(a[0].toLowerCase()) - order.indexOf(b[0].toLowerCase())
+        order.indexOf(a[0].toLowerCase()) - order.indexOf(b[0].toLowerCase()),
     )
     .map(([name, ingresos]) => ({
       name,
@@ -130,7 +130,7 @@ function computeRevenueSeriesMonthly(
 }
 
 function computeRevenueSeriesWeekly(
-  appointments: Appointment[]
+  appointments: Appointment[],
 ): RevenueData[] {
   // últimos 7 días por día de semana
   const now = new Date();
@@ -211,7 +211,7 @@ function distinctColorForKey(key: string, idx: number): string {
 
 function computeServiceRevenue(
   appointments: Appointment[],
-  services: { id: number; title: string }[]
+  services: { id: number; title: string }[],
 ): ServiceRevenueData[] {
   const titleById = new Map<number, string>();
   services.forEach((s) => titleById.set(s.id, s.title));
@@ -231,7 +231,7 @@ function computeServiceRevenue(
 
 function computeClientsOverview(
   appointments: Appointment[],
-  clients: Client[]
+  clients: Client[],
 ): ClientSegmentData[] {
   const now = new Date();
   const ninety = new Date(now);
@@ -300,7 +300,7 @@ function computeClientSummary(appointments: Appointment[], clients: Client[]) {
             ((newThisMonth.size - newPrevMonth.size) /
               Math.max(1, newPrevMonth.size)) *
             100
-          ).toFixed(1)
+          ).toFixed(1),
         );
 
   // Retención: clientes con cita en mes actual que también tuvieron en el mes anterior
@@ -313,7 +313,7 @@ function computeClientSummary(appointments: Appointment[], clients: Client[]) {
       hadPrevMonth.add(a.client_id);
   });
   const retained = Array.from(hadThisMonth).filter((id) =>
-    hadPrevMonth.has(id)
+    hadPrevMonth.has(id),
   ).length;
   const retentionRate =
     hadThisMonth.size === 0
@@ -346,7 +346,7 @@ function computeAppointmentSummary(appointments: Appointment[]) {
   const endPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
 
   const totalThisMonth = appointments.filter(
-    (a) => new Date(a.start_datetime) >= startThisMonth
+    (a) => new Date(a.start_datetime) >= startThisMonth,
   ).length;
   const totalPrevMonth = appointments.filter((a) => {
     const d = new Date(a.start_datetime);
@@ -359,14 +359,14 @@ function computeAppointmentSummary(appointments: Appointment[]) {
           (
             ((totalThisMonth - totalPrevMonth) / Math.max(1, totalPrevMonth)) *
             100
-          ).toFixed(1)
+          ).toFixed(1),
         );
 
   const monthAppointments = appointments.filter(
-    (a) => new Date(a.start_datetime) >= startThisMonth
+    (a) => new Date(a.start_datetime) >= startThisMonth,
   );
   const attended = monthAppointments.filter(
-    (a) => a.status === 'Confirmada'
+    (a) => a.status === 'Confirmada',
   ).length;
   const attendanceRate =
     monthAppointments.length === 0
@@ -376,8 +376,8 @@ function computeAppointmentSummary(appointments: Appointment[]) {
   const avgDuration = Math.round(
     monthAppointments.reduce(
       (sum, a) => sum + (a.actual_duration_minutes || 0),
-      0
-    ) / Math.max(1, monthAppointments.length)
+      0,
+    ) / Math.max(1, monthAppointments.length),
   );
 
   return {
@@ -392,7 +392,7 @@ function computeAppointmentSummary(appointments: Appointment[]) {
 
 // ---- Datasets para AppointmentsAnalysis ----
 function computeAppointmentsByDayData(
-  appts: Appointment[]
+  appts: Appointment[],
 ): AppointmentByDayData[] {
   const labels = [
     'Lunes',
@@ -414,7 +414,7 @@ function computeAppointmentsByDayData(
 }
 
 function computeAppointmentsByHourData(
-  appts: Appointment[]
+  appts: Appointment[],
 ): AppointmentByHourData[] {
   const hours = Array.from({ length: 12 }, (_, i) => 8 + i); // 8..19
   const labels = hours.map((h) => `${h}-${h + 1}`);
@@ -432,7 +432,7 @@ function computeAppointmentsByHourData(
 
 function computeAppointmentsByServiceData(
   appts: Appointment[],
-  services: Service[]
+  services: Service[],
 ): AppointmentByServiceData[] {
   const byService = new Map<number, number>();
   appts.forEach((a) => {
@@ -462,7 +462,7 @@ function computeAppointmentsByServiceData(
 }
 
 function computeAppointmentStatusData(
-  appts: Appointment[]
+  appts: Appointment[],
 ): AppointmentStatusData[] {
   const keys = ['Confirmada', 'Cancelada', 'Proceso'] as const;
   const colors: Record<(typeof keys)[number], string> = {
@@ -483,8 +483,8 @@ function computeAppointmentStatusData(
       k === 'Proceso'
         ? 'En proceso'
         : k === 'Confirmada'
-        ? 'Completadas'
-        : 'Canceladas',
+          ? 'Completadas'
+          : 'Canceladas',
     value: counts[k],
     color: colors[k],
   }));
@@ -521,15 +521,15 @@ function computeHeatmapData(appts: Appointment[]): HeatmapData[] {
   const data: HeatmapData[] = [];
   dayLabels.forEach((x) =>
     hourRanges.forEach((y) =>
-      data.push({ x, y, value: map.get(`${x}|${y}`) || 0 })
-    )
+      data.push({ x, y, value: map.get(`${x}|${y}`) || 0 }),
+    ),
   );
   return data;
 }
 
 function computePopularServicesData(
   appts: Appointment[],
-  services: Service[]
+  services: Service[],
 ): PopularServiceData[] {
   const now = new Date();
   const startThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -538,7 +538,7 @@ function computePopularServicesData(
 
   // Filtrar citas por mes actual y mes anterior
   const thisMonthAppts = appts.filter(
-    (a) => new Date(a.start_datetime) >= startThisMonth
+    (a) => new Date(a.start_datetime) >= startThisMonth,
   );
   const prevMonthAppts = appts.filter((a) => {
     const d = new Date(a.start_datetime);
@@ -554,7 +554,7 @@ function computePopularServicesData(
       countsThisMonth.set(id, (countsThisMonth.get(id) || 0) + 1);
       totalDuration.set(
         id,
-        (totalDuration.get(id) || 0) + (a.actual_duration_minutes || 0)
+        (totalDuration.get(id) || 0) + (a.actual_duration_minutes || 0),
       );
     }
   });
@@ -580,7 +580,7 @@ function computePopularServicesData(
         growthPercent = 100; // Nuevo servicio (100% de crecimiento)
       } else {
         growthPercent = Number(
-          (((count - prevCount) / prevCount) * 100).toFixed(1)
+          (((count - prevCount) / prevCount) * 100).toFixed(1),
         );
       }
 
@@ -595,7 +595,7 @@ function computePopularServicesData(
         growth: growthFormatted,
         avgDuration: `${avg || svc?.duration_minutes || 0} min`,
       };
-    }
+    },
   );
 
   // Ordenar por número de citas y tomar los 5 más populares
@@ -603,7 +603,7 @@ function computePopularServicesData(
 }
 
 function computeCancellationTrendData(
-  appts: Appointment[]
+  appts: Appointment[],
 ): { month: string; tasa: number }[] {
   // últimos 12 meses
   const now = new Date();
@@ -623,7 +623,7 @@ function computeCancellationTrendData(
       23,
       59,
       59,
-      999
+      999,
     );
     const slice = appts.filter((a) => {
       const d = new Date(a.start_datetime);
@@ -668,7 +668,7 @@ function getRangeStart(range: TimeRange, ref = new Date()): Date {
 
 function filterAppointmentsByRange(
   appts: Appointment[],
-  range: TimeRange
+  range: TimeRange,
 ): Appointment[] {
   const start = getRangeStart(range);
   const end = new Date();
@@ -700,11 +700,11 @@ export default async function DashboardPage() {
     monthlyRevenueData.length > 0 || weeklyRevenueData.length > 0;
   const serviceRevenueData: ServiceRevenueData[] = computeServiceRevenue(
     appointments,
-    (services as any) || []
+    (services as any) || [],
   );
   const clientOverviewData: ClientSegmentData[] = computeClientsOverview(
     appointments,
-    clients as Client[]
+    clients as Client[],
   );
   const clientSummary = computeClientSummary(appointments, clients as Client[]);
   const appointmentSummary = computeAppointmentSummary(appointments);
@@ -714,13 +714,13 @@ export default async function DashboardPage() {
   (clients as Client[]).forEach((c) => clientById.set(c.id, c));
   const serviceById = new Map<number, Service>();
   ((services as Service[]) || []).forEach((s) =>
-    serviceById.set(Number(s.id), s as Service)
+    serviceById.set(Number(s.id), s as Service),
   );
   const recentAppointments = [...(appointments as Appointment[])]
     .sort(
       (a, b) =>
         new Date(b.start_datetime).getTime() -
-        new Date(a.start_datetime).getTime()
+        new Date(a.start_datetime).getTime(),
     )
     .slice(0, 5)
     .map((a) => ({
@@ -752,13 +752,13 @@ export default async function DashboardPage() {
   const appointmentsByHourData = computeAppointmentsByHourData(appointments);
   const appointmentsByServiceData = computeAppointmentsByServiceData(
     appointments,
-    (services as Service[]) || []
+    (services as Service[]) || [],
   );
   const appointmentStatusData = computeAppointmentStatusData(appointments);
   const heatmapData = computeHeatmapData(appointments);
   const popularServicesData = computePopularServicesData(
     appointments,
-    (services as Service[]) || []
+    (services as Service[]) || [],
   );
   const cancellationTrendData = computeCancellationTrendData(appointments);
 
@@ -777,7 +777,7 @@ export default async function DashboardPage() {
       const heatmap: HeatmapData[] = computeHeatmapData(appts);
       const popular: PopularServiceData[] = computePopularServicesData(
         appts,
-        (services as Service[]) || []
+        (services as Service[]) || [],
       );
       const summary = computeAppointmentSummary(appts);
       // Para la tendencia de cancelaciones, podemos mantener últimos 12 meses, independiente del rango
@@ -795,7 +795,7 @@ export default async function DashboardPage() {
           cancellationTrendData: cancelTrend,
         },
       ];
-    })
+    }),
   ) as Record<
     TimeRange,
     {
@@ -823,13 +823,13 @@ export default async function DashboardPage() {
 
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-lg font-semibold">Resumen rápido</h2>
-        <InfoDialog description="Aquí ves un resumen rápido: cuántos pacientes tienes, cuántos vuelven y cuánto valor genera cada uno en promedio.">
+        <InfoDialog description="Aquí ves un resumen rápido: cuántos clientes tienes, cuántos vuelven y cuánto valor genera cada uno en promedio.">
           Resumen rápido
         </InfoDialog>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
-          title="Pacientes Totales"
+          title="Clientes Totales"
           value={clientSummary.total}
           changePercent={clientSummary.growthPercent}
           icon={<Users className="h-4 w-4 text-muted-foreground" />}
@@ -840,7 +840,7 @@ export default async function DashboardPage() {
           changePercent={clientSummary.retentionGrowth}
         />
         <SummaryCard
-          title="Valor Promedio Paciente"
+          title="Valor Promedio Cliente"
           value={`$${clientSummary.avgValue}`}
           changePercent={clientSummary.avgValueGrowth}
         />
@@ -856,12 +856,12 @@ export default async function DashboardPage() {
         <div>
           <div className="flex items-center justify-between gap-2 mb-2">
             <h3 className="text-lg font-semibold">Métricas Generales</h3>
-            <InfoDialog description="Aquí ves, mes a mes, cuántas citas, ingresos y pacientes has tenido, para comparar meses fuertes y meses más tranquilos.">
+            <InfoDialog description="Aquí ves, mes a mes, cuántas citas, ingresos y clientes has tenido, para comparar meses fuertes y meses más tranquilos.">
               Métricas generales
             </InfoDialog>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            Resumen de citas, pacientes e ingresos
+            Resumen de citas, clientes e ingresos
           </p>
           <MetricsOverviewChart data={metricsData} />
         </div>
@@ -915,13 +915,13 @@ export default async function DashboardPage() {
           <CardHeader>
             <div className="flex items-start justify-between gap-2">
               <div>
-                <CardTitle>Resumen de Pacientes</CardTitle>
+                <CardTitle>Resumen de Clientes</CardTitle>
                 <CardDescription>
-                  Distribución de pacientes por categoría
+                  Distribución de clientes por categoría
                 </CardDescription>
               </div>
-              <InfoDialog description="Divide a tus pacientes en nuevos, recurrentes e inactivos para que veas quién sigue viniendo y quién hace tiempo que no agenda.">
-                Resumen de pacientes
+              <InfoDialog description="Divide a tus clientes en nuevos, recurrentes e inactivos para que veas quién sigue viniendo y quién hace tiempo que no agenda.">
+                Resumen de clientes
               </InfoDialog>
             </div>
           </CardHeader>

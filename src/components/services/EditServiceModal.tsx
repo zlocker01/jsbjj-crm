@@ -41,10 +41,6 @@ export const serviceFormSchema = z.object({
   price: z.coerce.number().min(0, 'El precio debe ser mayor o igual a 0'),
   duration_minutes: z.coerce.number().min(1, 'La duración debe ser mayor a 0'),
   category: z.string().min(1, 'La categoría es requerida'),
-  sessions_count: z.coerce.number().min(1, 'Debe haber al menos 1 sesión'),
-  target_audience: z.enum(['Niños', 'Adultos', 'Para todos'], {
-    required_error: 'Selecciona el público objetivo',
-  }),
 });
 
 type ServiceFormData = z.infer<typeof serviceFormSchema>;
@@ -73,10 +69,6 @@ export function EditServiceModal({
       price: service?.price || 0,
       duration_minutes: service?.duration_minutes || 30,
       category: service?.category || 'Barbería',
-      sessions_count: service?.sessions_count || 1,
-      target_audience:
-        (service?.target_audience as 'Niños' | 'Adultos' | 'Para todos') ||
-        'Para todos',
     },
   });
 
@@ -88,10 +80,6 @@ export function EditServiceModal({
       price: service.price,
       duration_minutes: service.duration_minutes || 30,
       category: service.category || 'Barbería',
-      sessions_count: service.sessions_count || 1,
-      target_audience:
-        (service.target_audience as 'Niños' | 'Adultos' | 'Para todos') ||
-        'Para todos',
     });
   }, [service, form]);
 
@@ -107,8 +95,6 @@ export function EditServiceModal({
           price: Number(data.price),
           duration_minutes: Number(data.duration_minutes),
           category: data.category,
-          sessions_count: Number(data.sessions_count),
-          target_audience: data.target_audience,
         }),
       });
 
@@ -225,72 +211,6 @@ export function EditServiceModal({
                             : ''
                         }
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="sessions_count"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Número de Sesiones</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        step="1"
-                        placeholder="1"
-                        {...field}
-                        className={
-                          form.formState.errors.sessions_count
-                            ? 'border-red-500'
-                            : ''
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="target_audience"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Público Objetivo</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Niños" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Niños</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Adultos" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Adultos</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Para todos" />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            Para todos
-                          </FormLabel>
-                        </FormItem>
-                      </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

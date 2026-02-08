@@ -36,7 +36,11 @@ export const deleteService = async (id: number): Promise<string | null> => {
       .eq("id", id);
 
     if (deleteError) {
-      return "Error al eliminar el servicio de la base de datos";
+      console.error("Error detallado de Supabase:", deleteError);
+      if (deleteError.code === '23503') {
+        return "No se puede eliminar el servicio porque está siendo utilizado en citas o historiales.";
+      }
+      return `Error al eliminar el servicio: ${deleteError.message}`;
     }
 
     if (service.image) {

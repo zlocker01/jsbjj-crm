@@ -55,16 +55,16 @@ export default function CalendarPage() {
     });
     if (res.ok) {
       toast({
-        title: "Paciente creado",
-        description: `El paciente ${data.name} ha sido creado correctamente.`,
+        title: "Cliente creado",
+        description: `El cliente ${data.name} ha sido creado correctamente.`,
         variant: "success",
       });
       setIsNewClientDialogOpen(false);
-      mutate(); // Recargar todos los datos del calendario, incluyendo los pacientes
+      mutate(); // Recargar todos los datos del calendario, incluyendo los clientes
     } else {
       toast({
         title: "Error",
-        description: "No se pudo crear el paciente.",
+        description: "No se pudo crear el cliente.",
         variant: "destructive",
       });
     }
@@ -155,7 +155,7 @@ export default function CalendarPage() {
             variant="outline"
           >
             <Plus className="mr-2 h-4 w-4" />
-            Nuevo Paciente
+            Nuevo Cliente
           </Button>
           <Button
             onClick={() => {

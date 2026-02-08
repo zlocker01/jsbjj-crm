@@ -24,16 +24,11 @@ import { galleryItemFormSchema } from '@/schemas/gallerySchemas/galleryItemSchem
 import type { GalleryFormData } from '@/interfaces/galleryItems/GalleryFormData';
 
 const categories: Category[] = [
-  'Ortodoncia',
-  'Endodoncia',
-  'Periodoncia',
-  'Odontopediatría',
-  'Implantes',
-  'Estética Dental',
-  'Blanqueamiento',
-  'Cirugía',
-  'Prótesis',
-  'General',
+  'Corte',
+  'Barba',
+  'Tratamiento',
+  'Paquete',
+  'Instalaciones',
 ];
 
 export default function AddGalleryItemModal({

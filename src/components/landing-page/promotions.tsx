@@ -14,14 +14,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  CalendarPlus,
-  Loader2,
-  AlertCircle,
-  Clock,
-  Layers,
-  Users,
-} from 'lucide-react';
+import { CalendarPlus, Loader2, AlertCircle, Clock } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -42,7 +35,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
   const [isMounted, setIsMounted] = useState(false);
   const { data, error, isLoading } = useSWR<{ promotions: any[] }>(
     `/api/promotions?landingPageId=${landingId}`,
-    fetcher
+    fetcher,
   );
 
   const promotions = data?.promotions || [];
@@ -137,13 +130,13 @@ export default function Promotions({ landingId }: { landingId: string }) {
                             ((parseFloat(promo.price) -
                               parseFloat(promo.discount_price)) /
                               parseFloat(promo.price)) *
-                              100
+                              100,
                           )}
                           % OFF
                         </Badge>
                         {promo.category && (
-                          <Badge 
-                            variant="secondary" 
+                          <Badge
+                            variant="secondary"
                             className="text-sm px-3 py-1 bg-primary/90 text-primary-foreground hover:bg-primary/100 border-none"
                           >
                             {promo.category}
@@ -173,27 +166,6 @@ export default function Promotions({ landingId }: { landingId: string }) {
                               </p>
                             </div>
 
-                            {/* Sessions */}
-                            {promo.sessions_count && (
-                              <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
-                                <Layers className="h-4 w-4" />
-                                <span>
-                                  {promo.sessions_count}{' '}
-                                  {promo.sessions_count === 1
-                                    ? 'sesión'
-                                    : 'sesiones'}
-                                </span>
-                              </div>
-                            )}
-
-                            {/* Target Audience */}
-                            {promo.target_audience && (
-                              <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
-                                <Users className="h-4 w-4" />
-                                <span>{promo.target_audience}</span>
-                              </div>
-                            )}
-
                             {/* Validity */}
                             <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
                               <CalendarPlus className="h-4 w-4" />
@@ -204,7 +176,7 @@ export default function Promotions({ landingId }: { landingId: string }) {
                                   {
                                     day: 'numeric',
                                     month: 'long',
-                                  }
+                                  },
                                 )}
                               </span>
                             </div>

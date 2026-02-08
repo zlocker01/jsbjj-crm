@@ -58,7 +58,22 @@ type InventoryFormState = {
   minimum_stock: number;
   expiration_date: string;
   location: string;
-  status: InventoryItemStatus | '';
+  status: InventoryItemStatus;
+};
+
+const itemTypeLabels: Record<InventoryItemType, string> = {
+  consumable: 'Consumible',
+  instrument: 'Herramienta',
+  equipment: 'Equipo',
+  medication: 'Producto estético',
+};
+
+const itemStatusLabels: Record<InventoryItemStatus, string> = {
+  available: 'Disponible',
+  out_of_stock: 'Agotado',
+  in_use: 'En uso',
+  maintenance: 'En mantenimiento',
+  expired: 'Caducado',
 };
 
 const inventorySchema = z.object({
@@ -83,7 +98,7 @@ const inventorySchema = z.object({
     ['available', 'out_of_stock', 'in_use', 'maintenance', 'expired'],
     {
       message: 'Selecciona un estado válido',
-    }
+    },
   ),
 });
 
@@ -101,7 +116,7 @@ export default function InventoryPage() {
     resolver: zodResolver(inventorySchema),
     defaultValues: {
       name: '',
-      category: '', 
+      category: '',
       item_type: '',
       quantity: 0,
       unit: '',
@@ -199,7 +214,7 @@ export default function InventoryPage() {
           method: values.id ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
-        }
+        },
       );
       const json = await res.json();
       if (!res.ok || !json.success) {
@@ -292,7 +307,7 @@ export default function InventoryPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Inventario</h1>
           <p className="text-muted-foreground">
-            Gestiona los productos e insumos de la clínica.
+            Gestiona los productos e insumos de la barberia.
           </p>
         </div>
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
@@ -357,13 +372,14 @@ export default function InventoryPage() {
                     <TableRow key={item.id}>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>
-                        {item.category} / {item.item_type}
+                        {item.category} /{' '}
+                        {itemTypeLabels[item.item_type] || item.item_type}
                       </TableCell>
                       <TableCell>{item.location || '-'}</TableCell>
                       <TableCell>
                         {item.expiration_date
                           ? new Date(item.expiration_date).toLocaleDateString(
-                              'es-MX'
+                              'es-MX',
                             )
                           : '-'}
                       </TableCell>
@@ -371,7 +387,7 @@ export default function InventoryPage() {
                         {item.quantity} {item.unit}
                       </TableCell>
                       <TableCell className="text-center">
-                        {item.status}
+                        {itemStatusLabels[item.status] || item.status}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
@@ -451,7 +467,7 @@ export default function InventoryPage() {
               </div>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 <FormField
-                  control={form.control as any}
+                  control={form.control}
                   name="item_type"
                   render={({ field }) => (
                     <FormItem>
@@ -469,11 +485,11 @@ export default function InventoryPage() {
                               Consumible
                             </SelectItem>
                             <SelectItem value="instrument">
-                              Instrumento
+                              Herramienta
                             </SelectItem>
                             <SelectItem value="equipment">Equipo</SelectItem>
                             <SelectItem value="medication">
-                              Medicamento
+                              Producto estético
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -550,7 +566,7 @@ export default function InventoryPage() {
                   )}
                 />
                 <FormField
-                  control={form.control as any}
+                  control={form.control}
                   name="minimum_stock"
                   render={({ field }) => (
                     <FormItem>
@@ -635,7 +651,7 @@ export default function InventoryPage() {
               <span className="mx-1 font-semibold text-primary">
                 registrar y controlar
               </span>
-              los productos, materiales y medicamentos de la clínica.
+              los productos, materiales y productos de la barberia.
             </p>
             <div className="space-y-1 rounded-md border border-primary/20 bg-primary/5 px-3 py-2">
               <p className="font-semibold text-primary">
@@ -644,7 +660,7 @@ export default function InventoryPage() {
               <p>
                 Usa
                 <span className="mx-1 font-semibold text-primary">Nombre</span>
-                para algo que todo el equipo reconozca rápidamente.
+                para algo que todo el Equipo reconozca rápidamente.
               </p>
               <p>
                 En
@@ -653,13 +669,15 @@ export default function InventoryPage() {
                 </span>
                 agrupa por tipo de producto, por ejemplo:
                 <span className="mx-1 font-medium text-secondary">
-                  anestesia, limpieza, ortodoncia
+                  Talco → Consumible, Navajas → Consumible, Tijeras →
+                  Herramienta, Máquina de cortar → Equipo, Pomada / shampoo →
+                  Producto cosmético
                 </span>
                 .
               </p>
               <p>
                 <span className="font-semibold text-primary">Tipo</span> indica
-                si es consumible, instrumento, equipo o medicamento.
+                si es Consumible, Herramienta, Equipo o Producto cosmético.
               </p>
             </div>
             <div className="space-y-1 rounded-md border border-primary/20 bg-primary/5 px-3 py-2">
@@ -692,7 +710,7 @@ export default function InventoryPage() {
                 <span className="font-semibold text-destructive">
                   Fecha de caducidad
                 </span>
-                es importante sobre todo para medicamentos y materiales
+                es importante sobre todo para productos cosméticos y materiales
                 estériles.
               </p>
               <p>

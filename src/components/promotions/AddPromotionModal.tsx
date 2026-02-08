@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
 import {
   Popover,
   PopoverContent,
@@ -88,8 +88,6 @@ export function AddPromotionModal({
           duration_minutes: promotion.duration_minutes,
           category: promotion.category as any,
           valid_until: new Date(promotion.valid_until).toISOString(),
-          sessions_count: (promotion as any).sessions_count || 1,
-          target_audience: (promotion as any).target_audience || 'Para todos',
           image: promotion.image,
         }
       : {
@@ -98,9 +96,7 @@ export function AddPromotionModal({
           price: 0,
           discount_price: 0,
           duration_minutes: 30,
-          category: 'Prevención y cuidado', // Default category
-          sessions_count: 1,
-          target_audience: 'Para todos',
+          category: 'Corte', // Default category
           valid_until: new Date().toISOString(),
           image: '',
         },
@@ -229,7 +225,7 @@ export function AddPromotionModal({
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
-            errorData.error || 'Error al actualizar la promoción'
+            errorData.error || 'Error al actualizar la promoción',
           );
         }
 
@@ -270,7 +266,7 @@ export function AddPromotionModal({
         price: 0,
         discount_price: 0,
         duration_minutes: 30,
-        category: 'Endodoncia',
+        category: 'Corte',
         valid_until: new Date().toISOString(),
         image: '',
       });
@@ -298,8 +294,6 @@ export function AddPromotionModal({
         duration_minutes: promotion.duration_minutes,
         category: promotion.category as any,
         valid_until: new Date(promotion.valid_until).toISOString(),
-        sessions_count: (promotion as any).sessions_count || 1,
-        target_audience: (promotion as any).target_audience || 'Para todos',
         image: promotion.image,
       });
       setPreviewUrl(promotion.image || null);
@@ -310,10 +304,8 @@ export function AddPromotionModal({
         price: 0,
         discount_price: 0,
         duration_minutes: 30,
-        category: 'Prevención y cuidado',
+        category: 'Corte',
         valid_until: new Date().toISOString(),
-        sessions_count: 1,
-        target_audience: 'Para todos',
         image: '',
       });
       setPreviewUrl(null);
@@ -423,7 +415,7 @@ export function AddPromotionModal({
                           <p className="text-sm text-green-600 mt-1">
                             Descuento:{' '}
                             {Math.round(
-                              ((price - discountPrice) / price) * 100
+                              ((price - discountPrice) / price) * 100,
                             )}
                             %
                           </p>
@@ -487,75 +479,6 @@ export function AddPromotionModal({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="sessions_count"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Número de Sesiones</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          step="1"
-                          placeholder="1"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? parseInt(e.target.value) : ''
-                            )
-                          }
-                          value={field.value ?? ''}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="target_audience"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Público Objetivo</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Niños" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Niños</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Adultos" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Adultos
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Para todos" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Para todos
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
               <FormField
                 control={form.control}
                 name="valid_until"
@@ -569,7 +492,7 @@ export function AddPromotionModal({
                             variant={'outline'}
                             className={cn(
                               'w-full justify-start text-left font-normal',
-                              !field.value && 'text-muted-foreground'
+                              !field.value && 'text-muted-foreground',
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />

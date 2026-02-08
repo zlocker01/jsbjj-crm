@@ -19,9 +19,9 @@
     "display": "standalone",
     "dir": "auto",
     "lang": "es-MX",
-    "name": "La Rochelle Estetica & Barberia",
-    "short_name": "La Rochelle",
+    "name": "El Callejon Barbershop",
+    "short_name": "El Callejon Barbershop",
     "start_url": "/login",
     "scope": "/",
-    "description": "la rochelle app"
+    "description": "El Callejon Barbershop App"
 }

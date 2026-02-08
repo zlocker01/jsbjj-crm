@@ -40,7 +40,7 @@ export default function ClientsPage() {
   const { data: servicesData } = useSWR<Service[]>('/api/services', fetcher);
   const { data: promotionsData } = useSWR<Promotion[]>(
     '/api/promotions',
-    fetcher
+    fetcher,
   );
 
   const handleCreateClient = async (data: ClientFormValues) => {
@@ -107,9 +107,9 @@ export default function ClientsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Pacientes</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Clientes</h1>
         <p className="text-muted-foreground">
-          Gestiona la información de tus pacientes
+          Gestiona la información de tus clientes
         </p>
       </div>
 
@@ -118,9 +118,9 @@ export default function ClientsPage() {
           <Card>
             <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
               <div>
-                <CardTitle>Lista de Pacientes</CardTitle>
+                <CardTitle>Lista de Clientes</CardTitle>
                 <CardDescription>
-                  Gestiona y busca entre tus pacientes
+                  Gestiona y busca entre tus clientes
                 </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2 w-full sm:w-auto">
@@ -138,7 +138,7 @@ export default function ClientsPage() {
                   onClick={() => setIsNewClientDialogOpen(true)}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Nuevo Paciente
+                  Nuevo Cliente
                 </Button>
               </div>
             </CardHeader>
@@ -166,11 +166,11 @@ export default function ClientsPage() {
         <div className="w-full lg:w-80 order-1 lg:order-2">
           <Card className="sticky top-20">
             <CardHeader>
-              <CardTitle>Paciente</CardTitle>
+              <CardTitle>Cliente</CardTitle>
               <CardDescription>
                 {selectedClient
-                  ? 'Información detallada del paciente'
-                  : 'Selecciona un paciente para ver detalles'}
+                  ? 'Información detallada del cliente'
+                  : 'Selecciona un cliente para ver detalles'}
               </CardDescription>
             </CardHeader>
             <CardContent>

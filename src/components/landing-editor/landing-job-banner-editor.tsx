@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { JobBannerFormData } from "@/schemas/jobBannerSchemas/jobBannerSchema";
-import { jobBannerSchema } from "@/schemas/jobBannerSchemas/jobBannerSchema";
-import { toast } from "../ui/use-toast";
-import type { JobBannerSection } from "@/interfaces/jobBannerSections/JobBannerSection";
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { JobBannerFormData } from '@/schemas/jobBannerSchemas/jobBannerSchema';
+import { jobBannerSchema } from '@/schemas/jobBannerSchemas/jobBannerSchema';
+import { toast } from '../ui/use-toast';
+import type { JobBannerSection } from '@/interfaces/jobBannerSections/JobBannerSection';
+import { useRouter } from 'next/navigation';
 
 interface LandingJobBannerEditorProps {
   jobBannerContent: Partial<JobBannerSection>;
@@ -26,6 +27,7 @@ export function LandingJobBannerEditor({
   jobBannerContent,
   landing_id,
 }: LandingJobBannerEditorProps) {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -33,16 +35,42 @@ export function LandingJobBannerEditor({
   } = useForm<JobBannerFormData>({
     resolver: zodResolver(jobBannerSchema),
     defaultValues: {
-      title: jobBannerContent.title || "",
-      subtitle: jobBannerContent.subtitle || "",
+      title: jobBannerContent.title || '',
+      subtitle: jobBannerContent.subtitle || '',
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   const onSubmit = async (data: JobBannerFormData) => {
     try {
       if (!jobBannerContent.id) {
-        throw new Error("ID de la sección no encontrado");
+        // Crear nueva sección
+        const createData = {
+          ...data,
+          landing_page_id: landing_id,
+        };
+
+        const response = await fetch('/api/jobBanners', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(createData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Error al crear la sección');
+        }
+
+        toast({
+          title: 'Éxito',
+          description: 'Sección de empleo creada correctamente',
+          variant: 'success',
+        });
+
+        router.refresh();
+        return;
       }
 
       const updateData: Partial<JobBannerSection> = {
@@ -52,29 +80,29 @@ export function LandingJobBannerEditor({
       };
 
       const response = await fetch(`/api/jobBanners/${jobBannerContent.id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar la sección");
+        throw new Error(errorData.error || 'Error al actualizar la sección');
       }
 
       toast({
-        title: "Éxito",
-        description: "Sección de empleo actualizada correctamente",
-        variant: "success",
+        title: 'Éxito',
+        description: 'Sección de empleo actualizada correctamente',
+        variant: 'success',
       });
     } catch (error) {
-      console.error("Error completo:", error);
+      console.error('Error completo:', error);
       toast({
-        title: "Error",
-        description: "Error al enviar el formulario",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Error al enviar el formulario',
+        variant: 'destructive',
       });
     }
   };
@@ -98,9 +126,9 @@ export function LandingJobBannerEditor({
             </Label>
             <Input
               id="job-banner-title"
-              {...register("title")}
+              {...register('title')}
               className={`rounded-md border ${
-                errors.title ? "border-red-500" : "border-gray-300"
+                errors.title ? 'border-red-500' : 'border-gray-300'
               } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
             />
             {errors.title && (
@@ -119,9 +147,9 @@ export function LandingJobBannerEditor({
             </Label>
             <Textarea
               id="job-banner-subtitle"
-              {...register("subtitle")}
+              {...register('subtitle')}
               className={`rounded-md border ${
-                errors.subtitle ? "border-red-500" : "border-gray-300"
+                errors.subtitle ? 'border-red-500' : 'border-gray-300'
               } focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200`}
             />
             {errors.subtitle && (
@@ -136,10 +164,10 @@ export function LandingJobBannerEditor({
               type="submit"
               disabled={isSubmitting}
               className={`${
-                isSubmitting ? "opacity-50" : ""
+                isSubmitting ? 'opacity-50' : ''
               } bg-green-600 hover:bg-green-700 text-white font-medium`}
             >
-              {isSubmitting ? "Actualizando..." : "Actualizar Sección"}
+              {isSubmitting ? 'Actualizando...' : 'Actualizar Sección'}
             </Button>
           </div>
         </form>

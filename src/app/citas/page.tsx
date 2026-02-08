@@ -23,7 +23,7 @@ export default async function CitasPage() {
           <img
             src="/landing-page/logo.png"
             alt="Logo Clínica"
-            className="h-36 w-auto object-contain"
+            className="h-56 w-auto object-contain"
           />
         </div>
         <Booking landingId={landingId} />

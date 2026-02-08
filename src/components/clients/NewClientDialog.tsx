@@ -14,9 +14,9 @@ export function NewClientDialog({ open, onOpenChange, onSubmit }: NewClientDialo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Crear Nuevo Paciente</DialogTitle>
+          <DialogTitle>Crear Nuevo Cliente</DialogTitle>
           <DialogDescription>
-            Completa el formulario para añadir un nuevo paciente a tu base de datos.
+            Completa el formulario para añadir un nuevo cliente a tu base de datos.
           </DialogDescription>
         </DialogHeader>
         <ClientForm

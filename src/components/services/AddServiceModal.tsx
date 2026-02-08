@@ -65,8 +65,6 @@ export function AddServiceModal({
       description: '',
       price: 0,
       duration_minutes: 15,
-      sessions_count: 1,
-      target_audience: 'Para todos',
       image: '',
       category: 'Prevención y cuidado',
       landing_page_id: landingId,
@@ -156,7 +154,6 @@ export function AddServiceModal({
         ...data,
         price: Number(data.price),
         duration_minutes: data.duration_minutes,
-        sessions_count: Number(data.sessions_count),
         landing_page_id: landingId,
       });
 
@@ -169,7 +166,6 @@ export function AddServiceModal({
           ...data,
           price: Number(data.price),
           duration_minutes: data.duration_minutes,
-          sessions_count: Number(data.sessions_count),
           landing_page_id: landingId,
         }),
       });
@@ -193,8 +189,6 @@ export function AddServiceModal({
         description: '',
         price: 0,
         duration_minutes: undefined,
-        sessions_count: 1,
-        target_audience: 'Para todos',
         image: '',
         category: 'Prevención y cuidado',
         landing_page_id: landingId,
@@ -280,7 +274,7 @@ export function AddServiceModal({
                           {...field}
                           onChange={(e) =>
                             field.onChange(
-                              e.target.value ? parseFloat(e.target.value) : ''
+                              e.target.value ? parseFloat(e.target.value) : '',
                             )
                           }
                         />
@@ -305,78 +299,10 @@ export function AddServiceModal({
                           value={field.value ?? ''}
                           onChange={(e) =>
                             field.onChange(
-                              e.target.value ? parseInt(e.target.value) : null
+                              e.target.value ? parseInt(e.target.value) : null,
                             )
                           }
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="sessions_count"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Número de Sesiones</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          step="1"
-                          placeholder="1"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? parseInt(e.target.value) : ''
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="target_audience"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Público Objetivo</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Niños" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Niños</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Adultos" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Adultos
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Para todos" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Para todos
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

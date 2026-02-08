@@ -107,7 +107,7 @@ export function DashboardLayout({
       icon: Calendar,
     },
     {
-      title: 'Pacientes',
+      title: 'Clientes',
       href: '/session/admin/clients',
       icon: IdCardLanyard,
     },
@@ -134,7 +134,7 @@ export function DashboardLayout({
     <div className="flex min-h-screen flex-col md:flex-row bg-background text-foreground transition-colors duration-300">
       {/* Desktop Sidebar */}
       <div className="hidden w-64 flex-col border-r bg-card md:flex">
-        <div className="flex h-14 items-center border-b px-4">
+        <div className="flex h-auto py-4 items-center border-b px-4">
           <Link
             href="/session/admin/dashboard"
             className="flex items-center gap-2 font-semibold justify-center"
@@ -142,7 +142,7 @@ export function DashboardLayout({
             <img
               src="/landing-page/logo.png"
               alt="Odontologo Tlaxcala"
-              className="max-h-44 flex justify-center"
+              className="max-h-24 w-auto flex justify-center"
             />
           </Link>
         </div>
@@ -154,7 +154,7 @@ export function DashboardLayout({
                 variant={pathname === route.href ? 'secondary' : 'ghost'}
                 className={cn(
                   'justify-start gap-2',
-                  pathname === route.href && 'font-medium'
+                  pathname === route.href && 'font-medium',
                 )}
                 asChild
               >
@@ -192,7 +192,7 @@ export function DashboardLayout({
                 <img
                   src="/landing-page/logo.png"
                   alt="odontologia Tlaxcala"
-                  className="max-h-20 min-w-38 -my-38"
+                  className="max-h-24 w-auto"
                 />
               </Link>
             </SheetTitle>
@@ -205,7 +205,7 @@ export function DashboardLayout({
                   variant={pathname === route.href ? 'secondary' : 'ghost'}
                   className={cn(
                     'justify-start gap-2',
-                    pathname === route.href && 'font-medium'
+                    pathname === route.href && 'font-medium',
                   )}
                   asChild
                   onClick={() => setOpen(false)}

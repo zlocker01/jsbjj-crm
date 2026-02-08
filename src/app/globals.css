@@ -4,44 +4,46 @@
 
 @layer base {
   :root {
-    --font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system,
-      BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-      'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans:
+      var(--font-montserrat), 'Montserrat', ui-sans-serif, system-ui,
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+      Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
       'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-serif: var(--font-lora), 'Lora', 'Playfair Display', ui-serif,
-      Georgia, Cambria, 'Times New Roman', Times, serif;
-    
+    --font-serif:
+      var(--font-oswald), 'Oswald', 'Impact', ui-sans-serif, system-ui,
+      sans-serif; /* Usamos Oswald para títulos */
+
     /* Light Mode - Clean, Modern, Vibrant */
     --background: 210 40% 98%; /* Slate 50 - Suave, no blanco puro */
     --foreground: 222.2 84% 4.9%; /* Slate 950 - Azul muy oscuro */
-    
+
     --card: 0 0% 100%; /* Blanco puro para tarjetas */
     --card-foreground: 222.2 84% 4.9%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    
-    /* Primary: Vibrant Royal Blue (Inter/System Blue style) */
-    --primary: 221.2 83.2% 53.3%; /* #2563EB - Blue 600 */
-    --primary-foreground: 210 40% 98%; /* Blanco suave */
-    
-    /* Secondary: Refreshing Teal/Cyan */
-    --secondary: 173.4 80.4% 40%; /* #14b8a6 - Teal 500/600 mix */
+
+    /* Primary: Gold #EAA200 */
+    --primary: 42 100% 46%;
+    --primary-foreground: 222.2 84% 4.9%; /* Dark text for contrast */
+
+    /* Secondary: Red #EC4339 */
+    --secondary: 3 82% 58%;
     --secondary-foreground: 210 40% 98%;
-    
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    
-    --accent: 199 89% 48%; /* Sky 500 - Acento complementario */
+
+    --accent: 3 82% 58%; /* Match Secondary */
     --accent-foreground: 210 40% 98%;
-    
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%; /* Match primary */
-    
+    --ring: 42 100% 46%; /* Match primary */
+
     --radius: 0.75rem; /* Rounder corners for modern feel */
   }
 
@@ -49,33 +51,33 @@
     /* Dark Mode - Deep, Rich, Glowing */
     --background: 224 71% 4%; /* Slate 950+ - Casi negro azulado */
     --foreground: 210 40% 98%;
-    
+
     --card: 222.2 47.4% 11.2%; /* Slate 900 - Elevación sutil */
     --card-foreground: 210 40% 98%;
-    
+
     --popover: 222.2 47.4% 11.2%;
     --popover-foreground: 210 40% 98%;
-    
-    /* Primary: Lighter, Glowing Blue */
-    --primary: 217.2 91.2% 59.8%; /* Blue 500 - Brilla sobre fondo oscuro */
+
+    /* Primary: Gold #EAA200 */
+    --primary: 42 100% 46%;
     --primary-foreground: 222.2 47.4% 11.2%;
-    
-    /* Secondary: Glowing Teal */
-    --secondary: 173 80% 40%;
+
+    /* Secondary: Red #EC4339 */
+    --secondary: 3 82% 58%;
     --secondary-foreground: 210 40% 98%;
-    
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    
-    --accent: 217.2 32.6% 17.5%;
+
+    --accent: 42 30% 20%; /* Warm dark background for accents */
     --accent-foreground: 210 40% 98%;
-    
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 217.2 91.2% 59.8%;
+    --ring: 42 100% 46%;
   }
 }
 
@@ -95,7 +97,7 @@
     line-height: 1.2;
     color: hsl(var(--foreground)); /* Mejor legibilidad general */
   }
-  
+
   /* Títulos destacados con color primario opcionalmente */
   .text-title-primary {
     color: hsl(var(--primary));
@@ -115,7 +117,9 @@
 
   body {
     @apply bg-background text-foreground;
-    transition: background-color 0.3s, color 0.3s;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
   }
 }
 

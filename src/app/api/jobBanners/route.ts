@@ -22,11 +22,12 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const error = await createJobBannerSection(body);
+  const { data, error } = await createJobBannerSection(body);
   if (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
   return NextResponse.json({
     message: "Sección de banner de trabajo creada correctamente.",
+    data,
   });
 }

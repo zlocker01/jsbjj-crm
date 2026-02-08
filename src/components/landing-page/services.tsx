@@ -61,49 +61,24 @@ const ToothIcon = ({ className }: { className?: string }) => (
 const serviceCategories = [
   { id: 'all', label: 'Todos' },
   { 
-    id: 'Prevención y cuidado', 
-    label: 'Prevención', 
-    icon: <ShieldCheck className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Estética dental', 
-    label: 'Estética', 
-    icon: <Sparkles className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Ortodoncia', 
-    label: 'Ortodoncia', 
-    icon: <Smile className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Rehabilitación y restauración dental', 
-    label: 'Rehabilitación', 
-    icon: <Stethoscope className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Endodoncia', 
-    label: 'Endodoncia', 
-    icon: <Activity className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Periodoncia (encías)', 
-    label: 'Periodoncia', 
-    icon: <HeartPulse className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Odontopediatría', 
-    label: 'Odontopediatría', 
-    icon: <Baby className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Cirugía dental', 
-    label: 'Cirugía', 
+    id: 'Corte', 
+    label: 'Corte', 
     icon: <Scissors className="h-4 w-4" /> 
   },
   { 
-    id: 'Urgencias dentales', 
-    label: 'Urgencias', 
-    icon: <Siren className="h-4 w-4" /> 
+    id: 'Barba', 
+    label: 'Barba', 
+    icon: <Smile className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Tratamiento', 
+    label: 'Tratamiento', 
+    icon: <Sparkles className="h-4 w-4" /> 
+  },
+  { 
+    id: 'Paquete', 
+    label: 'Paquete', 
+    icon: <Layers className="h-4 w-4" /> 
   },
 ];
 

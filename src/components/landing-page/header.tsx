@@ -87,7 +87,7 @@ export default function Header() {
               <Link href="/" className="flex items-center" onClick={closeMenu}>
                 <img
                   src="/landing-page/logo.png"
-                  alt="la rochelle estetica y barberia en Tlaxcala"
+                  alt="El Callejon Barbershop"
                   className="h-16 w-auto"
                 />
               </Link>

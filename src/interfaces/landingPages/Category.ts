@@ -1,17 +1,6 @@
 export type Category =
-  | 'Ortodoncia'
-  | 'Endodoncia'
-  | 'Periodoncia'
-  | 'Odontopediatría'
-  | 'Implantes'
-  | 'Estética Dental'
-  | 'Blanqueamiento'
-  | 'Cirugía'
-  | 'Prótesis'
-  | 'General'
-  | 'Prevención y cuidado'
-  | 'Rehabilitación y restauración dental'
-  | 'Periodoncia (encías)'
-  | 'Cirugía dental'
-  | 'Urgencias dentales'
-  | 'Estética dental';
+  | 'Corte'
+  | 'Barba'
+  | 'Tratamiento'
+  | 'Paquete'
+  | 'Instalaciones';

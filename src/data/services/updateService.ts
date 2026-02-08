@@ -43,10 +43,6 @@ export async function updateService(
         duration_minutes: serviceData.duration_minutes
           ? Number(serviceData.duration_minutes)
           : undefined,
-        sessions_count: serviceData.sessions_count
-          ? Number(serviceData.sessions_count)
-          : undefined,
-        target_audience: serviceData.target_audience || 'Para todos',
       })
       .eq("id", id)
       .select("id")

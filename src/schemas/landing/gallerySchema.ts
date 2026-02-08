@@ -13,7 +13,7 @@ const galleryItemSchema = z.object({
     .string()
     .min(1, "La imagen es requerida")
     .url("La imagen debe ser una URL válida"),
-  category: z.enum(["Ortodoncia", "Endodoncia", "Periodoncia", "Odontopediatría", "Implantes", "Estética Dental", "Blanqueamiento", "Cirugía", "Prótesis", "General"], {
+  category: z.enum(["Corte", "Barba", "Tratamiento", "Paquete"], {
     errorMap: () => ({ message: "Categoría inválida" }),
   }),
 });

@@ -1,36 +1,31 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import type { Category } from "@/interfaces/landingPages/Category";
-import { Loader2 } from "lucide-react";
-import { galleryItemFormSchema } from "@/schemas/gallerySchemas/galleryItemSchema";
-import type { GalleryFormData } from "@/interfaces/galleryItems/GalleryFormData";
-import type { GalleryItem } from "@/interfaces/galleryItems/GalleryItem";
-import { useEffect, useState } from "react";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import type { Category } from '@/interfaces/landingPages/Category';
+import { Loader2 } from 'lucide-react';
+import { galleryItemFormSchema } from '@/schemas/gallerySchemas/galleryItemSchema';
+import type { GalleryFormData } from '@/interfaces/galleryItems/GalleryFormData';
+import type { GalleryItem } from '@/interfaces/galleryItems/GalleryItem';
+import { useEffect, useState } from 'react';
 
 const categories: Category[] = [
-  "Ortodoncia",
-  "Endodoncia",
-  "Periodoncia",
-  "Odontopediatría",
-  "Implantes",
-  "Estética Dental",
-  "Blanqueamiento",
-  "Cirugía",
-  "Prótesis",
-  "General",
+  'Corte',
+  'Barba',
+  'Tratamiento',
+  'Paquete',
+  'Instalaciones',
 ];
 
 interface EditGalleryItemModalProps {
@@ -59,7 +54,7 @@ export default function EditGalleryItemModal({
     resolver: zodResolver(galleryItemFormSchema) as any,
     defaultValues: {
       title: item.title,
-      description: item.description || "",
+      description: item.description || '',
       category: item.category as Category,
       is_before_after: item.is_before_after || false,
     },
@@ -70,7 +65,7 @@ export default function EditGalleryItemModal({
     // Reset form when item changes
     reset({
       title: item.title,
-      description: item.description || "",
+      description: item.description || '',
       category: item.category as Category,
       is_before_after: item.is_before_after,
     });
@@ -79,9 +74,9 @@ export default function EditGalleryItemModal({
   const onSubmit = async (data: GalleryFormData) => {
     try {
       const response = await fetch(`/api/galleryItems/${item.id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           title: data.title,
@@ -97,36 +92,36 @@ export default function EditGalleryItemModal({
         // Si el error es 14 pero la actualización fue exitosa, lo manejamos como éxito
         if (responseData.error) {
           console.log(
-            "Advertencia: Se recibió el código de error 14, pero la actualización fue exitosa",
+            'Advertencia: Se recibió el código de error 14, pero la actualización fue exitosa',
           );
         }
       }
 
       toast({
-        title: "¡Éxito!",
-        description: "El ítem se ha actualizado correctamente.",
-        variant: "success",
+        title: '¡Éxito!',
+        description: 'El ítem se ha actualizado correctamente.',
+        variant: 'success',
       });
 
       onItemUpdated();
       onOpenChange(false);
       router.refresh();
     } catch (error) {
-      console.error("Error al actualizar el ítem:", error);
+      console.error('Error al actualizar el ítem:', error);
       // Solo mostrar el toast si el error no es el código 14 o 15
       if (
         !(
           error instanceof Error &&
-          (error.message.includes("14") || error.message.includes("15"))
+          (error.message.includes('14') || error.message.includes('15'))
         )
       ) {
         toast({
-          title: "Error",
+          title: 'Error',
           description:
             error instanceof Error
               ? error.message
-              : "Ocurrió un error al actualizar el ítem",
-          variant: "destructive",
+              : 'Ocurrió un error al actualizar el ítem',
+          variant: 'destructive',
         });
       }
     }
@@ -152,8 +147,8 @@ export default function EditGalleryItemModal({
             </label>
             <Input
               id="title"
-              {...register("title")}
-              className={`mt-1 block w-full ${errors.title ? "border-red-500" : ""}`}
+              {...register('title')}
+              className={`mt-1 block w-full ${errors.title ? 'border-red-500' : ''}`}
               placeholder="Título del ítem"
             />
             {errors.title && (
@@ -172,7 +167,7 @@ export default function EditGalleryItemModal({
             </label>
             <Textarea
               id="description"
-              {...register("description")}
+              {...register('description')}
               className="mt-1 block w-full"
               rows={3}
               placeholder="Descripción del ítem"
@@ -188,7 +183,7 @@ export default function EditGalleryItemModal({
             </label>
             <select
               id="category"
-              {...register("category")}
+              {...register('category')}
               className="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
             >
               {categories.map((category) => (
@@ -203,7 +198,7 @@ export default function EditGalleryItemModal({
             <input
               type="checkbox"
               id="is_before_after"
-              {...register("is_before_after")}
+              {...register('is_before_after')}
               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <label
@@ -230,7 +225,7 @@ export default function EditGalleryItemModal({
                   Guardando...
                 </>
               ) : (
-                "Guardar cambios"
+                'Guardar cambios'
               )}
             </Button>
           </div>

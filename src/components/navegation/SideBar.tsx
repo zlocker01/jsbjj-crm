@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
-import { Logout } from "../auth/Logout";
+import Link from 'next/link';
+import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
+import { Logout } from '../auth/Logout';
 import {
   Users,
   UserCircle,
@@ -17,8 +17,8 @@ import {
   Pill,
   FileText,
   Edit,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export const SideBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -34,28 +34,28 @@ export const SideBar = () => {
   const currentPatientId =
     patientIdFromPath ||
     pathname
-      .split("/")
+      .split('/')
       .find(
         (segment) =>
-          segment !== "" &&
-          segment !== "pacientes" &&
-          segment !== "detalles" &&
-          segment !== "editar" &&
-          segment !== "objetivos" &&
-          segment !== "pruebas-psicometricas" &&
-          segment !== "notas" &&
-          segment !== "medicamentos" &&
-          segment !== "documentos",
+          segment !== '' &&
+          segment !== 'pacientes' &&
+          segment !== 'detalles' &&
+          segment !== 'editar' &&
+          segment !== 'objetivos' &&
+          segment !== 'pruebas-psicometricas' &&
+          segment !== 'notas' &&
+          segment !== 'medicamentos' &&
+          segment !== 'documentos',
       );
   const hasPatientId = !!currentPatientId;
 
   const isPatientSection =
-    pathname.includes("/pacientes") ||
-    pathname.includes("/objetivos") ||
-    pathname.includes("/pruebas-psicometricas") ||
-    pathname.includes("/notas") ||
-    pathname.includes("/medicamentos") ||
-    pathname.includes("/documentos");
+    pathname.includes('/pacientes') ||
+    pathname.includes('/objetivos') ||
+    pathname.includes('/pruebas-psicometricas') ||
+    pathname.includes('/notas') ||
+    pathname.includes('/medicamentos') ||
+    pathname.includes('/documentos');
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -77,39 +77,39 @@ export const SideBar = () => {
 
   // Determinar qué sección está activa
   const isActive = (path: string) => {
-    if (path === "/pacientes") {
-      return pathname === "/pacientes" || pathname.startsWith("/pacientes/");
+    if (path === '/pacientes') {
+      return pathname === '/pacientes' || pathname.startsWith('/pacientes/');
     }
     return pathname === path;
   };
 
   const isSubActive = (subPath: string) => {
-    if (subPath === "detalles") {
-      return pathname.includes("/pacientes/detalles/");
+    if (subPath === 'detalles') {
+      return pathname.includes('/pacientes/detalles/');
     }
-    if (subPath === "editar") {
-      return pathname.includes("/pacientes/editar/");
+    if (subPath === 'editar') {
+      return pathname.includes('/pacientes/editar/');
     }
-    if (subPath === "objetivos") {
-      return pathname.includes("/objetivos/");
+    if (subPath === 'objetivos') {
+      return pathname.includes('/objetivos/');
     }
-    if (subPath === "pruebas") {
-      return pathname.includes("/pruebas-psicometricas/");
+    if (subPath === 'pruebas') {
+      return pathname.includes('/pruebas-psicometricas/');
     }
-    if (subPath === "notas") {
-      return pathname.includes("/notas/");
+    if (subPath === 'notas') {
+      return pathname.includes('/notas/');
     }
-    if (subPath === "medicamentos") {
-      return pathname.includes("/medicamentos/");
+    if (subPath === 'medicamentos') {
+      return pathname.includes('/medicamentos/');
     }
-    if (subPath === "documentos") {
-      return pathname.includes("/documentos/");
+    if (subPath === 'documentos') {
+      return pathname.includes('/documentos/');
     }
     return false;
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     // Auto-abrir el submenú de pacientes si estamos en una sección de pacientes
     if (isPatientSection) {
@@ -119,7 +119,7 @@ export const SideBar = () => {
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isPatientSection]);
 
@@ -127,7 +127,7 @@ export const SideBar = () => {
     <nav>
       {/* Overlay solo cuando el sidebar está abierto en móvil */}
       <div
-        className={`fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={toggleMenu}
         aria-hidden={!isOpen}
       />
@@ -143,7 +143,7 @@ export const SideBar = () => {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed top-0 left-0 z-30 w-64 h-screen transition-all duration-300 ease-in-out bg-card border-r border-border shadow-lg ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`} // Clases clave: fixed, z-40, w-64, h-screen, translate-x
+        className={`fixed top-0 left-0 z-30 w-64 h-screen transition-all duration-300 ease-in-out bg-card border-r border-border shadow-lg ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`} // Clases clave: fixed, z-40, w-64, h-screen, translate-x
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-6 overflow-y-auto">
@@ -154,21 +154,21 @@ export const SideBar = () => {
           </div>
 
           <ul className="space-y-2 font-medium">
-            {/* Sección de Pacientes */}
-            {pathname !== "/perfil" ? (
+            {/* Sección de Clientes */}
+            {pathname !== '/perfil' ? (
               <li>
                 <div
                   className={cn(
-                    "flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all",
-                    isActive("/pacientes")
-                      ? "bg-primaryColor text-white"
-                      : "text-primaryText dark:text-secondaryText hover:bg-muted",
+                    'flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all',
+                    isActive('/pacientes')
+                      ? 'bg-primaryColor text-white'
+                      : 'text-primaryText dark:text-secondaryText hover:bg-muted',
                   )}
                   onClick={togglePatientSubmenu}
                 >
                   <div className="flex items-center">
                     <Users className="h-5 w-5 mr-3" />
-                    <span>Pacientes</span>
+                    <span>Clientes</span>
                   </div>
                   {patientSubmenuOpen ? (
                     <ChevronDown className="h-4 w-4" />
@@ -177,20 +177,20 @@ export const SideBar = () => {
                   )}
                 </div>
 
-                {/* Submenú de Pacientes */}
+                {/* Submenú de Clientes */}
                 {patientSubmenuOpen && (
                   <ul className="mt-2 ml-6 space-y-1 border-l-2 border-muted pl-4">
                     <li>
                       <Link
                         href="/pacientes"
                         className={cn(
-                          "flex items-center p-2 rounded-md transition-colors",
-                          pathname === "/pacientes"
-                            ? "bg-primaryColor/10 text-primaryColor font-medium"
-                            : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                          'flex items-center p-2 rounded-md transition-colors',
+                          pathname === '/pacientes'
+                            ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                            : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                         )}
                       >
-                        <span>Lista de Pacientes</span>
+                        <span>Lista de Clientes</span>
                       </Link>
                     </li>
 
@@ -201,10 +201,10 @@ export const SideBar = () => {
                           <Link
                             href={`/pacientes/detalles/${currentPatientId}`}
                             className={cn(
-                              "flex items-center p-2 rounded-md transition-colors",
-                              isSubActive("detalles")
-                                ? "bg-primaryColor/10 text-primaryColor font-medium"
-                                : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                              'flex items-center p-2 rounded-md transition-colors',
+                              isSubActive('detalles')
+                                ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                             )}
                           >
                             <span>Detalles</span>
@@ -214,24 +214,24 @@ export const SideBar = () => {
                           <Link
                             href={`/pacientes/editar/${currentPatientId}`}
                             className={cn(
-                              "flex items-center p-2 rounded-md transition-colors",
-                              isSubActive("editar")
-                                ? "bg-primaryColor/10 text-primaryColor font-medium"
-                                : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                              'flex items-center p-2 rounded-md transition-colors',
+                              isSubActive('editar')
+                                ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                             )}
                           >
                             <Edit className="h-4 w-4 mr-2" />
-                            <span>Editar Paciente</span>
+                            <span>Editar Cliente</span>
                           </Link>
                         </li>
                         <li>
                           <Link
                             href={`/objetivos/${currentPatientId}`}
                             className={cn(
-                              "flex items-center p-2 rounded-md transition-colors",
-                              isSubActive("objetivos")
-                                ? "bg-primaryColor/10 text-primaryColor font-medium"
-                                : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                              'flex items-center p-2 rounded-md transition-colors',
+                              isSubActive('objetivos')
+                                ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                             )}
                           >
                             <Target className="h-4 w-4 mr-2" />
@@ -242,10 +242,10 @@ export const SideBar = () => {
                           <Link
                             href={`/pruebas-psicometricas/${currentPatientId}`}
                             className={cn(
-                              "flex items-center p-2 rounded-md transition-colors",
-                              isSubActive("pruebas")
-                                ? "bg-primaryColor/10 text-primaryColor font-medium"
-                                : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                              'flex items-center p-2 rounded-md transition-colors',
+                              isSubActive('pruebas')
+                                ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                             )}
                           >
                             <FileSpreadsheet className="h-4 w-4 mr-2" />
@@ -256,10 +256,10 @@ export const SideBar = () => {
                           <Link
                             href={`/notas/${currentPatientId}`}
                             className={cn(
-                              "flex items-center p-2 rounded-md transition-colors",
-                              isSubActive("notas")
-                                ? "bg-primaryColor/10 text-primaryColor font-medium"
-                                : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                              'flex items-center p-2 rounded-md transition-colors',
+                              isSubActive('notas')
+                                ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                             )}
                           >
                             <StickyNote className="h-4 w-4 mr-2" />
@@ -270,10 +270,10 @@ export const SideBar = () => {
                           <Link
                             href={`/medicamentos/${currentPatientId}`}
                             className={cn(
-                              "flex items-center p-2 rounded-md transition-colors",
-                              isSubActive("medicamentos")
-                                ? "bg-primaryColor/10 text-primaryColor font-medium"
-                                : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                              'flex items-center p-2 rounded-md transition-colors',
+                              isSubActive('medicamentos')
+                                ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                             )}
                           >
                             <Pill className="h-4 w-4 mr-2" />
@@ -284,10 +284,10 @@ export const SideBar = () => {
                           <Link
                             href={`/documentos/${currentPatientId}`}
                             className={cn(
-                              "flex items-center p-2 rounded-md transition-colors",
-                              isSubActive("documentos")
-                                ? "bg-primaryColor/10 text-primaryColor font-medium"
-                                : "text-muted-foreground hover:bg-muted hover:text-primaryText",
+                              'flex items-center p-2 rounded-md transition-colors',
+                              isSubActive('documentos')
+                                ? 'bg-primaryColor/10 text-primaryColor font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                             )}
                           >
                             <FileText className="h-4 w-4 mr-2" />
@@ -305,8 +305,8 @@ export const SideBar = () => {
                 <Link
                   href="/pacientes"
                   className={cn(
-                    "flex items-center p-3 rounded-lg cursor-pointer transition-all",
-                    "text-primaryText dark:text-secondaryText hover:bg-muted",
+                    'flex items-center p-3 rounded-lg cursor-pointer transition-all',
+                    'text-primaryText dark:text-secondaryText hover:bg-muted',
                   )}
                 >
                   <Users className="h-5 w-5 mr-3" />
@@ -321,10 +321,10 @@ export const SideBar = () => {
               <Link
                 href="/perfil"
                 className={cn(
-                  "flex items-center p-3 rounded-lg cursor-pointer transition-all",
-                  pathname === "/perfil"
-                    ? "bg-primaryColor text-white"
-                    : "text-primaryText dark:text-secondaryText hover:bg-muted",
+                  'flex items-center p-3 rounded-lg cursor-pointer transition-all',
+                  pathname === '/perfil'
+                    ? 'bg-primaryColor text-white'
+                    : 'text-primaryText dark:text-secondaryText hover:bg-muted',
                 )}
               >
                 <UserCircle className="h-5 w-5 mr-3" />

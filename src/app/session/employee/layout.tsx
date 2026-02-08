@@ -9,7 +9,7 @@ import { DashboardLayoutEmployee } from "@/components/layout/dashboard-layout-em
 
 export const metadata: Metadata = {
   title: "Dashboard de Empleado",
-  description: "Dashboard para empleados de la Rochelle",
+  description: "Dashboard para empleados de El Calléjon Barbershop",
 };
 
 export default async function RootLayout({

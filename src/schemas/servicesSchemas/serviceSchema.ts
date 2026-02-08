@@ -1,15 +1,10 @@
 import { z } from 'zod';
 
 export const serviceCategories = [
-  'Prevención y cuidado',
-  'Estética dental',
-  'Ortodoncia',
-  'Rehabilitación y restauración dental',
-  'Endodoncia',
-  'Periodoncia (encías)',
-  'Odontopediatría',
-  'Cirugía dental',
-  'Urgencias dentales',
+  'Corte',
+  'Barba',
+  'Tratamiento',
+  'Paquete',
 ] as const;
 
 export const serviceFormSchema = z.object({
@@ -40,10 +35,6 @@ export const serviceFormSchema = z.object({
     .optional(),
   category: z.enum(serviceCategories, {
     required_error: 'Por favor selecciona una categoría',
-  }),
-  sessions_count: z.number().min(1, 'Debe haber al menos 1 sesión'),
-  target_audience: z.enum(['Niños', 'Adultos', 'Para todos'], {
-    required_error: 'Selecciona el público objetivo',
   }),
   landing_page_id: z.string().uuid(),
 });

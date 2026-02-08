@@ -28,8 +28,6 @@ interface PromotionItem {
   title: string;
   description: string;
   image: string;
-  sessions_count: number;
-  target_audience: 'Niños' | 'Adultos' | 'Para todos';
 }
 
 interface PromotionsFormData {
@@ -89,7 +87,7 @@ export function LandingPromotionsEditor({
   const handlePromotionItemChange = (
     index: number,
     field: string,
-    value: string
+    value: string,
   ) => {
     const newItems = [...(promotionsContent?.items || [])];
     newItems[index] = {
@@ -110,8 +108,6 @@ export function LandingPromotionsEditor({
         title: 'Nueva Promoción',
         description: 'Descripción de la promoción',
         image: '',
-        sessions_count: 1,
-        target_audience: 'Para todos' as const,
       },
     ];
     onChange({
@@ -219,66 +215,11 @@ export function LandingPromotionsEditor({
                       handlePromotionItemChange(
                         index,
                         'description',
-                        e.target.value
+                        e.target.value,
                       )
                     }
                     className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                   />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor={`${baseId}-promotion-item-sessions-${index}`}
-                      className="text-sm font-medium"
-                    >
-                      Número de Sesiones
-                    </Label>
-                    <Input
-                      id={`${baseId}-promotion-item-sessions-${index}`}
-                      type="number"
-                      min="1"
-                      value={item.sessions_count || 1}
-                      onChange={(e) =>
-                        handlePromotionItemChange(
-                          index,
-                          'sessions_count',
-                          e.target.value
-                        )
-                      }
-                      className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor={`${baseId}-promotion-item-audience-${index}`}
-                      className="text-sm font-medium"
-                    >
-                      Público Objetivo
-                    </Label>
-                    <Select
-                      value={item.target_audience || 'Para todos'}
-                      onValueChange={(value) =>
-                        handlePromotionItemChange(
-                          index,
-                          'target_audience',
-                          value
-                        )
-                      }
-                    >
-                      <SelectTrigger
-                        id={`${baseId}-promotion-item-audience-${index}`}
-                        className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
-                      >
-                        <SelectValue placeholder="Selecciona público" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Niños">Niños</SelectItem>
-                        <SelectItem value="Adultos">Adultos</SelectItem>
-                        <SelectItem value="Para todos">Para todos</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label
@@ -296,7 +237,7 @@ export function LandingPromotionsEditor({
                         onChange={(e) => {
                           if (e.target.files && e.target.files[0]) {
                             handleFileUpload(e.target.files[0], (value) =>
-                              handlePromotionItemChange(index, 'image', value)
+                              handlePromotionItemChange(index, 'image', value),
                             );
                           }
                         }}
@@ -318,7 +259,7 @@ export function LandingPromotionsEditor({
                   </div>
                 </div>
               </div>
-            )
+            ),
           )}
           <div className="mt-4 flex justify-end space-x-2">
             <Button

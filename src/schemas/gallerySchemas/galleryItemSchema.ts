@@ -1,14 +1,20 @@
-import * as z from "zod";
+import * as z from 'zod';
 
 export const galleryItemFormSchema = z.object({
-  title: z.string().min(1, "El título es requerido"),
+  title: z.string().min(1, 'El título es requerido'),
   description: z.string().optional(),
-  category: z.enum(["Ortodoncia", "Endodoncia", "Periodoncia", "Odontopediatría", "Implantes", "Estética Dental", "Blanqueamiento", "Cirugía", "Prótesis", "General"]),
+  category: z.enum([
+    'Corte',
+    'Barba',
+    'Tratamiento',
+    'Paquete',
+    'Instalaciones',
+  ]),
   is_before_after: z.boolean().default(false),
-  image: z.string().min(1, "La imagen es requerida").optional(),
+  image: z.string().min(1, 'La imagen es requerida').optional(),
   landing_page_id: z
     .string()
-    .min(1, "El ID de la página es requerido")
+    .min(1, 'El ID de la página es requerido')
     .optional(),
 });
 

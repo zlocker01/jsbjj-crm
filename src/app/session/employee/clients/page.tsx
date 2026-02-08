@@ -1,76 +1,76 @@
-"use client";
+'use client';
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ClientsTable } from "@/components/clients/clients-table";
-import { ClientDetails } from "@/components/clients/client-details";
-import { Download, Plus, Search } from "lucide-react";
+} from '@/components/ui/card';
+import { ClientsTable } from '@/components/clients/clients-table';
+import { ClientDetails } from '@/components/clients/client-details';
+import { Download, Plus, Search } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { ClientForm } from "@/components/clients/client-form";
-import { useToast } from "@/components/ui/use-toast";
-import { AdvancedMetrics } from "@/components/dashboard/advanced-metrics";
-import type { ClientFormValues } from "@/schemas/clientSchemas/clientSchema";
-import useSWR, { mutate } from "swr";
-import type { Client } from "@/interfaces/client/Client";
+} from '@/components/ui/dialog';
+import { ClientForm } from '@/components/clients/client-form';
+import { useToast } from '@/components/ui/use-toast';
+import { AdvancedMetrics } from '@/components/dashboard/advanced-metrics';
+import type { ClientFormValues } from '@/schemas/clientSchemas/clientSchema';
+import useSWR, { mutate } from 'swr';
+import type { Client } from '@/interfaces/client/Client';
 
 export default function ClientsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isNewClientDialogOpen, setIsNewClientDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleCreateClient = async (data: ClientFormValues) => {
-    const res = await fetch("/api/clients", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('/api/clients', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     if (res.ok) {
       toast({
-        title: "Paciente creado",
+        title: 'Paciente creado',
         description: `El paciente ${data.name} ha sido creado correctamente.`,
-        variant: "success",
+        variant: 'success',
       });
       setIsNewClientDialogOpen(false);
-      mutate("/api/clients"); // <-- Esto recarga la lista automáticamente
+      mutate('/api/clients'); // <-- Esto recarga la lista automáticamente
     } else {
       toast({
-        title: "Error",
-        description: "No se pudo crear el paciente.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'No se pudo crear el paciente.',
+        variant: 'destructive',
       });
     }
   };
 
-  const handleDeleteClientSuccess = (deletedClientId: Client["id"]) => {
+  const handleDeleteClientSuccess = (deletedClientId: Client['id']) => {
     if (selectedClient && selectedClient.id === deletedClientId) {
       setSelectedClient(null); // Limpiar la selección si el cliente eliminado era el seleccionado
     }
-    mutate("/api/clients"); // Actualizar la lista de clientes
+    mutate('/api/clients'); // Actualizar la lista de clientes
   };
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Pacientes</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Clientes</h1>
         <p className="text-muted-foreground">
-          Gestiona la información de tus pacientes
+          Gestiona la información de tus clientes
         </p>
       </div>
 
@@ -79,9 +79,9 @@ export default function ClientsPage() {
           <Card>
             <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
               <div>
-                <CardTitle>Lista de Pacientes</CardTitle>
+                <CardTitle>Lista de Clientes</CardTitle>
                 <CardDescription>
-                  Gestiona y busca entre tus pacientes
+                  Gestiona y busca entre tus clientes
                 </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2 w-full sm:w-auto">
@@ -99,7 +99,7 @@ export default function ClientsPage() {
                   onClick={() => setIsNewClientDialogOpen(true)}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Nuevo Paciente
+                  Nuevo Cliente
                 </Button>
               </div>
             </CardHeader>
@@ -132,8 +132,8 @@ export default function ClientsPage() {
               <CardTitle>Paciente</CardTitle>
               <CardDescription>
                 {selectedClient
-                  ? "Información detallada del paciente"
-                  : "Selecciona un paciente para ver detalles"}
+                  ? 'Información detallada del paciente'
+                  : 'Selecciona un paciente para ver detalles'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -155,18 +155,18 @@ export default function ClientsPage() {
       >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Crear Nuevo Paciente</DialogTitle>
+            <DialogTitle>Crear Nuevo Cliente</DialogTitle>
             <DialogDescription>
-              Completa el formulario para añadir un nuevo paciente a tu base de
+              Completa el formulario para añadir un nuevo cliente a tu base de
               datos.
             </DialogDescription>
           </DialogHeader>
           <ClientForm
             defaultValues={{
-              name: "",
-              email: "",
-              phone: "",
-              notes: "",
+              name: '',
+              email: '',
+              phone: '',
+              notes: '',
             }}
             onSubmit={handleCreateClient}
             onCancel={() => setIsNewClientDialogOpen(false)}

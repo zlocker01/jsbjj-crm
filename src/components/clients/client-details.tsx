@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Calendar,
   Mail,
@@ -14,16 +14,16 @@ import {
   AlertCircle,
   Pencil,
   Trash,
-} from "lucide-react";
-import { ClientForm } from "@/components/clients/client-form";
-import { formatDate } from "@/lib/date-utils";
-import type { ClientFormValues } from "@/schemas/clientSchemas/clientSchema";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Plus } from "lucide-react";
-import type { Client } from "@/interfaces/client/Client";
+} from 'lucide-react';
+import { ClientForm } from '@/components/clients/client-form';
+import { formatDate } from '@/lib/date-utils';
+import type { ClientFormValues } from '@/schemas/clientSchemas/clientSchema';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
+import type { Client } from '@/interfaces/client/Client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,10 +34,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 // Hook para obtener las citas reales del cliente
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 function useClientAppointments(clientId: string) {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -50,12 +50,12 @@ function useClientAppointments(clientId: string) {
     setError(null);
     fetch(`/api/clients/${clientId}/appointments`)
       .then(async (res) => {
-        if (!res.ok) throw new Error("Error al obtener citas");
+        if (!res.ok) throw new Error('Error al obtener citas');
         const data = await res.json();
         setAppointments(data.appointments || []);
       })
       .catch((err) => {
-        setError(err.message || "Error desconocido");
+        setError(err.message || 'Error desconocido');
         setAppointments([]);
       })
       .finally(() => setLoading(false));
@@ -64,16 +64,19 @@ function useClientAppointments(clientId: string) {
   return { appointments, loading, error };
 }
 
-
 interface ClientDetailsProps {
   client: Client;
-  onDeleteSuccess?: (clientId: Client["id"]) => void;
+  onDeleteSuccess?: (clientId: Client['id']) => void;
   onNewAppointmentClick?: () => void;
 }
 
-export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }: ClientDetailsProps) {
+export function ClientDetails({
+  client,
+  onDeleteSuccess,
+  onNewAppointmentClick,
+}: ClientDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState("info");
+  const [activeTab, setActiveTab] = useState('info');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { toast } = useToast();
 
@@ -81,12 +84,16 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center text-muted-foreground">
         <User className="h-12 w-12 mb-4 opacity-20" />
-        <p>Selecciona un paciente para ver sus detalles</p>
+        <p>Selecciona un cliente para ver sus detalles</p>
       </div>
     );
   }
 
-  const { appointments: clientAppointments, loading: loadingAppointments, error: errorAppointments } = useClientAppointments(client.id);
+  const {
+    appointments: clientAppointments,
+    loading: loadingAppointments,
+    error: errorAppointments,
+  } = useClientAppointments(client.id);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -98,27 +105,27 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
 
   const handleSave = async (data: ClientFormValues) => {
     try {
-      const response = await fetch(`/api/clients/${client.id}`, { 
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch(`/api/clients/${client.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        throw new Error("Error al actualizar el paciente");
+        throw new Error('Error al actualizar el paciente');
       }
       setIsEditing(false);
       toast({
-        title: "Paciente actualizado",
+        title: 'Paciente actualizado',
         description:
-          "La información del paciente ha sido actualizada correctamente.",
-        variant: "success",
+          'La información del paciente ha sido actualizada correctamente.',
+        variant: 'success',
       });
       // Consider re-fetching or updating client data in parent state if needed
     } catch (error) {
       toast({
-        title: "Error",
-        description: "No se pudo actualizar el paciente.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'No se pudo actualizar el paciente.',
+        variant: 'destructive',
       });
     }
   };
@@ -127,18 +134,18 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
     // Added
     try {
       const response = await fetch(`/api/clients/${client.id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (!response.ok) {
         const errorData = await response
           .json()
-          .catch(() => ({ message: "Error al eliminar el paciente" }));
-        throw new Error(errorData.message || "Error al eliminar el paciente");
+          .catch(() => ({ message: 'Error al eliminar el paciente' }));
+        throw new Error(errorData.message || 'Error al eliminar el paciente');
       }
       toast({
-        title: "Paciente eliminado",
+        title: 'Paciente eliminado',
         description: `El paciente ${client.name} ha sido eliminado correctamente.`,
-        variant: "success",
+        variant: 'success',
       });
       setIsDeleteDialogOpen(false);
       if (onDeleteSuccess) {
@@ -146,21 +153,21 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
       }
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "No se pudo eliminar el cliente.",
-        variant: "destructive",
+        title: 'Error',
+        description: error.message || 'No se pudo eliminar el cliente.',
+        variant: 'destructive',
       });
       setIsDeleteDialogOpen(false);
     }
   };
 
   const handleViewAppointments = () => {
-    setActiveTab("appointments");
+    setActiveTab('appointments');
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "Confirmada":
+      case 'Confirmada':
         return (
           <Badge
             variant="confirmada"
@@ -169,7 +176,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
             <CheckCircle className="mr-1 h-3 w-3" /> Completada
           </Badge>
         );
-      case "En Proceso":
+      case 'En Proceso':
         return (
           <Badge
             variant="proceso"
@@ -178,7 +185,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
             <Clock className="mr-1 h-3 w-3" /> En Proceso
           </Badge>
         );
-      case "Cancelada":
+      case 'Cancelada':
         return (
           <Badge
             variant="cancelada"
@@ -202,10 +209,10 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
         defaultValues={{
           // Asegúrate que estos campos coincidan con tu ClientFormValues y clientSchema
           name: client.name,
-          email: client.email ?? "",
-          phone: client.phone ?? "",
-          notes: client.notes || "",
-          birthday: client.birthday || "",
+          email: client.email ?? '',
+          phone: client.phone ?? '',
+          notes: client.notes || '',
+          birthday: client.birthday || '',
           // Si ClientForm espera is_active y client_source_id, debes pasarlos aquí también
           // is_active: client.is_active,
           // client_source_id: client.client_source_id,
@@ -230,11 +237,11 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
         <div>
           <h3 className="text-lg font-medium">{client.name}</h3>
           <p className="text-sm text-muted-foreground">
-            Paciente desde{" "}
+            Paciente desde{' '}
             {client.registration_date &&
             !isNaN(new Date(client.registration_date).getTime())
               ? formatDate(client.registration_date)
-              : "Fecha desconocida"}
+              : 'Fecha desconocida'}
           </p>
         </div>
       </div>
@@ -258,11 +265,11 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span>
-                Última visita:{" "}
+                Última visita:{' '}
                 {client.last_visit_date &&
                 !isNaN(new Date(client.last_visit_date).getTime())
                   ? formatDate(client.last_visit_date)
-                  : "Sin registro"}
+                  : 'Sin registro'}
               </span>
             </div>
           </div>
@@ -270,31 +277,43 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
           <div className="pt-2">
             <h4 className="text-sm font-medium mb-2">Notas</h4>
             <p className="text-sm text-muted-foreground">
-              {client.notes || "No hay notas disponibles para este cliente."}
+              {client.notes || 'No hay notas disponibles para este cliente.'}
             </p>
           </div>
         </TabsContent>
 
-          {/* ... Contenido del historial ... */}
+        {/* ... Contenido del historial ... */}
         <TabsContent value="history" className="pt-4">
           <div className="flex flex-col gap-2 mb-4">
             <p className="text-sm">
-              Total de citas: <span className="font-semibold">{clientAppointments.length}</span>
+              Total de citas:{' '}
+              <span className="font-semibold">{clientAppointments.length}</span>
             </p>
             <p className="text-sm">
-              Citas confirmadas: <span className="font-semibold">{clientAppointments.filter(a => a.status === "Confirmada").length}</span>
+              Citas confirmadas:{' '}
+              <span className="font-semibold">
+                {
+                  clientAppointments.filter((a) => a.status === 'Confirmada')
+                    .length
+                }
+              </span>
             </p>
             <p className="text-sm">
-              Citas canceladas: <span className="font-semibold">{clientAppointments.filter(a => a.status === "Cancelada").length}</span>
+              Citas canceladas:{' '}
+              <span className="font-semibold">
+                {
+                  clientAppointments.filter((a) => a.status === 'Cancelada')
+                    .length
+                }
+              </span>
             </p>
           </div>
         </TabsContent>
 
-
-          {/* ... Citas pro cliente ... */}
+        {/* ... Citas pro cliente ... */}
         <TabsContent value="appointments" className="pt-4">
           <div className="space-y-4">
-            <h4 className="text-sm font-medium">Citas del paciente</h4>
+            <h4 className="text-sm font-medium">Citas del cliente</h4>
             {clientAppointments.length > 0 ? (
               <div className="space-y-3">
                 {clientAppointments.map((appointment) => (
@@ -303,10 +322,13 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
                       <div>
                         <h5 className="font-medium">{appointment.service}</h5>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(appointment.start_datetime).toLocaleString("es-ES", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
+                          {new Date(appointment.start_datetime).toLocaleString(
+                            'es-ES',
+                            {
+                              dateStyle: 'medium',
+                              timeStyle: 'short',
+                            },
+                          )}
                         </p>
                       </div>
                       <div>{getStatusBadge(appointment.status)}</div>
@@ -316,10 +338,15 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Este paciente no tiene citas registradas.
+                Este cliente no tiene citas registradas.
               </p>
             )}
-            <Button size="sm" className="w-full mt-2" onClick={onNewAppointmentClick} disabled={!onNewAppointmentClick}>
+            <Button
+              size="sm"
+              className="w-full mt-2"
+              onClick={onNewAppointmentClick}
+              disabled={!onNewAppointmentClick}
+            >
               <Plus className="mr-2 h-4 w-4" />
               Agendar nueva cita
             </Button>
@@ -348,7 +375,7 @@ export function ClientDetails({ client, onDeleteSuccess, onNewAppointmentClick }
                 <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                 <AlertDialogDescription>
                   Esta acción no se puede deshacer. Esto eliminará
-                  permanentemente al paciente &quot;{client.name}&quot; de tus
+                  permanentemente al cliente &quot;{client.name}&quot; de tus
                   registros.
                 </AlertDialogDescription>
               </AlertDialogHeader>

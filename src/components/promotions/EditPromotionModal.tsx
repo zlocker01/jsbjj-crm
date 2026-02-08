@@ -42,7 +42,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export const promotionFormSchema = z.object({
   title: z.string().min(1, 'El título es requerido'),
@@ -60,10 +59,6 @@ export const promotionFormSchema = z.object({
     .min(0, 'La duración no puede ser negativa'),
   valid_until: z.date({
     required_error: 'La fecha de vencimiento es requerida',
-  }),
-  sessions_count: z.coerce.number().min(1, 'Debe haber al menos 1 sesión'),
-  target_audience: z.enum(['Niños', 'Adultos', 'Para todos'], {
-    required_error: 'Selecciona el público objetivo',
   }),
 });
 
@@ -135,7 +130,6 @@ export function EditPromotionModal({
         body: JSON.stringify({
           ...data,
           valid_until: data.valid_until.toISOString(),
-          sessions_count: Number(data.sessions_count),
         }),
       });
 
@@ -321,72 +315,6 @@ export function EditPromotionModal({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="sessions_count"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Número de Sesiones</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        step="1"
-                        placeholder="1"
-                        {...field}
-                        className={
-                          form.formState.errors.sessions_count
-                            ? 'border-red-500'
-                            : ''
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="target_audience"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Público Objetivo</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Niños" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Niños</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Adultos" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Adultos</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Para todos" />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            Para todos
-                          </FormLabel>
-                        </FormItem>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <FormField
               control={form.control}
               name="valid_until"
@@ -400,7 +328,7 @@ export function EditPromotionModal({
                           variant="outline"
                           className={cn(
                             'pl-3 text-left font-normal',
-                            !field.value && 'text-muted-foreground'
+                            !field.value && 'text-muted-foreground',
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />

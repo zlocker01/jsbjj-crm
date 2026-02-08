@@ -76,23 +76,6 @@ export function ServiceCard({
               <span>{service.duration_minutes} minutos</span>
             </div>
           )}
-
-          {service.sessions_count && (
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Layers className="mr-2 h-4 w-4" />
-              <span>
-                {service.sessions_count}{' '}
-                {service.sessions_count === 1 ? 'sesión' : 'sesiones'}
-              </span>
-            </div>
-          )}
-
-          {service.target_audience && (
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Users className="mr-2 h-4 w-4" />
-              <span>{service.target_audience}</span>
-            </div>
-          )}
         </div>
       </CardContent>
 

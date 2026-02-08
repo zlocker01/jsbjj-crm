@@ -2,25 +2,32 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import { Poppins, Lora } from 'next/font/google';
+import { Montserrat, Oswald, Poppins } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
+const montserrat = Montserrat({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+  display: 'swap',
+});
+
+const oswald = Oswald({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-oswald',
+  display: 'swap',
+});
+
 const poppins = Poppins({
-  weight: ['400', '500', '600'],
+  weight: ['300', '400', '500', '600', '700'],
   subsets: ['latin'],
   variable: '--font-poppins',
   display: 'swap',
 });
 
-const lora = Lora({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-lora',
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
-  title: 'La Rochelle - Odontología Integral',
+  title: 'El Callejon Barbershop',
   description: 'Servicios odontológicos profesionales',
   manifest: '/manifest.json',
   icons: {
@@ -40,9 +47,10 @@ export default function RootLayout({
       <body
         suppressHydrationWarning
         className={cn(
+          montserrat.variable,
+          oswald.variable,
           poppins.variable,
-          lora.variable,
-          'min-h-screen bg-background antialiased font-sans'
+          'min-h-screen bg-background antialiased font-sans',
         )}
       >
         <ThemeProvider

@@ -7,7 +7,5 @@ export interface Service {
   duration_minutes?: number;
   image: string;
   category: string;
-  sessions_count: number;
-  target_audience: string;
   landing_page_id?: string;
 }

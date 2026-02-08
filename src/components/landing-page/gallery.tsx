@@ -23,16 +23,11 @@ import type { GalleryItem } from '@/interfaces/galleryItems/GalleryItem';
 
 const categories = [
   { id: 'all', label: 'Todos' },
-  { id: 'orthodontics', label: 'Ortodoncia' },
-  { id: 'endodontics', label: 'Endodoncia' },
-  { id: 'periodontics', label: 'Periodoncia' },
-  { id: 'pediatric', label: 'Odontopediatría' },
-  { id: 'implants', label: 'Implantes' },
-  { id: 'esthetic', label: 'Estética Dental' },
-  { id: 'whitening', label: 'Blanqueamiento' },
-  { id: 'surgery', label: 'Cirugía' },
-  { id: 'prosthesis', label: 'Prótesis' },
-  { id: 'general', label: 'General' },
+  { id: 'Corte', label: 'Corte' },
+  { id: 'Barba', label: 'Barba' },
+  { id: 'Tratamiento', label: 'Tratamiento' },
+  { id: 'Paquete', label: 'Paquete' },
+  { id: 'Instalaciones', label: 'Instalaciones' },
 ];
 
 export default function Gallery({ data }: { data: GalleryItem[] }) {
@@ -43,17 +38,6 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
     category === 'all'
       ? data
       : data.filter((item) => item.category === category);
-
-  // Extraer categorías únicas de los datos
-  const uniqueCategories = [
-    { id: 'all', label: 'Todos' },
-    ...Array.from(new Set(data.map((item) => item.category)))
-      .filter((cat) => cat) // Filtrar valores nulos o undefined
-      .map((cat) => ({
-        id: cat,
-        label: cat.charAt(0).toUpperCase() + cat.slice(1), // Capitalizar primera letra
-      })),
-  ];
 
   return (
     <section id="gallery" className="py-16 md:py-24 bg-muted/30">
@@ -77,7 +61,7 @@ export default function Gallery({ data }: { data: GalleryItem[] }) {
         >
           <div className="flex justify-center my-8">
             <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full max-w-3xl">
-              {uniqueCategories.map((cat) => (
+              {categories.map((cat) => (
                 <TabsTrigger
                   key={cat.id}
                   value={cat.id}

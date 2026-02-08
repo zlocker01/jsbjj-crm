@@ -31,7 +31,7 @@ export function PromotionCard({
 
   const calculateDiscount = () => {
     return Math.round(
-      ((promotion.price - promotion.discount_price) / promotion.price) * 100
+      ((promotion.price - promotion.discount_price) / promotion.price) * 100,
     );
   };
 
@@ -100,19 +100,6 @@ export function PromotionCard({
           <div className="flex items-center text-sm text-gray-300 mt-1">
             <Clock className="h-4 w-4 mr-1" />
             {promotion.duration_minutes} minutos
-          </div>
-        )}
-        {promotion.sessions_count && (
-          <div className="flex items-center text-sm text-gray-300 mt-1">
-            <Layers className="h-4 w-4 mr-1" />
-            {promotion.sessions_count}{' '}
-            {promotion.sessions_count === 1 ? 'sesión' : 'sesiones'}
-          </div>
-        )}
-        {promotion.target_audience && (
-          <div className="flex items-center text-sm text-gray-300 mt-1">
-            <Users className="h-4 w-4 mr-1" />
-            {promotion.target_audience}
           </div>
         )}
       </CardHeader>

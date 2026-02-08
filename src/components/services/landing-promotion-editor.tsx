@@ -73,13 +73,11 @@ export default function LandingPromotionEditor({
       title: 'Nueva Promoción',
       description: 'Descripción de la nueva promoción',
       image: '',
-      category: 'Prevención y cuidado', // Default category
+      category: 'Corte', // Default category
       price: 0,
       discount_price: 0,
       valid_until: new Date().toISOString().split('T')[0], // Today's date
       duration_minutes: 60,
-      sessions_count: 1,
-      target_audience: 'Para todos',
     };
     append(newItem);
   };

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import type React from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Calendar,
   CameraIcon,
@@ -17,17 +17,17 @@ import {
   User,
   Users,
   X,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetHeader,
-} from "@/components/ui/sheet";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { useMediaQuery } from "@/hooks/use-media-query";
+} from '@/components/ui/sheet';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 export function DashboardLayoutEmployee({
   children,
@@ -38,7 +38,7 @@ export function DashboardLayoutEmployee({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -50,27 +50,27 @@ export function DashboardLayoutEmployee({
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const routes = [
     {
-      title: "Calendario de Citas",
+      title: 'Calendario de Citas',
       href: `/session/employee/calendar/${landingId}`,
       icon: Calendar,
     },
     {
-      title: "Pacientes",
-      href: "/session/employee/clients",
+      title: 'Clientes',
+      href: '/session/employee/clients',
       icon: Users,
     },
     {
-      title: "Perfil",
-      href: "/session/employee/profile",
+      title: 'Perfil',
+      href: '/session/employee/profile',
       icon: User,
     },
   ];
@@ -91,7 +91,7 @@ export function DashboardLayoutEmployee({
     <div className="flex min-h-screen flex-col md:flex-row bg-background text-foreground transition-colors duration-300">
       {/* Desktop Sidebar */}
       <div className="hidden w-64 flex-col border-r bg-card md:flex">
-        <div className="flex h-14 items-center border-b px-4">
+        <div className="flex h-auto py-4 items-center border-b px-4">
           <Link
             href="/session/employee/calendar"
             className="flex items-center gap-2 font-semibold justify-center"
@@ -99,7 +99,7 @@ export function DashboardLayoutEmployee({
             <img
               src="/landing-page/logo.png"
               alt="odontologo Tlaxcala"
-              className="max-h-44 flex justify-center"
+              className="max-h-24 w-auto flex justify-center"
             />
           </Link>
         </div>
@@ -108,10 +108,10 @@ export function DashboardLayoutEmployee({
             {routes.map((route) => (
               <Button
                 key={route.href}
-                variant={pathname === route.href ? "secondary" : "ghost"}
+                variant={pathname === route.href ? 'secondary' : 'ghost'}
                 className={cn(
-                  "justify-start gap-2",
-                  pathname === route.href && "font-medium",
+                  'justify-start gap-2',
+                  pathname === route.href && 'font-medium',
                 )}
                 asChild
               >
@@ -149,7 +149,7 @@ export function DashboardLayoutEmployee({
                 <img
                   src="/landing-page/logo.png"
                   alt="estetica y barberia en Tlaxcala"
-                  className="max-h-20"
+                  className="max-h-24 w-auto"
                 />
               </Link>
             </SheetTitle>
@@ -159,10 +159,10 @@ export function DashboardLayoutEmployee({
               {routes.map((route) => (
                 <Button
                   key={route.href}
-                  variant={pathname === route.href ? "secondary" : "ghost"}
+                  variant={pathname === route.href ? 'secondary' : 'ghost'}
                   className={cn(
-                    "justify-start gap-2",
-                    pathname === route.href && "font-medium",
+                    'justify-start gap-2',
+                    pathname === route.href && 'font-medium',
                   )}
                   asChild
                   onClick={() => setOpen(false)}
@@ -192,7 +192,9 @@ export function DashboardLayoutEmployee({
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col">
-        <header className={`sticky top-0 z-10 flex h-14 items-center gap-4 border-b px-4 md:px-6 transition-colors duration-300 ${scrolled ? "bg-black/90 shadow-lg" : "bg-card"}`}>
+        <header
+          className={`sticky top-0 z-10 flex h-14 items-center gap-4 border-b px-4 md:px-6 transition-colors duration-300 ${scrolled ? 'bg-black/90 shadow-lg' : 'bg-card'}`}
+        >
           <Button
             variant="ghost"
             size="icon"

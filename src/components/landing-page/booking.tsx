@@ -102,7 +102,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
     console.log('LandingId recibido en component:', landingId);
     if (!landingId) {
       console.warn(
-        'landingId no proporcionado o inválido. Algunos datos no estarán disponibles.'
+        'landingId no proporcionado o inválido. Algunos datos no estarán disponibles.',
       );
       setIsLoadingServices(false);
       setIsLoadingPromotions(false);
@@ -116,12 +116,12 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
         try {
           console.log('Solicitando servicios con landingId:', landingId);
           const resServices = await fetch(
-            `/api/services?landingPageId=${landingId}`
+            `/api/services?landingPageId=${landingId}`,
           );
           console.log(
             'Respuesta de API servicios:',
             resServices.status,
-            resServices.statusText
+            resServices.statusText,
           );
 
           if (!resServices.ok) {
@@ -137,13 +137,13 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
             if (dataServices && Array.isArray(dataServices.services)) {
               console.log(
                 'Número de servicios encontrados:',
-                dataServices.services.length
+                dataServices.services.length,
               );
               setServices(dataServices.services);
             } else {
               console.warn(
                 'La estructura de datos de servicios no es la esperada:',
-                dataServices
+                dataServices,
               );
             }
           }
@@ -157,12 +157,12 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
         try {
           console.log('Solicitando promociones con landingId:', landingId);
           const resPromotions = await fetch(
-            `/api/promotions?landingPageId=${landingId}`
+            `/api/promotions?landingPageId=${landingId}`,
           );
           console.log(
             'Respuesta de API promociones:',
             resPromotions.status,
-            resPromotions.statusText
+            resPromotions.statusText,
           );
 
           if (!resPromotions.ok) {
@@ -176,18 +176,18 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
             const dataPromotions = await resPromotions.json();
             console.log(
               'Promociones recibidas (datos brutos):',
-              dataPromotions
+              dataPromotions,
             );
             if (dataPromotions && Array.isArray(dataPromotions.promotions)) {
               console.log(
                 'Número de promociones encontradas:',
-                dataPromotions.promotions.length
+                dataPromotions.promotions.length,
               );
               setPromotions(dataPromotions.promotions);
             } else {
               console.warn(
                 'La estructura de datos de promociones no es la esperada:',
-                dataPromotions
+                dataPromotions,
               );
               console.log('Usando datos de prueba para promociones');
             }
@@ -278,7 +278,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
         // Obtener duración del servicio seleccionado para calcular el fin del slot candidato
         const currentServiceId = watchService;
         const currentService = services.find(
-          (s: any) => s.id.toString() === currentServiceId
+          (s: any) => s.id.toString() === currentServiceId,
         );
         const serviceDurationMinutes = currentService?.duration_minutes || 30; // Default 30 min
 
@@ -415,7 +415,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
                 // Intentar buscar duración del servicio original si está disponible en 'services'
                 // Nota: app.service_id debe coincidir con el tipo de ID en services (string vs number)
                 const originalService = services.find(
-                  (s) => s.id == app.service_id
+                  (s) => s.id == app.service_id,
                 );
                 const duration = originalService?.duration_minutes || 30;
                 appEnd = appStart + duration * 60 * 1000;
@@ -427,14 +427,14 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
               if (overlaps) {
                 console.log(
                   `[DEBUG] Conflicto: Slot ${slotTime} (${new Date(
-                    slotStartTime
+                    slotStartTime,
                   ).toLocaleTimeString()} - ${new Date(
-                    slotEndTime
+                    slotEndTime,
                   ).toLocaleTimeString()}) choca con cita ${app.id} (${new Date(
-                    appStart
+                    appStart,
                   ).toLocaleTimeString()} - ${new Date(
-                    appEnd
-                  ).toLocaleTimeString()})`
+                    appEnd,
+                  ).toLocaleTimeString()})`,
                 );
               }
 
@@ -511,7 +511,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
       ['service', /* "stylist", */ 'date', 'time', 'name', 'email', 'phone'],
       {
         shouldFocus: true,
-      }
+      },
     );
 
     if (result) {
@@ -559,7 +559,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
         label: `${format(weekStart, 'd MMM', { locale: es })} - ${format(
           weekEnd,
           'd MMM',
-          { locale: es }
+          { locale: es },
         )}`,
         start: weekStart,
       });
@@ -598,7 +598,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
               <div
                 className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center text-white font-bold',
-                  step >= 1 ? 'bg-primary' : 'bg-muted'
+                  step >= 1 ? 'bg-primary' : 'bg-muted',
                 )}
               >
                 1
@@ -612,7 +612,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
               <div
                 className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center text-white font-bold',
-                  step >= 2 ? 'bg-primary' : 'bg-muted'
+                  step >= 2 ? 'bg-primary' : 'bg-muted',
                 )}
               >
                 2
@@ -668,7 +668,7 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
                                       key={service.id}
                                       value={service.id.toString()}
                                     >
-                                      {service.title} - {service.price}€
+                                      {service.title} - ${service.price} MXN
                                     </SelectItem>
                                   ))
                                 )}
@@ -717,10 +717,10 @@ export default function Booking({ landingId = '' }: { landingId?: string }) {
                                       key={promotion.id}
                                       value={promotion.id.toString()}
                                     >
-                                      {promotion.title} -{' '}
+                                      {promotion.title} - ${' '}
                                       {promotion.discount_price ||
-                                        promotion.price}
-                                      €
+                                        promotion.price}{' '}
+                                      MXN
                                     </SelectItem>
                                   ))
                                 )}

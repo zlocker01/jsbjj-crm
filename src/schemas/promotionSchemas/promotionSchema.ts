@@ -1,15 +1,10 @@
 import { z } from 'zod';
 
 export const serviceCategories = [
-  'Prevención y cuidado',
-  'Estética dental',
-  'Ortodoncia',
-  'Rehabilitación y restauración dental',
-  'Endodoncia',
-  'Periodoncia (encías)',
-  'Odontopediatría',
-  'Cirugía dental',
-  'Urgencias dentales',
+  'Corte',
+  'Barba',
+  'Tratamiento',
+  'Paquete',
 ] as const;
 
 export const promotionItemSchema = z.object({
@@ -37,10 +32,6 @@ export const promotionItemSchema = z.object({
     .max(1440, 'La duración no puede ser mayor a 24 horas')
     .optional()
     .nullable(),
-  sessions_count: z.number().min(1, 'Debe haber al menos 1 sesión'),
-  target_audience: z.enum(['Niños', 'Adultos', 'Para todos'], {
-    required_error: 'Selecciona el público objetivo',
-  }),
 });
 
 export const PromotionFormSchema = z.object({
