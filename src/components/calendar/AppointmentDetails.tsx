@@ -47,7 +47,7 @@ export function AppointmentDetails({
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center text-muted-foreground">
         <Calendar className="h-12 w-12 mb-4 opacity-20" />
-        <p>Selecciona una cita para ver sus detalles</p>
+        <p>Selecciona una clase para ver sus detalles</p>
       </div>
     );
   }
@@ -63,7 +63,7 @@ export function AppointmentDetails({
       });
 
       if (!response.ok) {
-        throw new Error('Error al cancelar la cita');
+        throw new Error('Error al cancelar la clase');
       }
 
       setShowCancelDialog(false);
@@ -72,16 +72,16 @@ export function AppointmentDetails({
         onAppointmentCancelled();
       }
       toast({
-        title: 'Cita cancelada',
-        description: 'La cita ha sido cancelada correctamente.',
+        title: 'Clase cancelada',
+        description: 'La clase ha sido cancelada correctamente.',
         variant: 'success',
       });
     } catch (error) {
-      console.error('Error al cancelar la cita:', error);
+      console.error('Error al cancelar la clase:', error);
       toast({
         title: 'Error',
         description:
-          'No se pudo cancelar la cita. Por favor, inténtalo de nuevo.',
+          'No se pudo cancelar la clase. Por favor, inténtalo de nuevo.',
         variant: 'destructive',
       });
     }
@@ -133,7 +133,7 @@ export function AppointmentDetails({
               {format(
                 new Date(appointment?.start_datetime),
                 "EEEE d 'de' MMMM",
-                { locale: es }
+                { locale: es },
               )}
             </p>
             <p className="text-sm text-muted-foreground">
@@ -148,7 +148,7 @@ export function AppointmentDetails({
           {appointment.promotion_id
             ? (() => {
                 const promo = promotions.find(
-                  (p) => p.id === appointment.promotion_id
+                  (p) => p.id === appointment.promotion_id,
                 );
                 return promo ? (
                   <>
@@ -169,7 +169,7 @@ export function AppointmentDetails({
               })()
             : (() => {
                 const service = services.find(
-                  (s) => s.id === appointment.service_id
+                  (s) => s.id === appointment.service_id,
                 );
                 return service ? (
                   <>
@@ -193,15 +193,15 @@ export function AppointmentDetails({
               appointment.status === 'Confirmada'
                 ? 'confirmada'
                 : appointment.status === 'Cancelada'
-                ? 'cancelada'
-                : 'proceso'
+                  ? 'cancelada'
+                  : 'proceso'
             }
           >
             {appointment.status === 'Confirmada'
               ? 'Confirmada'
               : appointment.status === 'Cancelada'
-              ? 'Cancelada'
-              : 'Confirmada'}
+                ? 'Cancelada'
+                : 'Confirmada'}
           </Badge>
         </div>
 
@@ -245,7 +245,7 @@ export function AppointmentDetails({
                 Servicio:{' '}
                 {
                   services.find(
-                    (service) => service.id === appointment?.service_id
+                    (service) => service.id === appointment?.service_id,
                   )?.title
                 }
               </div>
@@ -253,7 +253,7 @@ export function AppointmentDetails({
                 {format(
                   new Date(appointment.start_datetime),
                   "EEEE d 'de' MMMM",
-                  { locale: es }
+                  { locale: es },
                 )}{' '}
                 • {format(new Date(appointment.start_datetime), 'HH:mm')} -{' '}
                 {format(new Date(appointment.end_datetime), 'HH:mm')}
@@ -261,7 +261,7 @@ export function AppointmentDetails({
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Esta acción no se puede deshacer. La cita será marcada como
+              Esta acción no se puede deshacer. La clase será marcada como
               cancelada y se liberará el horario.
             </p>
           </div>
@@ -274,7 +274,7 @@ export function AppointmentDetails({
               Volver
             </Button>
             <Button variant="destructive" onClick={handleCancelAppointment}>
-              Sí, cancelar cita
+              Sí, cancelar clase
             </Button>
           </DialogFooter>
         </DialogContent>

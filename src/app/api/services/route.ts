@@ -34,7 +34,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const success = await createService(body);
+    // Sanitizar datos para evitar enviar campos obsoletos (precio, duración, categoría)
+    const serviceData = {
+      title: body.title,
+      description: body.description,
+      image: body.image,
+      level: body.level,
+      benefits: body.benefits,
+      landing_page_id: body.landing_page_id,
+    };
+
+    const success = await createService(serviceData);
     if (!success) {
       return NextResponse.json(
         { error: "No se pudo crear el servicio." },

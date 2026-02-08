@@ -15,7 +15,7 @@ import {
   MessageSquare,
   Package,
   Pencil,
-  ShoppingBasket,
+  Dumbbell,
   Tag,
   User,
   Users,
@@ -87,9 +87,9 @@ export function DashboardLayout({
       icon: Clock,
     },
     {
-      title: 'Servicios',
+      title: 'Clases',
       href: '/session/admin/services',
-      icon: ShoppingBasket,
+      icon: Dumbbell,
     },
     {
       title: 'Inventario',
@@ -102,12 +102,12 @@ export function DashboardLayout({
       icon: Tag,
     },
     {
-      title: 'Calendario de Citas',
+      title: 'Horario de Clases',
       href: `/session/admin/calendar/${landingId}`,
       icon: Calendar,
     },
     {
-      title: 'Clientes',
+      title: 'Alumnos',
       href: '/session/admin/clients',
       icon: IdCardLanyard,
     },

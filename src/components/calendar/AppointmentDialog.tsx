@@ -31,12 +31,12 @@ export function AppointmentDialog({
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {appointment ? "Editar Cita" : "Nueva Cita"}
+            {appointment ? "Editar Clase" : "Nueva Clase"}
           </DialogTitle>
           <DialogDescription>
             {appointment
-              ? "Modifica los datos de la cita"
-              : "Completa los datos para crear una nueva cita"}
+              ? "Modifica los datos de la clase"
+              : "Completa los datos para crear una nueva clase"}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">

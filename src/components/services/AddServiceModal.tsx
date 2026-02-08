@@ -17,10 +17,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2, Upload, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import type { ServiceFormData } from '@/schemas/servicesSchemas/serviceSchema';
 import {
   serviceFormSchema,
-  serviceCategories,
+  serviceLevels,
 } from '@/schemas/servicesSchemas/serviceSchema';
 import {
   Form,
@@ -63,13 +64,54 @@ export function AddServiceModal({
     defaultValues: {
       title: '',
       description: '',
-      price: 0,
-      duration_minutes: 15,
       image: '',
-      category: 'Prevención y cuidado',
+      level: 'Principiantes',
+      benefits: [],
       landing_page_id: landingId,
     },
   });
+
+  const normalizeBenefits = (benefits: any): string[] => {
+    if (Array.isArray(benefits)) {
+      return benefits;
+    }
+    if (typeof benefits === 'string') {
+      return benefits
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+    return [];
+  };
+
+  const handleAddBenefit = (value: string): boolean => {
+    if (!value.trim()) {
+      return false;
+    }
+
+    const currentBenefits = normalizeBenefits(form.getValues('benefits'));
+    if (currentBenefits.length >= 3) {
+      toast({
+        title: 'Límite alcanzado',
+        description: 'Máximo 3 beneficios permitidos',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    if (!currentBenefits.includes(value.trim())) {
+      const newBenefits = [...currentBenefits, value.trim()];
+      form.setValue('benefits', newBenefits, { shouldValidate: true });
+      return true;
+    }
+    return false;
+  };
+
+  const handleRemoveBenefit = (index: number) => {
+    const currentBenefits = [...normalizeBenefits(form.getValues('benefits'))];
+    currentBenefits.splice(index, 1);
+    form.setValue('benefits', currentBenefits, { shouldValidate: true });
+  };
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -144,7 +186,7 @@ export function AddServiceModal({
       if (!data.image) {
         toast({
           title: 'Error',
-          description: 'Por favor, sube una imagen para el servicio',
+          description: 'Por favor, sube una imagen para la clase',
           variant: 'destructive',
         });
         return;
@@ -152,8 +194,6 @@ export function AddServiceModal({
 
       console.log('Enviando datos:', {
         ...data,
-        price: Number(data.price),
-        duration_minutes: data.duration_minutes,
         landing_page_id: landingId,
       });
 
@@ -164,8 +204,6 @@ export function AddServiceModal({
         },
         body: JSON.stringify({
           ...data,
-          price: Number(data.price),
-          duration_minutes: data.duration_minutes,
           landing_page_id: landingId,
         }),
       });
@@ -178,8 +216,8 @@ export function AddServiceModal({
       }
 
       toast({
-        title: '¡Servicio creado!',
-        description: 'El servicio se ha añadido correctamente.',
+        title: '¡Clase creada!',
+        description: 'La clase se ha añadido correctamente.',
         variant: 'success',
       });
 
@@ -187,10 +225,9 @@ export function AddServiceModal({
       form.reset({
         title: '',
         description: '',
-        price: 0,
-        duration_minutes: undefined,
         image: '',
-        category: 'Prevención y cuidado',
+        level: 'Principiantes',
+        benefits: [],
         landing_page_id: landingId,
       });
 
@@ -200,13 +237,13 @@ export function AddServiceModal({
       // Recargar la página o actualizar la lista de servicios
       onServiceAdded?.();
     } catch (error) {
-      console.error('Error al crear el servicio:', error);
+      console.error('Error al crear la clase:', error);
       toast({
         title: 'Error',
         description:
           error instanceof Error
             ? error.message
-            : 'No se pudo crear el servicio. Inténtalo de nuevo.',
+            : 'No se pudo crear la clase. Inténtalo de nuevo.',
         variant: 'destructive',
       });
     }
@@ -216,7 +253,7 @@ export function AddServiceModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Agregar Nuevo Servicio</DialogTitle>
+          <DialogTitle>Agregar Nueva Clase</DialogTitle>
         </DialogHeader>
 
         <div>
@@ -231,9 +268,9 @@ export function AddServiceModal({
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Título del Servicio</FormLabel>
+                    <FormLabel>Título de la Clase</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ej: Corte de cabello" {...field} />
+                      <Input placeholder="Ej: Clase de Boxeo" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -248,7 +285,7 @@ export function AddServiceModal({
                     <FormLabel>Descripción</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Describe el servicio"
+                        placeholder="Describe la clase"
                         rows={3}
                         {...field}
                       />
@@ -258,77 +295,25 @@ export function AddServiceModal({
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Precio ($)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="0.00"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? parseFloat(e.target.value) : '',
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="duration_minutes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Duración (minutos)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="15"
-                          step="15"
-                          placeholder="15"
-                          value={field.value ?? ''}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? parseInt(e.target.value) : null,
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
               <FormField
                 control={form.control}
-                name="category"
+                name="level"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Categoría</FormLabel>
+                    <FormLabel>Nivel</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecciona una categoría" />
+                          <SelectValue placeholder="Selecciona un nivel" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {serviceCategories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
+                        {serviceLevels.map((level) => (
+                          <SelectItem key={level} value={level}>
+                            {level}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -340,61 +325,129 @@ export function AddServiceModal({
 
               <FormField
                 control={form.control}
+                name="benefits"
+                render={({ field }) => {
+                  const benefitsArray = normalizeBenefits(field.value);
+
+                  return (
+                    <FormItem>
+                      <FormLabel>Beneficios (Máximo 3)</FormLabel>
+                      <FormControl>
+                        <div className="space-y-2">
+                          <div className="relative">
+                            <Input
+                              placeholder="Escribe un beneficio y presiona Enter o coma"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === ",") {
+                                  e.preventDefault();
+                                  const value = e.currentTarget.value.trim();
+                                  if (handleAddBenefit(value)) {
+                                    e.currentTarget.value = "";
+                                  }
+                                }
+                              }}
+                              onBlur={(e) => {
+                                const value = e.target.value.trim();
+                                if (handleAddBenefit(value)) {
+                                  e.target.value = "";
+                                }
+                              }}
+                              disabled={benefitsArray.length >= 3}
+                            />
+                            <span className="absolute right-3 top-2 text-sm text-muted-foreground">
+                              Enter o ,
+                            </span>
+                          </div>
+
+                          {benefitsArray.length > 0 && (
+                            <div className="rounded-md border p-3">
+                              <div className="flex flex-wrap gap-2">
+                                {benefitsArray.map((benefit, index) => (
+                                  <Badge
+                                    key={index}
+                                    variant="secondary"
+                                    className="flex items-center gap-1 py-1"
+                                  >
+                                    {benefit}
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveBenefit(index)}
+                                      className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                                      aria-label={`Eliminar ${benefit}`}
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </button>
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+
+              <FormField
+                control={form.control}
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Imagen del Servicio</FormLabel>
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      accept="image/*"
-                      className="hidden"
-                    />
-
-                    {previewUrl ? (
-                      <div className="relative">
-                        <img
-                          src={previewUrl}
-                          alt="Vista previa"
-                          className="w-full h-48 object-cover rounded-md"
+                    <FormLabel>Foto de la Clase</FormLabel>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept="image/*"
+                          className="hidden"
                         />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-2 right-2 rounded-full h-8 w-8"
-                          onClick={removeImage}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
+
+                        <div className="mt-2 flex items-center gap-4">
+                          {previewUrl || field.value ? (
+                            <div className="relative">
+                              <img
+                                src={previewUrl || field.value}
+                                alt="Vista previa"
+                                className="h-24 w-24 rounded-md object-cover"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="absolute -right-2 -top-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={removeImage}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={triggerFileInput}
+                              disabled={isUploading}
+                            >
+                              {isUploading ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              ) : (
+                                <Upload className="mr-2 h-4 w-4" />
+                              )}
+                              Subir Imagen
+                            </Button>
+                          )}
+
+                          <div className="text-sm text-muted-foreground">
+                            {isUploading
+                              ? "Subiendo imagen..."
+                              : "Sube una foto de la clase (opcional)"}
+                          </div>
+                        </div>
                       </div>
-                    ) : (
-                      <button
-                        type="button"
-                        className="border-2 border-dashed rounded-md p-8 text-center cursor-pointer hover:bg-accent/50 transition-colors"
-                        onClick={triggerFileInput}
-                      >
-                        {isUploading ? (
-                          <div className="flex flex-col items-center justify-center space-y-2">
-                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                            <p className="text-sm text-muted-foreground">
-                              Subiendo imagen...
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center space-y-2">
-                            <Upload className="h-8 w-8 text-muted-foreground" />
-                            <p className="text-sm text-muted-foreground">
-                              Haz clic para subir una imagen
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              PNG, JPG, JPEG (máx. 5MB)
-                            </p>
-                          </div>
-                        )}
-                      </button>
-                    )}
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -403,27 +456,22 @@ export function AddServiceModal({
           </Form>
         </div>
 
-        <DialogFooter className="mt-10 flex justify-between gap-3">
+        <DialogFooter className="flex justify-end gap-3">
           <Button
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={form.formState.isSubmitting}
           >
             Cancelar
           </Button>
-          <Button
-            type="submit"
-            form="service-form"
-            disabled={form.formState.isSubmitting}
-          >
+          <Button type="submit" form="service-form" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Guardando...
               </>
             ) : (
-              'Guardar Servicio'
+              "Guardar Clase"
             )}
           </Button>
         </DialogFooter>

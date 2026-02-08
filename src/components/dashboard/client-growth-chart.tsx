@@ -45,20 +45,20 @@ export function ClientGrowthChart({ data, isLoading }: ClientGrowthChartProps) {
         <Bar
           yAxisId="left"
           dataKey="nuevos"
-          name="Nuevos clientes"
+          name="Nuevos alumnos"
           fill="#8884d8"
         />
         <Bar
           yAxisId="left"
           dataKey="perdidos"
-          name="Clientes perdidos"
+          name="Alumnos perdidos"
           fill="#ff8042"
         />
         <Line
           yAxisId="right"
           type="monotone"
           dataKey="total"
-          name="Total de clientes"
+          name="Total de alumnos"
           stroke="#82ca9d"
           strokeWidth={2}
           dot={{ r: 4 }}

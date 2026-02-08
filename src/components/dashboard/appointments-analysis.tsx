@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -23,14 +23,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { SummaryCard } from "@/components/dashboard/summary-card";
-import { AppointmentsByDayChart } from "@/components/dashboard/appointments-by-day-chart";
-import { AppointmentsByHourChart } from "@/components/dashboard/appointments-by-hour-chart";
-import { AppointmentsByServiceChart } from "@/components/dashboard/appointments-by-service-chart";
-import { AppointmentStatusChart } from "@/components/dashboard/appointment-status-chart";
-import { AppointmentHeatmapChart } from "@/components/dashboard/appointment-heatmap-chart";
-import { AppointmentCancellationChart } from "@/components/dashboard/appointment-cancellation-chart";
+} from '@/components/ui/table';
+import { SummaryCard } from '@/components/dashboard/summary-card';
+import { AppointmentsByDayChart } from '@/components/dashboard/appointments-by-day-chart';
+import { AppointmentsByHourChart } from '@/components/dashboard/appointments-by-hour-chart';
+import { AppointmentsByServiceChart } from '@/components/dashboard/appointments-by-service-chart';
+import { AppointmentStatusChart } from '@/components/dashboard/appointment-status-chart';
+import { AppointmentHeatmapChart } from '@/components/dashboard/appointment-heatmap-chart';
+import { AppointmentCancellationChart } from '@/components/dashboard/appointment-cancellation-chart';
 import {
   getAppointmentsByDayData,
   getAppointmentsByHourData,
@@ -40,7 +40,7 @@ import {
   getPopularServicesData,
   getAppointmentSummaryData,
   getCancellationTrendData,
-} from "@/data/dashboard-data";
+} from '@/data/dashboard-data';
 import type {
   AppointmentByDayData,
   AppointmentByHourData,
@@ -48,7 +48,7 @@ import type {
   AppointmentStatusData,
   HeatmapData,
   PopularServiceData,
-} from "@/interfaces/dashboard";
+} from '@/interfaces/dashboard';
 
 interface AppointmentsAnalysisProps {
   appointmentsByDayData?: AppointmentByDayData[];
@@ -67,7 +67,7 @@ interface AppointmentsAnalysisProps {
   };
   cancellationTrendData?: { month: string; tasa: number }[];
   datasetsByRange?: Record<
-    "week" | "month" | "quarter" | "year",
+    'week' | 'month' | 'quarter' | 'year',
     {
       appointmentsByDayData: AppointmentByDayData[];
       appointmentsByHourData: AppointmentByHourData[];
@@ -89,18 +89,41 @@ interface AppointmentsAnalysisProps {
 }
 
 export function AppointmentsAnalysis(props: AppointmentsAnalysisProps) {
-  const [timeRange, setTimeRange] = useState("month");
+  const [timeRange, setTimeRange] = useState('month');
 
   // Obtener datos para el análisis de citas
-  const rangeData = props.datasetsByRange?.[timeRange as "week" | "month" | "quarter" | "year"];
-  const appointmentsByDayData = rangeData?.appointmentsByDayData ?? props.appointmentsByDayData ?? getAppointmentsByDayData();
-  const appointmentsByHourData = rangeData?.appointmentsByHourData ?? props.appointmentsByHourData ?? getAppointmentsByHourData();
-  const appointmentsByServiceData = rangeData?.appointmentsByServiceData ?? props.appointmentsByServiceData ?? getAppointmentsByServiceData();
-  const appointmentStatusData = rangeData?.appointmentStatusData ?? props.appointmentStatusData ?? getAppointmentStatusData();
-  const heatmapData = rangeData?.heatmapData ?? props.heatmapData ?? getHeatmapData();
-  const popularServicesData = rangeData?.popularServicesData ?? props.popularServicesData ?? getPopularServicesData();
-  const appointmentSummary = rangeData?.appointmentSummary ?? props.appointmentSummary ?? getAppointmentSummaryData();
-  const cancellationTrendData = (rangeData?.cancellationTrendData ?? props.cancellationTrendData) ?? getCancellationTrendData();
+  const rangeData =
+    props.datasetsByRange?.[timeRange as 'week' | 'month' | 'quarter' | 'year'];
+  const appointmentsByDayData =
+    rangeData?.appointmentsByDayData ??
+    props.appointmentsByDayData ??
+    getAppointmentsByDayData();
+  const appointmentsByHourData =
+    rangeData?.appointmentsByHourData ??
+    props.appointmentsByHourData ??
+    getAppointmentsByHourData();
+  const appointmentsByServiceData =
+    rangeData?.appointmentsByServiceData ??
+    props.appointmentsByServiceData ??
+    getAppointmentsByServiceData();
+  const appointmentStatusData =
+    rangeData?.appointmentStatusData ??
+    props.appointmentStatusData ??
+    getAppointmentStatusData();
+  const heatmapData =
+    rangeData?.heatmapData ?? props.heatmapData ?? getHeatmapData();
+  const popularServicesData =
+    rangeData?.popularServicesData ??
+    props.popularServicesData ??
+    getPopularServicesData();
+  const appointmentSummary =
+    rangeData?.appointmentSummary ??
+    props.appointmentSummary ??
+    getAppointmentSummaryData();
+  const cancellationTrendData =
+    rangeData?.cancellationTrendData ??
+    props.cancellationTrendData ??
+    getCancellationTrendData();
 
   return (
     <div className="space-y-4">
@@ -126,7 +149,7 @@ export function AppointmentsAnalysis(props: AppointmentsAnalysisProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SummaryCard
-          title="Total de Citas"
+          title="Total de Clases"
           value={appointmentSummary.total}
           changePercent={appointmentSummary.growthPercent}
         />
@@ -263,9 +286,9 @@ export function AppointmentsAnalysis(props: AppointmentsAnalysisProps) {
                         <TableCell className="text-right">
                           <span
                             className={
-                              service.growth.startsWith("+")
-                                ? "text-green-600"
-                                : "text-red-600"
+                              service.growth.startsWith('+')
+                                ? 'text-green-600'
+                                : 'text-red-600'
                             }
                           >
                             {service.growth}
@@ -287,9 +310,9 @@ export function AppointmentsAnalysis(props: AppointmentsAnalysisProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Estado de las Citas</CardTitle>
+                <CardTitle>Estado de las Clases</CardTitle>
                 <CardDescription>
-                  Distribución de citas por estado
+                  Distribución de clases por estado
                 </CardDescription>
               </CardHeader>
               <CardContent>

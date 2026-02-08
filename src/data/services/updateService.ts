@@ -38,11 +38,9 @@ export async function updateService(
       .update({
         title: serviceData.title,
         description: serviceData.description || null,
-        price: serviceData.price ? Number(serviceData.price) : undefined,
-        category: serviceData.category || 'Cabello',
-        duration_minutes: serviceData.duration_minutes
-          ? Number(serviceData.duration_minutes)
-          : undefined,
+        image: serviceData.image || null,
+        level: serviceData.level,
+        benefits: serviceData.benefits || [],
       })
       .eq("id", id)
       .select("id")

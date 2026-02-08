@@ -154,7 +154,7 @@ export async function getClientGrowthDataFromSupabase(): Promise<ClientGrowthDat
   }
 }
 
-// Función para obtener datos de segmentación de clientes desde Supabase
+// Función para obtener datos de segmentación de alumnos desde Supabase
 export async function getClientSegmentDataFromSupabase(): Promise<ClientSegmentData[]> {
   try {
     const { data, error } = await supabase.rpc('get_client_segmentation_data');

@@ -85,7 +85,7 @@ export async function updateFeatures(
     }
     return { success: true, data };
   } catch (error) {
-    console.error("Error al actualizar servicios:", error);
+    console.error("Error al actualizar clases:", error);
     return { success: false, error };
   }
 }

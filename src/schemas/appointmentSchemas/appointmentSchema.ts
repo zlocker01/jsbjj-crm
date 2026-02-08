@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const appointmentSchema = z.object({
-  client_id: z.string().min(1, "El cliente es requerido"),
+  client_id: z.string().min(1, "El alumno es requerido"),
   service_id: z
     .number()
     .nullable()

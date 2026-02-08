@@ -15,7 +15,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { useEffect } from 'react';
 import {
   Form,
@@ -33,14 +34,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { serviceCategories } from '@/schemas/servicesSchemas/serviceSchema';
+import { serviceLevels } from '@/schemas/servicesSchemas/serviceSchema';
 
 export const serviceFormSchema = z.object({
   title: z.string().min(1, 'El título es requerido'),
   description: z.string().optional(),
-  price: z.coerce.number().min(0, 'El precio debe ser mayor o igual a 0'),
-  duration_minutes: z.coerce.number().min(1, 'La duración debe ser mayor a 0'),
-  category: z.string().min(1, 'La categoría es requerida'),
+  level: z.enum(serviceLevels, {
+    required_error: 'Por favor selecciona un nivel',
+  }),
+  benefits: z
+    .array(z.string())
+    .max(3, 'No puedes agregar más de 3 beneficios')
+    .optional(),
 });
 
 type ServiceFormData = z.infer<typeof serviceFormSchema>;
@@ -66,9 +71,8 @@ export function EditServiceModal({
     defaultValues: {
       title: service?.title || '',
       description: service?.description || '',
-      price: service?.price || 0,
-      duration_minutes: service?.duration_minutes || 30,
-      category: service?.category || 'Barbería',
+      level: (service?.level as any) || 'Principiantes',
+      benefits: service?.benefits || [],
     },
   });
 
@@ -77,11 +81,52 @@ export function EditServiceModal({
     form.reset({
       title: service.title,
       description: service.description || '',
-      price: service.price,
-      duration_minutes: service.duration_minutes || 30,
-      category: service.category || 'Barbería',
+      level: (service.level as any) || 'Principiantes',
+      benefits: service.benefits || [],
     });
   }, [service, form]);
+
+  const normalizeBenefits = (benefits: any): string[] => {
+    if (Array.isArray(benefits)) {
+      return benefits;
+    }
+    if (typeof benefits === 'string') {
+      return benefits
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+    return [];
+  };
+
+  const handleAddBenefit = (value: string): boolean => {
+    if (!value.trim()) {
+      return false;
+    }
+
+    const currentBenefits = normalizeBenefits(form.getValues('benefits'));
+    if (currentBenefits.length >= 3) {
+      toast({
+        title: 'Límite alcanzado',
+        description: 'Máximo 3 beneficios permitidos',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    if (!currentBenefits.includes(value.trim())) {
+      const newBenefits = [...currentBenefits, value.trim()];
+      form.setValue('benefits', newBenefits, { shouldValidate: true });
+      return true;
+    }
+    return false;
+  };
+
+  const handleRemoveBenefit = (index: number) => {
+    const currentBenefits = [...normalizeBenefits(form.getValues('benefits'))];
+    currentBenefits.splice(index, 1);
+    form.setValue('benefits', currentBenefits, { shouldValidate: true });
+  };
 
   const onSubmit = async (data: ServiceFormData) => {
     try {
@@ -92,21 +137,20 @@ export function EditServiceModal({
         },
         body: JSON.stringify({
           ...data,
-          price: Number(data.price),
-          duration_minutes: Number(data.duration_minutes),
-          category: data.category,
+          level: data.level,
+          benefits: data.benefits,
         }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Error al actualizar el servicio');
+        throw new Error(result.error || 'Error al actualizar la clase');
       }
 
       toast({
         title: '¡Éxito!',
-        description: 'El servicio se ha actualizado correctamente.',
+        description: 'La clase se ha actualizado correctamente.',
         variant: 'success',
       });
 
@@ -130,7 +174,7 @@ export function EditServiceModal({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Editar Servicio</DialogTitle>
+          <DialogTitle>Editar Clase</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -139,10 +183,10 @@ export function EditServiceModal({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Título</FormLabel>
+                  <FormLabel>Título de la Clase</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Título del servicio"
+                      placeholder="Título de la clase"
                       {...field}
                       className={
                         form.formState.errors.title ? 'border-red-500' : ''
@@ -162,7 +206,7 @@ export function EditServiceModal({
                   <FormLabel>Descripción (opcional)</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Descripción del servicio"
+                      placeholder="Descripción de la clase"
                       className="min-h-[100px]"
                       {...field}
                     />
@@ -172,71 +216,25 @@ export function EditServiceModal({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Precio ($)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        {...field}
-                        className={
-                          form.formState.errors.price ? 'border-red-500' : ''
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="duration_minutes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Duración (minutos)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        className={
-                          form.formState.errors.duration_minutes
-                            ? 'border-red-500'
-                            : ''
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <FormField
               control={form.control}
-              name="category"
+              name="level"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Categoría</FormLabel>
+                  <FormLabel>Nivel</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecciona una categoría" />
+                        <SelectValue placeholder="Selecciona un nivel" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {serviceCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
+                      {serviceLevels.map((level) => (
+                        <SelectItem key={level} value={level}>
+                          {level}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -244,6 +242,73 @@ export function EditServiceModal({
                   <FormMessage />
                 </FormItem>
               )}
+            />
+
+            <FormField
+              control={form.control}
+              name="benefits"
+              render={({ field }) => {
+                const benefitsArray = normalizeBenefits(field.value);
+
+                return (
+                  <FormItem>
+                    <FormLabel>Beneficios (Máximo 3)</FormLabel>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <Input
+                            placeholder="Escribe un beneficio y presiona Enter o coma"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ',') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value.trim();
+                                if (handleAddBenefit(value)) {
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                            onBlur={(e) => {
+                              const value = e.target.value.trim();
+                              if (handleAddBenefit(value)) {
+                                e.target.value = '';
+                              }
+                            }}
+                            disabled={benefitsArray.length >= 3}
+                          />
+                          <span className="absolute right-3 top-2 text-sm text-muted-foreground">
+                            Enter o ,
+                          </span>
+                        </div>
+
+                        {benefitsArray.length > 0 && (
+                          <div className="rounded-md border p-3">
+                            <div className="flex flex-wrap gap-2">
+                              {benefitsArray.map((benefit, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="secondary"
+                                  className="flex items-center gap-1 py-1"
+                                >
+                                  {benefit}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveBenefit(index)}
+                                    className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                                    aria-label={`Eliminar ${benefit}`}
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <div className="flex justify-end space-x-3 pt-4">
@@ -262,7 +327,7 @@ export function EditServiceModal({
                     Guardando...
                   </>
                 ) : (
-                  'Guardar cambios'
+                  'Actualizar Clase'
                 )}
               </Button>
             </div>

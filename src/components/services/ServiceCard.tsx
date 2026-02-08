@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Edit, Clock, Layers, Users } from 'lucide-react';
+import { Edit, Clock, Layers, Users, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -16,6 +16,8 @@ import { EditServiceModal } from './EditServiceModal';
 import type { Service } from '@/interfaces/services/Service';
 import { toast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { LevelBadge } from './LevelBadge';
 
 interface ServiceCardProps {
   service: Service;
@@ -31,26 +33,24 @@ export function ServiceCard({
 
   const handleServiceDeleted = (deletedServiceId: number) => {
     toast({
-      title: 'Servicio eliminado',
-      description: 'El servicio ha sido eliminado correctamente.',
+      title: 'Clase eliminada',
+      description: 'La clase ha sido eliminada correctamente.',
       variant: 'success',
     });
     router.refresh();
   };
 
   return (
-    <Card className="w-full max-w-sm overflow-hidden transition-shadow hover:shadow-lg">
-      <div className="h-48 w-full overflow-hidden relative">
+    <Card className="w-full max-w-sm overflow-hidden transition-shadow hover:shadow-lg flex flex-col h-full">
+      <div className="h-48 w-full overflow-hidden relative shrink-0">
         <img
           src={service.image || '/placeholder-service.jpg'}
           alt={service.title}
           className="w-full h-full object-cover"
         />
-        {service.category && (
-          <Badge className="absolute top-2 right-2 bg-primary/90 hover:bg-primary">
-            {service.category}
-          </Badge>
-        )}
+        <div className="absolute top-2 right-2">
+          <LevelBadge level={service.level} />
+        </div>
       </div>
 
       <CardHeader>
@@ -58,35 +58,41 @@ export function ServiceCard({
           <CardTitle className="text-lg font-semibold">
             {service.title}
           </CardTitle>
-          <span className="text-primary font-bold">
-            ${service.price.toFixed(2)}
-          </span>
         </div>
       </CardHeader>
 
-      <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
+      <CardContent className="flex-grow">
+        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
           {service.description}
         </p>
 
-        <div className="space-y-1">
-          {service.duration_minutes && (
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Clock className="mr-2 h-4 w-4" />
-              <span>{service.duration_minutes} minutos</span>
-            </div>
+        <div className="space-y-2">
+          {service.benefits && service.benefits.length > 0 && (
+            <>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Beneficios:
+              </p>
+              <ul className="space-y-1">
+                {service.benefits.map((benefit, index) => (
+                  <li key={index} className="text-sm flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span className="text-muted-foreground">{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </div>
       </CardContent>
 
-      <CardFooter className="flex justify-between border-t pt-4">
+      <CardFooter className="flex justify-between border-t pt-4 mt-auto">
         <Button
           onClick={() => setIsEditModalOpen(true)}
           variant="outline"
           className="flex-1 mr-2"
         >
           <Edit className="mr-2 h-4 w-4" />
-          Editar
+          Editar Clase
         </Button>
         <DeleteServiceButton
           serviceId={service.id}

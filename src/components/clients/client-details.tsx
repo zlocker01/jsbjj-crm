@@ -84,7 +84,7 @@ export function ClientDetails({
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center text-muted-foreground">
         <User className="h-12 w-12 mb-4 opacity-20" />
-        <p>Selecciona un cliente para ver sus detalles</p>
+        <p>Selecciona un alumno para ver sus detalles</p>
       </div>
     );
   }
@@ -111,20 +111,20 @@ export function ClientDetails({
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        throw new Error('Error al actualizar el paciente');
+        throw new Error('Error al actualizar el alumno');
       }
       setIsEditing(false);
       toast({
-        title: 'Paciente actualizado',
+        title: 'Alumno actualizado',
         description:
-          'La información del paciente ha sido actualizada correctamente.',
+          'La información del alumno ha sido actualizada correctamente.',
         variant: 'success',
       });
       // Consider re-fetching or updating client data in parent state if needed
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'No se pudo actualizar el paciente.',
+        description: 'No se pudo actualizar el alumno.',
         variant: 'destructive',
       });
     }
@@ -139,12 +139,12 @@ export function ClientDetails({
       if (!response.ok) {
         const errorData = await response
           .json()
-          .catch(() => ({ message: 'Error al eliminar el paciente' }));
-        throw new Error(errorData.message || 'Error al eliminar el paciente');
+          .catch(() => ({ message: 'Error al eliminar el alumno' }));
+        throw new Error(errorData.message || 'Error al eliminar el alumno');
       }
       toast({
-        title: 'Paciente eliminado',
-        description: `El paciente ${client.name} ha sido eliminado correctamente.`,
+        title: 'Alumno eliminado',
+        description: `El alumno ${client.name} ha sido eliminado correctamente.`,
         variant: 'success',
       });
       setIsDeleteDialogOpen(false);
@@ -154,7 +154,7 @@ export function ClientDetails({
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'No se pudo eliminar el cliente.',
+        description: error.message || 'No se pudo eliminar el alumno.',
         variant: 'destructive',
       });
       setIsDeleteDialogOpen(false);
@@ -277,7 +277,7 @@ export function ClientDetails({
           <div className="pt-2">
             <h4 className="text-sm font-medium mb-2">Notas</h4>
             <p className="text-sm text-muted-foreground">
-              {client.notes || 'No hay notas disponibles para este cliente.'}
+              {client.notes || 'No hay notas disponibles para este alumno.'}
             </p>
           </div>
         </TabsContent>

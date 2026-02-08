@@ -59,12 +59,12 @@ export function DashboardLayoutEmployee({
 
   const routes = [
     {
-      title: 'Calendario de Citas',
+      title: 'Horario de Clases',
       href: `/session/employee/calendar/${landingId}`,
       icon: Calendar,
     },
     {
-      title: 'Clientes',
+      title: 'Alumnos',
       href: '/session/employee/clients',
       icon: Users,
     },

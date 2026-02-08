@@ -63,7 +63,7 @@ export function getRevenueData(timeRange: "monthly" | "weekly"): RevenueData[] {
   ];
 }
 
-// Datos de clientes
+// Datos de alumnos
 export function getClientGrowthData(): ClientGrowthData[] {
   return [
     { month: "Ene", nuevos: 15, perdidos: 5, total: 120 },

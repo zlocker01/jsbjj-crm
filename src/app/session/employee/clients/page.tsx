@@ -43,8 +43,8 @@ export default function ClientsPage() {
     });
     if (res.ok) {
       toast({
-        title: 'Paciente creado',
-        description: `El paciente ${data.name} ha sido creado correctamente.`,
+        title: 'Alumno creado',
+        description: `El alumno ${data.name} ha sido creado correctamente.`,
         variant: 'success',
       });
       setIsNewClientDialogOpen(false);
@@ -52,7 +52,7 @@ export default function ClientsPage() {
     } else {
       toast({
         title: 'Error',
-        description: 'No se pudo crear el paciente.',
+        description: 'No se pudo crear el alumno.',
         variant: 'destructive',
       });
     }
@@ -68,9 +68,9 @@ export default function ClientsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Clientes</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Alumnos</h1>
         <p className="text-muted-foreground">
-          Gestiona la información de tus clientes
+          Gestiona la información de tus alumnos
         </p>
       </div>
 
@@ -79,9 +79,9 @@ export default function ClientsPage() {
           <Card>
             <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
               <div>
-                <CardTitle>Lista de Clientes</CardTitle>
+                <CardTitle>Lista de Alumnos</CardTitle>
                 <CardDescription>
-                  Gestiona y busca entre tus clientes
+                  Gestiona y busca entre tus alumnos
                 </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2 w-full sm:w-auto">
@@ -99,7 +99,7 @@ export default function ClientsPage() {
                   onClick={() => setIsNewClientDialogOpen(true)}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Nuevo Cliente
+                  Nuevo Alumno
                 </Button>
               </div>
             </CardHeader>
@@ -129,11 +129,11 @@ export default function ClientsPage() {
         <div className="w-full lg:w-80 order-1 lg:order-2">
           <Card className="sticky top-20">
             <CardHeader>
-              <CardTitle>Paciente</CardTitle>
+              <CardTitle>Alumno</CardTitle>
               <CardDescription>
                 {selectedClient
-                  ? 'Información detallada del paciente'
-                  : 'Selecciona un paciente para ver detalles'}
+                  ? 'Información detallada del alumno'
+                  : 'Selecciona un alumno para ver detalles'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -148,16 +148,16 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      {/* Diálogo para crear nuevo cliente */}
+      {/* Diálogo para crear nuevo alumno */}
       <Dialog
         open={isNewClientDialogOpen}
         onOpenChange={setIsNewClientDialogOpen}
       >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Crear Nuevo Cliente</DialogTitle>
+            <DialogTitle>Crear Nuevo Alumno</DialogTitle>
             <DialogDescription>
-              Completa el formulario para añadir un nuevo cliente a tu base de
+              Completa el formulario para añadir un nuevo alumno a tu base de
               datos.
             </DialogDescription>
           </DialogHeader>

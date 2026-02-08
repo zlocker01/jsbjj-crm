@@ -10,6 +10,6 @@ export interface Client {
   user_id: string; // UUID
   is_active: boolean;
   last_visit_date?: string; // ISO string para timestamp
-  client_source?: string; // Rol del usuario que creó el cliente
+  client_source?: string; // Rol del usuario que creó el alumno
   appointments?: number;
 }

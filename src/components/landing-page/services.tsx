@@ -40,8 +40,10 @@ import {
   Smile,
 } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 import type { Service } from '@/interfaces/services/Service';
+import { LevelBadge } from '../services/LevelBadge';
 
 const ToothIcon = ({ className }: { className?: string }) => (
   <svg
@@ -58,27 +60,21 @@ const ToothIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const serviceCategories = [
+const serviceLevels = [
   { id: 'all', label: 'Todos' },
-  { 
-    id: 'Corte', 
-    label: 'Corte', 
-    icon: <Scissors className="h-4 w-4" /> 
+  {
+    id: 'Principiantes',
+    label: 'Principiantes',
+    icon: <Baby className="h-4 w-4" />,
   },
-  { 
-    id: 'Barba', 
-    label: 'Barba', 
-    icon: <Smile className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Tratamiento', 
-    label: 'Tratamiento', 
-    icon: <Sparkles className="h-4 w-4" /> 
-  },
-  { 
-    id: 'Paquete', 
-    label: 'Paquete', 
-    icon: <Layers className="h-4 w-4" /> 
+  { id: 'Avanzado', label: 'Avanzado', icon: <Sparkles className="h-4 w-4" /> },
+  { id: 'Niños', label: 'Niños', icon: <Smile className="h-4 w-4" /> },
+  { id: 'Mujeres', label: 'Mujeres', icon: <HeartPulse className="h-4 w-4" /> },
+  { id: 'Mixto', label: 'Mixto', icon: <Users className="h-4 w-4" /> },
+  {
+    id: 'Competencia',
+    label: 'Competencia',
+    icon: <Siren className="h-4 w-4" />,
   },
 ];
 
@@ -91,24 +87,24 @@ const fetcher = (url: string) =>
   });
 
 export default function Services({ landingId }: { landingId: string }) {
-  const [category, setCategory] = useState('all');
+  const [level, setLevel] = useState('all');
 
   const { data, error, isLoading } = useSWR<{ services: Service[] }>(
     `/api/services?landingPageId=${landingId}`,
-    fetcher
+    fetcher,
   );
 
   const filteredServices =
-    category === 'all'
+    level === 'all'
       ? data?.services || []
-      : data?.services.filter((service) => service.category === category) || [];
+      : data?.services.filter((service) => service.level === level) || [];
 
   if (isLoading) {
     return (
       <section id="services" className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4 text-center">
           <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
-          <p className="mt-4">Cargando servicios...</p>
+          <p className="mt-4">Cargando clases...</p>
         </div>
       </section>
     );
@@ -121,7 +117,7 @@ export default function Services({ landingId }: { landingId: string }) {
         <div className="container mx-auto px-4 text-center">
           <AlertCircle className="h-12 w-12 mx-auto text-destructive" />
           <p className="mt-4 text-destructive">
-            Error al cargar los servicios. Intente nuevamente.
+            Error al cargar las clases. Intente nuevamente.
           </p>
         </div>
       </section>
@@ -134,41 +130,40 @@ export default function Services({ landingId }: { landingId: string }) {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Nuestros Servicios
+            Nuestras Clases
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Ofrecemos una amplia gama de servicios de estética para realzar tu
-            belleza natural. Todos nuestros tratamientos son realizados por
-            profesionales certificados.
+            Ofrecemos una amplia gama de clases para todos los niveles. Todas
+            nuestras clases son impartidas por profesionales certificados.
           </p>
         </div>
 
         <Tabs
           defaultValue="all"
-          value={category}
-          onValueChange={setCategory}
+          value={level}
+          onValueChange={setLevel}
           className="w-full"
         >
           <div className="flex justify-center mb-28 md:mb-14">
             <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full max-w-3xl">
-              {serviceCategories.map((cat) => (
+              {serviceLevels.map((lvl) => (
                 <TabsTrigger
-                  key={cat.id}
-                  value={cat.id}
+                  key={lvl.id}
+                  value={lvl.id}
                   className="flex flex-col items-center justify-center py-2 px-1 text-xs sm:text-sm"
                 >
-                  {cat.icon}
-                  <span className="mt-1">{cat.label}</span>
+                  {lvl.icon}
+                  <span className="mt-1">{lvl.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
           </div>
 
-          <TabsContent value={category} className="mt-6">
+          <TabsContent value={level} className="mt-6">
             {filteredServices.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
-                  No hay servicios disponibles en esta categoría.
+                  No hay clases disponibles en este nivel.
                 </p>
               </div>
             ) : (
@@ -198,15 +193,10 @@ export default function Services({ landingId }: { landingId: string }) {
                               />
                               {/* Overlay de gradiente para legibilidad */}
                               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/35 to-transparent z-10" />
-                              
-                              {/* Category Badge */}
+
+                              {/* Level Badge */}
                               <div className="absolute top-4 right-4 z-20">
-                                <Badge 
-                                  variant="secondary" 
-                                  className="text-sm px-3 py-1 bg-primary/90 text-primary-foreground hover:bg-primary/100 border-none capitalize"
-                                >
-                                  {service.category.toLowerCase()}
-                                </Badge>
+                                <LevelBadge level={service.level} />
                               </div>
 
                               {/* Contenido encima de la imagen */}
@@ -221,21 +211,16 @@ export default function Services({ landingId }: { landingId: string }) {
                                     </CardDescription>
                                   </CardHeader>
                                   <CardContent className="space-y-2 p-0">
-                                    <p className="text-xl font-bold text-primary drop-shadow-md">
-                                      ${service.price.toFixed(2)}
-                                    </p>
-                                    <div className="flex items-center gap-2 text-sm text-white/80 drop-shadow-sm">
-                                      <Clock className="h-4 w-4" />
-                                      <span>
-                                        {service.duration_minutes} minutos
-                                      </span>
-                                    </div>
-                                    <Badge
-                                      variant="gold"
-                                      className="capitalize"
-                                    >
-                                      {service.category.toLowerCase()}
-                                    </Badge>
+                                    {service.benefits &&
+                                      service.benefits.length > 0 && (
+                                        <ul className="list-disc list-inside text-sm text-white/90 drop-shadow-sm">
+                                          {service.benefits.map(
+                                            (benefit, i) => (
+                                              <li key={i}>{benefit}</li>
+                                            ),
+                                          )}
+                                        </ul>
+                                      )}
                                   </CardContent>
                                   <CardFooter className="p-0 pt-4">
                                     <Button asChild className="w-full">

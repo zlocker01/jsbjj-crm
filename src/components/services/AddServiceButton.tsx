@@ -39,12 +39,12 @@ export function AddServiceButton({ landingId }: AddServiceButtonProps) {
 
   // No renderizar nada en el servidor
   if (!isMounted) {
-    return <Button disabled>Agregar Servicio</Button>;
+    return <Button disabled>Agregar Clase</Button>;
   }
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>Agregar Servicio</Button>
+      <Button onClick={() => setIsOpen(true)}>Agregar Clase</Button>
       {isMounted && (
         <AddServiceModal
           landingId={landingId}

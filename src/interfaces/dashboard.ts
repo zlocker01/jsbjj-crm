@@ -16,7 +16,7 @@ export interface RevenueData {
   beneficio: number;
 }
 
-// Tipos para datos de clientes
+// Tipos para datos de alumnos
 export interface ClientGrowthData {
   month: string;
   nuevos: number;

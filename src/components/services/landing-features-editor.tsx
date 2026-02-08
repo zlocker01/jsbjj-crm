@@ -1,26 +1,29 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash, Upload } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { featureSchema, type FeatureFormData } from "@/schemas/featureSchemas/featureSchema";
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Plus, Trash, Upload } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  featureSchema,
+  type FeatureFormData,
+} from '@/schemas/featureSchemas/featureSchema';
 
 interface FeatureItem {
   title: string;
   description: string;
   price: number;
   duration: number;
-  image: string;  
+  image: string;
 }
 
 interface LandingFeaturesEditorProps {
@@ -42,13 +45,13 @@ export function LandingFeaturesEditor({
   } = useForm<FeatureItem>({
     resolver: zodResolver(featureSchema),
     defaultValues: featuresContent?.[0] || {
-      title: "",
-      description: "",
+      title: '',
+      description: '',
       price: 0,
       duration: 0,
-      image: "",
+      image: '',
     },
-    mode: "onBlur",
+    mode: 'onBlur',
   });
 
   const onSubmit = async (data: FeatureItem) => {
@@ -61,18 +64,18 @@ export function LandingFeaturesEditor({
         newFeatures.push(data);
       }
       onChange(newFeatures);
-      console.log("Formulario enviado:", data);
+      console.log('Formulario enviado:', data);
     } catch (error) {
-      console.error("Error al enviar el formulario:", error);
+      console.error('Error al enviar el formulario:', error);
     }
   };
 
   const handleFeatureChange = (index: number, field: string, value: string) => {
     const newFeatures = [...(featuresContent || [])];
     const updatedValue =
-      field === "price" ? Number.parseFloat(value) || 0 : value;
+      field === 'price' ? Number.parseFloat(value) || 0 : value;
     const finalValue =
-      field === "duration" ? Number.parseInt(value) || 0 : updatedValue;
+      field === 'duration' ? Number.parseInt(value) || 0 : updatedValue;
 
     newFeatures[index] = {
       ...newFeatures[index],
@@ -85,11 +88,11 @@ export function LandingFeaturesEditor({
     const newFeatures = [
       ...(featuresContent || []),
       {
-        title: "Nuevo Servicio",
-        description: "Descripción del nuevo servicio",
+        title: 'Nueva Clase',
+        description: 'Descripción de la nueva clase',
         price: 0.0,
         duration: 60,
-        image: "", // Añadido campo de imagen
+        image: '', // Añadido campo de imagen
       },
     ];
     onChange(newFeatures);
@@ -107,7 +110,7 @@ export function LandingFeaturesEditor({
       className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm"
     >
       <AccordionTrigger className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
-        Sección de Servicios
+        Sección de Clases
       </AccordionTrigger>
       <AccordionContent className="space-y-4 p-4 bg-gray-50 dark:bg-gray-700/30">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -139,9 +142,9 @@ export function LandingFeaturesEditor({
                   </Label>
                   <Input
                     id={`feature-title-${index}`}
-                    value={feature.title || ""}
+                    value={feature.title || ''}
                     onChange={(e) =>
-                      handleFeatureChange(index, "title", e.target.value)
+                      handleFeatureChange(index, 'title', e.target.value)
                     }
                     className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                   />
@@ -155,9 +158,9 @@ export function LandingFeaturesEditor({
                   </Label>
                   <Textarea
                     id={`feature-description-${index}`}
-                    value={feature.description || ""}
+                    value={feature.description || ''}
                     onChange={(e) =>
-                      handleFeatureChange(index, "description", e.target.value)
+                      handleFeatureChange(index, 'description', e.target.value)
                     }
                     className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                   />
@@ -176,7 +179,7 @@ export function LandingFeaturesEditor({
                       step="0.01"
                       value={feature.price || 0}
                       onChange={(e) =>
-                        handleFeatureChange(index, "price", e.target.value)
+                        handleFeatureChange(index, 'price', e.target.value)
                       }
                       className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                     />
@@ -194,7 +197,7 @@ export function LandingFeaturesEditor({
                       step="1"
                       value={feature.duration || 0}
                       onChange={(e) =>
-                        handleFeatureChange(index, "duration", e.target.value)
+                        handleFeatureChange(index, 'duration', e.target.value)
                       }
                       className="rounded-md border-gray-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                     />
@@ -216,7 +219,7 @@ export function LandingFeaturesEditor({
                         onChange={(e) => {
                           if (e.target.files && e.target.files[0]) {
                             handleFileUpload(e.target.files[0], (value) =>
-                              handleFeatureChange(index, "image", value),
+                              handleFeatureChange(index, 'image', value),
                             );
                           }
                         }}
@@ -229,7 +232,7 @@ export function LandingFeaturesEditor({
                     {feature.image && (
                       <div className="relative h-16 w-16 overflow-hidden rounded-md border border-gray-300 dark:border-gray-700 shadow-sm">
                         <img
-                          src={feature.image || "/placeholder.svg"}
+                          src={feature.image || '/placeholder.svg'}
                           alt="Vista previa"
                           className="h-full w-full object-cover"
                         />
@@ -252,9 +255,9 @@ export function LandingFeaturesEditor({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className={`${isSubmitting ? "opacity-50" : ""} bg-green-600 hover:bg-green-700 text-white font-medium`}
+              className={`${isSubmitting ? 'opacity-50' : ''} bg-green-600 hover:bg-green-700 text-white font-medium`}
             >
-              {isSubmitting ? "Actualizando..." : "Actualizar Servicios"}
+              {isSubmitting ? 'Actualizando...' : 'Actualizar Servicios'}
             </Button>
           </div>
         </form>

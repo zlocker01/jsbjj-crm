@@ -154,7 +154,7 @@ export const SideBar = () => {
           </div>
 
           <ul className="space-y-2 font-medium">
-            {/* Sección de Clientes */}
+            {/* Sección de Alumnos */}
             {pathname !== '/perfil' ? (
               <li>
                 <div
@@ -168,7 +168,7 @@ export const SideBar = () => {
                 >
                   <div className="flex items-center">
                     <Users className="h-5 w-5 mr-3" />
-                    <span>Clientes</span>
+                    <span>Alumnos</span>
                   </div>
                   {patientSubmenuOpen ? (
                     <ChevronDown className="h-4 w-4" />
@@ -177,7 +177,7 @@ export const SideBar = () => {
                   )}
                 </div>
 
-                {/* Submenú de Clientes */}
+                {/* Submenú de Alumnos */}
                 {patientSubmenuOpen && (
                   <ul className="mt-2 ml-6 space-y-1 border-l-2 border-muted pl-4">
                     <li>
@@ -190,7 +190,7 @@ export const SideBar = () => {
                             : 'text-muted-foreground hover:bg-muted hover:text-primaryText',
                         )}
                       >
-                        <span>Lista de Clientes</span>
+                        <span>Lista de Alumnos</span>
                       </Link>
                     </li>
 

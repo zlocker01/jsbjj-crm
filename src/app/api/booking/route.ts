@@ -43,15 +43,17 @@ export async function POST(request: NextRequest) {
 
     if (service) {
       serviceId = parseInt(service);
+      // Validar que el servicio existe
       const { data: serviceData } = await supabase
         .from('services')
-        .select('duration_minutes, price')
+        .select('id')
         .eq('id', serviceId)
         .single();
       
       if (serviceData) {
-        durationMinutes = serviceData.duration_minutes || 30;
-        priceCharged = serviceData.price || 0;
+        // Clases tienen duración por defecto de 60 minutos y precio 0 (o según lógica de negocio futura)
+        durationMinutes = 60;
+        priceCharged = 0;
       }
     } else if (promotion) {
       promotionId = parseInt(promotion);

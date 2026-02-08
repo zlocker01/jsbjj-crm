@@ -105,13 +105,13 @@ export function AppointmentCalendar({
       (appointment) =>
         appointment?.start_datetime &&
         format(new Date(appointment.start_datetime), 'yyyy-MM-dd') ===
-          format(date, 'yyyy-MM-dd')
+          format(date, 'yyyy-MM-dd'),
     );
   };
 
   const handleAppointmentClick = (
     appointment: Appointment,
-    e: React.MouseEvent | React.KeyboardEvent
+    e: React.MouseEvent | React.KeyboardEvent,
   ) => {
     e.stopPropagation();
     onAppointmentSelect(appointment);
@@ -120,7 +120,7 @@ export function AppointmentCalendar({
     const endDate = new Date(appointment.end_datetime);
 
     toast({
-      title: 'Cita seleccionada',
+      title: 'Clase seleccionada',
       description: (
         <div className="space-y-1">
           <div>
@@ -157,14 +157,17 @@ export function AppointmentCalendar({
   );
 
   const layoutAppointmentsForDay = (appointments: Appointment[]) => {
-    const groupedByStartTime = appointments.reduce((acc, app) => {
-      const startTime = new Date(app.start_datetime).getTime();
-      if (!acc[startTime]) {
-        acc[startTime] = [];
-      }
-      acc[startTime].push(app);
-      return acc;
-    }, {} as Record<number, Appointment[]>);
+    const groupedByStartTime = appointments.reduce(
+      (acc, app) => {
+        const startTime = new Date(app.start_datetime).getTime();
+        if (!acc[startTime]) {
+          acc[startTime] = [];
+        }
+        acc[startTime].push(app);
+        return acc;
+      },
+      {} as Record<number, Appointment[]>,
+    );
 
     return Object.values(groupedByStartTime).flatMap((group) => {
       const groupWidth = 100 / group.length;
@@ -214,8 +217,8 @@ export function AppointmentCalendar({
                   appointment.status === 'Confirmada'
                     ? 'bg-green-800 text-white border-green-600 hover:bg-green-600 dark:bg-green-700/60 dark:text-white dark:border-green-600 dark:hover:bg-green-700/80'
                     : appointment.status === 'Cancelada'
-                    ? 'bg-red-800 text-white border-red-600 hover:bg-red-600 dark:bg-red-700/60 dark:text-white dark:border-red-600 dark:hover:bg-red-700/80'
-                    : 'bg-green-800 text-white border-green-600 hover:bg-green-600 dark:bg-green-700/60 dark:text-white dark:border-green-600 dark:hover:bg-green-700/80'
+                      ? 'bg-red-800 text-white border-red-600 hover:bg-red-600 dark:bg-red-700/60 dark:text-white dark:border-red-600 dark:hover:bg-red-700/80'
+                      : 'bg-green-800 text-white border-green-600 hover:bg-green-600 dark:bg-green-700/60 dark:text-white dark:border-green-600 dark:hover:bg-green-700/80'
                 }`}
                 style={{
                   top: `${top}px`,
@@ -279,8 +282,8 @@ export function AppointmentCalendar({
                       appointment.status === 'Confirmada'
                         ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                         : appointment.status === 'Cancelada'
-                        ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
-                        : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                          ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
+                          : 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                     }`}
                     style={{
                       top: `${top}%`,
@@ -357,8 +360,8 @@ export function AppointmentCalendar({
                         appointment.status === 'Confirmada'
                           ? 'bg-green-200 text-green-800 border-green-400 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                           : appointment.status === 'Cancelada'
-                          ? 'bg-red-200 text-red-800 border-red-400 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
-                          : 'bg-green-200 text-green-800 border-green-400 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
+                            ? 'bg-red-200 text-red-800 border-red-400 dark:bg-red-900/30 dark:text-red-100 dark:border-red-800'
+                            : 'bg-green-200 text-green-800 border-green-400 dark:bg-green-900/30 dark:text-green-100 dark:border-green-800'
                       } hover:opacity-80`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -371,9 +374,9 @@ export function AppointmentCalendar({
                           handleAppointmentClick(appointment, e);
                         }
                       }}
-                      aria-label={`Cita a las ${format(
+                      aria-label={`Clase a las ${format(
                         appointment.start_datetime,
-                        'HH:mm'
+                        'HH:mm',
                       )}, estado: ${appointment.status}`}
                     >
                       {format(appointment.start_datetime, 'HH:mm')}

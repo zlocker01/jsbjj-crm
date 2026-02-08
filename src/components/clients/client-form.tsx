@@ -51,15 +51,15 @@ export function ClientForm({
       setIsSubmitting(true);
       await onSubmit(data);
       toast({
-        title: "Cliente guardado",
+        title: "Alumno guardado",
         description:
-          "La información del cliente ha sido guardada correctamente.",
+          "La información del alumno ha sido guardada correctamente.",
         variant: "success",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Ocurrió un error al guardar la información del cliente.",
+        description: "Ocurrió un error al guardar la información del alumno.",
         variant: "destructive",
       });
     } finally {

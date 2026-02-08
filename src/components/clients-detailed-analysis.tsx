@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -20,85 +20,85 @@ import {
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
-} from "recharts";
+} from 'recharts';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ClientsOverview } from "@/components/dashboard/clients-overview";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ClientsOverview } from '@/components/dashboard/clients-overview';
 
 // Datos de ejemplo para los gráficos
 const clientGrowthData = [
-  { month: "Ene", nuevos: 15, perdidos: 5, total: 120 },
-  { month: "Feb", nuevos: 12, perdidos: 3, total: 129 },
-  { month: "Mar", nuevos: 18, perdidos: 4, total: 143 },
-  { month: "Abr", nuevos: 14, perdidos: 6, total: 151 },
-  { month: "May", nuevos: 10, perdidos: 4, total: 157 },
-  { month: "Jun", nuevos: 16, perdidos: 5, total: 168 },
-  { month: "Jul", nuevos: 20, perdidos: 7, total: 181 },
-  { month: "Ago", nuevos: 22, perdidos: 6, total: 197 },
-  { month: "Sep", nuevos: 18, perdidos: 8, total: 207 },
-  { month: "Oct", nuevos: 15, perdidos: 5, total: 217 },
-  { month: "Nov", nuevos: 17, perdidos: 4, total: 230 },
-  { month: "Dic", nuevos: 21, perdidos: 6, total: 245 },
+  { month: 'Ene', nuevos: 15, perdidos: 5, total: 120 },
+  { month: 'Feb', nuevos: 12, perdidos: 3, total: 129 },
+  { month: 'Mar', nuevos: 18, perdidos: 4, total: 143 },
+  { month: 'Abr', nuevos: 14, perdidos: 6, total: 151 },
+  { month: 'May', nuevos: 10, perdidos: 4, total: 157 },
+  { month: 'Jun', nuevos: 16, perdidos: 5, total: 168 },
+  { month: 'Jul', nuevos: 20, perdidos: 7, total: 181 },
+  { month: 'Ago', nuevos: 22, perdidos: 6, total: 197 },
+  { month: 'Sep', nuevos: 18, perdidos: 8, total: 207 },
+  { month: 'Oct', nuevos: 15, perdidos: 5, total: 217 },
+  { month: 'Nov', nuevos: 17, perdidos: 4, total: 230 },
+  { month: 'Dic', nuevos: 21, perdidos: 6, total: 245 },
 ];
 
 const clientSegmentationData = [
-  { name: "Nuevos (0-3 meses)", value: 65, color: "#8884d8" },
-  { name: "Ocasionales (1-3 visitas/año)", value: 85, color: "#82ca9d" },
-  { name: "Regulares (4-8 visitas/año)", value: 45, color: "#ffc658" },
-  { name: "Frecuentes (9+ visitas/año)", value: 30, color: "#ff8042" },
-  { name: "VIP (Top 10% en gasto)", value: 20, color: "#0088fe" },
+  { name: 'Nuevos (0-3 meses)', value: 65, color: '#8884d8' },
+  { name: 'Ocasionales (1-3 visitas/año)', value: 85, color: '#82ca9d' },
+  { name: 'Regulares (4-8 visitas/año)', value: 45, color: '#ffc658' },
+  { name: 'Frecuentes (9+ visitas/año)', value: 30, color: '#ff8042' },
+  { name: 'VIP (Top 10% en gasto)', value: 20, color: '#0088fe' },
 ];
 
 const clientRetentionData = [
-  { month: "Ene", tasa: 92 },
-  { month: "Feb", tasa: 94 },
-  { month: "Mar", tasa: 91 },
-  { month: "Abr", tasa: 88 },
-  { month: "May", tasa: 90 },
-  { month: "Jun", tasa: 93 },
-  { month: "Jul", tasa: 95 },
-  { month: "Ago", tasa: 94 },
-  { month: "Sep", tasa: 92 },
-  { month: "Oct", tasa: 91 },
-  { month: "Nov", tasa: 93 },
-  { month: "Dic", tasa: 96 },
+  { month: 'Ene', tasa: 92 },
+  { month: 'Feb', tasa: 94 },
+  { month: 'Mar', tasa: 91 },
+  { month: 'Abr', tasa: 88 },
+  { month: 'May', tasa: 90 },
+  { month: 'Jun', tasa: 93 },
+  { month: 'Jul', tasa: 95 },
+  { month: 'Ago', tasa: 94 },
+  { month: 'Sep', tasa: 92 },
+  { month: 'Oct', tasa: 91 },
+  { month: 'Nov', tasa: 93 },
+  { month: 'Dic', tasa: 96 },
 ];
 
 const clientSatisfactionData = [
-  { aspect: "Atención", valor: 4.8, fullMark: 5 },
-  { aspect: "Calidad", valor: 4.6, fullMark: 5 },
-  { aspect: "Precio", valor: 4.2, fullMark: 5 },
-  { aspect: "Instalaciones", valor: 4.5, fullMark: 5 },
-  { aspect: "Puntualidad", valor: 4.3, fullMark: 5 },
-  { aspect: "Resultados", valor: 4.7, fullMark: 5 },
+  { aspect: 'Atención', valor: 4.8, fullMark: 5 },
+  { aspect: 'Calidad', valor: 4.6, fullMark: 5 },
+  { aspect: 'Precio', valor: 4.2, fullMark: 5 },
+  { aspect: 'Instalaciones', valor: 4.5, fullMark: 5 },
+  { aspect: 'Puntualidad', valor: 4.3, fullMark: 5 },
+  { aspect: 'Resultados', valor: 4.7, fullMark: 5 },
 ];
 
 const clientSourceData = [
-  { name: "Recomendación", value: 45, color: "#8884d8" },
-  { name: "Redes sociales", value: 25, color: "#82ca9d" },
-  { name: "Búsqueda web", value: 15, color: "#ffc658" },
-  { name: "Publicidad local", value: 10, color: "#ff8042" },
-  { name: "Otros", value: 5, color: "#0088fe" },
+  { name: 'Recomendación', value: 45, color: '#8884d8' },
+  { name: 'Redes sociales', value: 25, color: '#82ca9d' },
+  { name: 'Búsqueda web', value: 15, color: '#ffc658' },
+  { name: 'Publicidad local', value: 10, color: '#ff8042' },
+  { name: 'Otros', value: 5, color: '#0088fe' },
 ];
 
 export function ClientsDetailedAnalysis() {
   const [isMounted, setIsMounted] = useState(false);
-  const [timeRange, setTimeRange] = useState("year");
+  const [timeRange, setTimeRange] = useState('year');
 
   useEffect(() => {
     setIsMounted(true);
@@ -137,7 +137,7 @@ export function ClientsDetailedAnalysis() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Clientes Totales</CardTitle>
+            <CardTitle className="text-lg">Alumnos Totales</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">245</div>
@@ -205,9 +205,9 @@ export function ClientsDetailedAnalysis() {
         <TabsContent value="growth" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Crecimiento de Clientes</CardTitle>
+              <CardTitle>Crecimiento de Alumnos</CardTitle>
               <CardDescription>
-                Evolución de la base de clientes a lo largo del tiempo
+                Evolución de la base de alumnos a lo largo del tiempo
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -223,29 +223,29 @@ export function ClientsDetailedAnalysis() {
                     <YAxis yAxisId="right" orientation="right" />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "var(--background)",
-                        borderColor: "var(--border)",
-                        color: "var(--foreground)",
+                        backgroundColor: 'var(--background)',
+                        borderColor: 'var(--border)',
+                        color: 'var(--foreground)',
                       }}
                     />
                     <Legend />
                     <Bar
                       yAxisId="left"
                       dataKey="nuevos"
-                      name="Nuevos clientes"
+                      name="Nuevos alumnos"
                       fill="#8884d8"
                     />
                     <Bar
                       yAxisId="left"
                       dataKey="perdidos"
-                      name="Clientes perdidos"
+                      name="Alumnos perdidos"
                       fill="#ff8042"
                     />
                     <Line
                       yAxisId="right"
                       type="monotone"
                       dataKey="total"
-                      name="Total de clientes"
+                      name="Total de alumnos"
                       stroke="#82ca9d"
                       strokeWidth={2}
                       dot={{ r: 4 }}
@@ -261,9 +261,9 @@ export function ClientsDetailedAnalysis() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Segmentación de Clientes</CardTitle>
+                <CardTitle>Segmentación de Alumnos</CardTitle>
                 <CardDescription>
-                  Distribución de clientes por categoría
+                  Distribución de alumnos por categoría
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -288,9 +288,9 @@ export function ClientsDetailedAnalysis() {
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "var(--background)",
-                          borderColor: "var(--border)",
-                          color: "var(--foreground)",
+                          backgroundColor: 'var(--background)',
+                          borderColor: 'var(--border)',
+                          color: 'var(--foreground)',
                         }}
                       />
                     </PieChart>
@@ -300,9 +300,9 @@ export function ClientsDetailedAnalysis() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Origen de Clientes</CardTitle>
+                <CardTitle>Origen de Alumnos</CardTitle>
                 <CardDescription>
-                  Cómo los clientes descubren tu negocio
+                  Cómo los alumnos descubren tu negocio
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -328,9 +328,9 @@ export function ClientsDetailedAnalysis() {
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "var(--background)",
-                          borderColor: "var(--border)",
-                          color: "var(--foreground)",
+                          backgroundColor: 'var(--background)',
+                          borderColor: 'var(--border)',
+                          color: 'var(--foreground)',
                         }}
                       />
                     </PieChart>
@@ -344,9 +344,9 @@ export function ClientsDetailedAnalysis() {
         <TabsContent value="retention" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Tasa de Retención de Clientes</CardTitle>
+              <CardTitle>Tasa de Retención de Alumnos</CardTitle>
               <CardDescription>
-                Porcentaje de clientes que regresan cada mes
+                Porcentaje de alumnos que regresan cada mes
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -360,11 +360,11 @@ export function ClientsDetailedAnalysis() {
                     <XAxis dataKey="month" />
                     <YAxis domain={[80, 100]} />
                     <Tooltip
-                      formatter={(value) => [`${value}%`, "Tasa de retención"]}
+                      formatter={(value) => [`${value}%`, 'Tasa de retención']}
                       contentStyle={{
-                        backgroundColor: "var(--background)",
-                        borderColor: "var(--border)",
-                        color: "var(--foreground)",
+                        backgroundColor: 'var(--background)',
+                        borderColor: 'var(--border)',
+                        color: 'var(--foreground)',
                       }}
                     />
                     <Legend />
@@ -414,9 +414,9 @@ export function ClientsDetailedAnalysis() {
                       />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "var(--background)",
-                          borderColor: "var(--border)",
-                          color: "var(--foreground)",
+                          backgroundColor: 'var(--background)',
+                          borderColor: 'var(--border)',
+                          color: 'var(--foreground)',
                         }}
                       />
                     </RadarChart>
@@ -426,9 +426,9 @@ export function ClientsDetailedAnalysis() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Distribución de Clientes</CardTitle>
+                <CardTitle>Distribución de Alumnos</CardTitle>
                 <CardDescription>
-                  Análisis de la base de clientes actual
+                  Análisis de la base de alumnos actual
                 </CardDescription>
               </CardHeader>
               <CardContent>

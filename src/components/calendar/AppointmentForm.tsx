@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Form,
   FormControl,
@@ -13,19 +13,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { SearchableSelect } from "./form-fields/SearchableSelect";
-import { User, Scissors, Tag, Loader2 } from "lucide-react";
+} from '@/components/ui/form';
+import { SearchableSelect } from './form-fields/SearchableSelect';
+import { User, Scissors, Tag, Loader2 } from 'lucide-react';
 
 import {
   appointmentSchema,
   type AppointmentFormValues,
-} from "@/schemas/appointmentSchemas/appointmentSchema";
-import type { Appointment } from "@/interfaces/appointments/Appointment";
-import type { Client } from "@/interfaces/client/Client";
-import type { Service } from "@/interfaces/services/Service";
-import type { Promotion } from "@/interfaces/promotions/Promotion";
-import { DateTimeSelector } from "./form-fields/TimeSelector";
+} from '@/schemas/appointmentSchemas/appointmentSchema';
+import type { Appointment } from '@/interfaces/appointments/Appointment';
+import type { Client } from '@/interfaces/client/Client';
+import type { Service } from '@/interfaces/services/Service';
+import type { Promotion } from '@/interfaces/promotions/Promotion';
+import { DateTimeSelector } from './form-fields/TimeSelector';
 
 interface AppointmentFormProps {
   appointment?: Appointment;
@@ -49,15 +49,15 @@ export function AppointmentForm({
   const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
-      client_id: appointment?.client_id || "",
+      client_id: appointment?.client_id || '',
       service_id: appointment?.service_id ?? null,
       promotion_id: appointment?.promotion_id ?? null,
-      start_datetime: appointment?.start_datetime || "",
-      status: "Confirmada",
-      notes: appointment?.notes || "",
+      start_datetime: appointment?.start_datetime || '',
+      status: 'Confirmada',
+      notes: appointment?.notes || '',
     },
-    mode: "onChange",
-    criteriaMode: "all",
+    mode: 'onChange',
+    criteriaMode: 'all',
   });
 
   const { isSubmitting } = form.formState;
@@ -66,13 +66,13 @@ export function AppointmentForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {/* Cliente */}
+          {/* Alumno */}
           <SearchableSelect
             control={form.control}
             name="client_id"
-            label="Cliente"
-            placeholder="Selecciona un cliente"
-            notFoundMessage="Cliente no encontrado."
+            label="Alumno"
+            placeholder="Selecciona un alumno"
+            notFoundMessage="Alumno no encontrado."
             options={clients.map((client) => ({
               value: client.id,
               label: client.name,
@@ -106,7 +106,7 @@ export function AppointmentForm({
           placeholder="Selecciona una promoción"
           notFoundMessage="Promoción no encontrada."
           options={[
-            { value: "no-promo", label: "Sin promoción" },
+            { value: 'no-promo', label: 'Sin promoción' },
             ...promotions.map((promo) => ({
               value: promo.id.toString(),
               label: `${promo.title} - ${promo.duration_minutes} min`,
@@ -114,7 +114,7 @@ export function AppointmentForm({
           ]}
           icon={<Tag className="mr-2 h-4 w-4 opacity-50" />}
           onValueChange={(value, onChange) => {
-            onChange(value === "no-promo" ? null : Number(value));
+            onChange(value === 'no-promo' ? null : Number(value));
           }}
         />
 
@@ -129,7 +129,7 @@ export function AppointmentForm({
             <FormItem>
               <FormLabel>Notas</FormLabel>
               <Textarea
-                placeholder="Notas adicionales sobre la cita"
+                placeholder="Notas adicionales sobre la clase"
                 className="min-h-[100px]"
                 {...field}
               />
@@ -155,9 +155,9 @@ export function AppointmentForm({
                 Procesando...
               </>
             ) : appointment ? (
-              "Actualizar cita"
+              'Actualizar clase'
             ) : (
-              "Crear cita"
+              'Crear clase'
             )}
           </Button>
         </div>

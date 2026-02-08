@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,9 +11,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import { toast } from "@/components/ui/use-toast";
+} from '@/components/ui/alert-dialog';
+import { useState } from 'react';
+import { toast } from '@/components/ui/use-toast';
 
 interface DeleteServiceButtonProps {
   serviceId: number;
@@ -32,33 +32,32 @@ export function DeleteServiceButton({
       setIsDeleting(true);
 
       const response = await fetch(`/api/services/${serviceId}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar el servicio");
+        throw new Error(errorData.error || 'Error al eliminar la clase');
       }
 
       const data = await response.json();
 
       toast({
-        title: "Servicio eliminado",
-        description:
-          data.message || "El servicio ha sido eliminado correctamente",
+        title: 'Clase eliminada',
+        description: data.message || 'La clase ha sido eliminada correctamente',
       });
 
       onServiceDeleted?.(serviceId);
       setIsOpen(false);
     } catch (error) {
-      console.error("Error deleting service:", error);
+      console.error('Error deleting service:', error);
       toast({
-        title: "Error",
+        title: 'Error',
         description:
           error instanceof Error
             ? error.message
-            : "No se pudo eliminar el servicio",
-        variant: "destructive",
+            : 'No se pudo eliminar la clase',
+        variant: 'destructive',
       });
     } finally {
       setIsDeleting(false);
@@ -83,7 +82,7 @@ export function DeleteServiceButton({
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
             <AlertDialogDescription>
               Esta acción no se puede deshacer. Esto eliminará permanentemente
-              el servicio.
+              la clase.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -95,7 +94,7 @@ export function DeleteServiceButton({
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? "Eliminando..." : "Eliminar"}
+              {isDeleting ? 'Eliminando...' : 'Eliminar'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

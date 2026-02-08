@@ -84,10 +84,10 @@ export default function Testimonials() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Lo que dicen nuestros clientes
+            Lo que dicen nuestros alumnos
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Nos enorgullece la satisfacción de nuestros clientes. Estas son
+            Nos enorgullece la satisfacción de nuestros alumnos. Estas son
             algunas de las opiniones que han compartido sobre su experiencia con
             nosotros.
           </p>

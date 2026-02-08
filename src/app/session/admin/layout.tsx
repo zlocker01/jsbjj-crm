@@ -1,9 +1,7 @@
 import "../globals.css";
 import type React from "react";
 import type { Metadata } from "next";
-import { ThemeProvider } from "@/components/theme-provider";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { ToastProvider } from "@/components/toast-provider";
 import { getLandingId } from "@/data/getLandingId";
 
 export const metadata: Metadata = {
@@ -28,15 +26,6 @@ export default async function RootLayout({
     );
   }
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="light"
-      enableSystem
-      disableTransitionOnChange={false}
-    >
-      <ToastProvider>
-        <DashboardLayout landingId={landingId}>{children}</DashboardLayout>
-      </ToastProvider>
-    </ThemeProvider>
+    <DashboardLayout landingId={landingId}>{children}</DashboardLayout>
   );
 }

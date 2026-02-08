@@ -3,9 +3,8 @@ export interface Service {
   user_id?: string;
   title: string;
   description: string;
-  price: number;
-  duration_minutes?: number;
+  level: string;
+  benefits?: string[];
   image: string;
-  category: string;
   landing_page_id?: string;
 }

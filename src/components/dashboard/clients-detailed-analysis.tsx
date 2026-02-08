@@ -96,7 +96,7 @@ export function ClientsDetailedAnalysis() {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Análisis de Clientes</h2>
+          <h2 className="text-2xl font-bold">Análisis de Alumnos</h2>
           <p className="text-muted-foreground">
             Información detallada sobre tu base de clientes
           </p>
@@ -116,7 +116,7 @@ export function ClientsDetailedAnalysis() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SummaryCard
-          title="Clientes Totales"
+          title="Alumnos Totales"
           value={clientSummary.total}
           changePercent={clientSummary.growthPercent}
           loading={loading}

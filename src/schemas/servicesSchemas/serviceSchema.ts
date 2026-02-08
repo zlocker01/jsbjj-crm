@@ -1,11 +1,32 @@
 import { z } from 'zod';
 
-export const serviceCategories = [
-  'Corte',
-  'Barba',
-  'Tratamiento',
-  'Paquete',
+export const serviceLevels = [
+  'Principiantes',
+  'Avanzado',
+  'Niños',
+  'Mujeres',
+  'Mixto',
+  'Competencia',
 ] as const;
+
+export const getLevelBadgeColor = (level: string) => {
+  switch (level) {
+    case 'Principiantes':
+      return 'bg-green-500 hover:bg-green-600 text-white border-green-600';
+    case 'Avanzado':
+      return 'bg-purple-600 hover:bg-purple-700 text-white border-purple-700';
+    case 'Niños':
+      return 'bg-blue-400 hover:bg-blue-500 text-white border-blue-500';
+    case 'Mujeres':
+      return 'bg-pink-500 hover:bg-pink-600 text-white border-pink-600';
+    case 'Mixto':
+      return 'bg-orange-500 hover:bg-orange-600 text-white border-orange-600';
+    case 'Competencia':
+      return 'bg-red-600 hover:bg-red-700 text-white border-red-700';
+    default:
+      return 'bg-primary/90 hover:bg-primary text-primary-foreground';
+  }
+};
 
 export const serviceFormSchema = z.object({
   title: z
@@ -16,16 +37,13 @@ export const serviceFormSchema = z.object({
     .string()
     .min(10, 'La descripción debe tener al menos 10 caracteres')
     .max(500, 'La descripción no puede tener más de 500 caracteres'),
-  price: z
-    .number()
-    .min(0, 'El precio no puede ser negativo')
-    .max(10000, 'El precio no puede ser mayor a 10,000'),
-  duration_minutes: z
-    .number()
-    .min(10, 'La duración debe ser de al menos 10 minutos')
-    .max(1440, 'La duración no puede ser mayor a 24 horas')
-    .optional()
-    .nullable(),
+  level: z.enum(serviceLevels, {
+    required_error: 'Por favor selecciona un nivel',
+  }),
+  benefits: z
+    .array(z.string())
+    .max(3, 'No puedes agregar más de 3 beneficios')
+    .optional(),
   image: z
     .string()
     .url('La URL de la imagen no es válida')
@@ -33,9 +51,6 @@ export const serviceFormSchema = z.object({
       message: 'La URL debe comenzar con http:// o https://',
     })
     .optional(),
-  category: z.enum(serviceCategories, {
-    required_error: 'Por favor selecciona una categoría',
-  }),
   landing_page_id: z.string().uuid(),
 });
 

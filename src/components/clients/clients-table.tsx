@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Table,
@@ -7,19 +7,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import useSWR from "swr";
-import type { Client } from "@/interfaces/client/Client";
-import { useState } from "react";
-import { ClientsTableRowSkeleton } from "../skeletons/clients/table-row-skeleton";
+} from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import useSWR from 'swr';
+import type { Client } from '@/interfaces/client/Client';
+import { useState } from 'react';
+import { ClientsTableRowSkeleton } from '../skeletons/clients/table-row-skeleton';
 
 interface ClientsTableProps {
   searchQuery: string;
@@ -34,7 +34,7 @@ export function ClientsTable({
 }: ClientsTableProps) {
   const [page, setPage] = useState(1);
   const pageSize = 5; // Usaremos esto para determinar cuántas filas de esqueleto mostrar
-  const { data, isLoading } = useSWR("/api/clients", async (url) => {
+  const { data, isLoading } = useSWR('/api/clients', async (url) => {
     const res = await fetch(url);
     const data = await res.json();
     return data.clients || [];
@@ -59,10 +59,10 @@ export function ClientsTable({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
@@ -86,16 +86,12 @@ export function ClientsTable({
               paginatedClients.map((client: Client) => (
                 <TableRow
                   key={client.id}
-                  className={`cursor-pointer ${client.id === selectedClientId ? "bg-muted" : ""}`}
+                  className={`cursor-pointer ${client.id === selectedClientId ? 'bg-muted' : ''}`}
                   onClick={() => onClientSelect(client)}
                 >
                   <TableCell className="font-medium">{client.name}</TableCell>
-                  <TableCell className="table-cell">
-                    {client.email}
-                  </TableCell>
-                  <TableCell className="table-cell">
-                    {client.phone}
-                  </TableCell>
+                  <TableCell className="table-cell">{client.email}</TableCell>
+                  <TableCell className="table-cell">{client.phone}</TableCell>
                 </TableRow>
               ))
             ) : (
@@ -104,7 +100,7 @@ export function ClientsTable({
                   colSpan={3}
                   className="text-center py-4 text-muted-foreground"
                 >
-                  No se encontraron clientes
+                  No se encontraron alumnos
                 </TableCell>
               </TableRow>
             )}

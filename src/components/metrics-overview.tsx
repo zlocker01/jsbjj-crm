@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -10,79 +10,79 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { Skeleton } from "@/components/ui/skeleton";
+} from 'recharts';
+import { useMediaQuery } from '@/hooks/use-media-query';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const data = [
   {
-    name: "Ene",
+    name: 'Ene',
     citas: 40,
     ingresos: 2400,
     clientes: 24,
   },
   {
-    name: "Feb",
+    name: 'Feb',
     citas: 30,
     ingresos: 1398,
     clientes: 22,
   },
   {
-    name: "Mar",
+    name: 'Mar',
     citas: 20,
     ingresos: 9800,
     clientes: 29,
   },
   {
-    name: "Abr",
+    name: 'Abr',
     citas: 27,
     ingresos: 3908,
     clientes: 20,
   },
   {
-    name: "May",
+    name: 'May',
     citas: 18,
     ingresos: 4800,
     clientes: 21,
   },
   {
-    name: "Jun",
+    name: 'Jun',
     citas: 23,
     ingresos: 3800,
     clientes: 25,
   },
   {
-    name: "Jul",
+    name: 'Jul',
     citas: 34,
     ingresos: 4300,
     clientes: 30,
   },
   {
-    name: "Ago",
+    name: 'Ago',
     citas: 45,
     ingresos: 5000,
     clientes: 32,
   },
   {
-    name: "Sep",
+    name: 'Sep',
     citas: 35,
     ingresos: 4000,
     clientes: 28,
   },
   {
-    name: "Oct",
+    name: 'Oct',
     citas: 30,
     ingresos: 3500,
     clientes: 26,
   },
   {
-    name: "Nov",
+    name: 'Nov',
     citas: 42,
     ingresos: 4800,
     clientes: 34,
   },
   {
-    name: "Dic",
+    name: 'Dic',
     citas: 50,
     ingresos: 6000,
     clientes: 40,
@@ -91,8 +91,8 @@ const data = [
 
 export function MetricsOverview() {
   const [isMounted, setIsMounted] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 640px)");
-  const isTablet = useMediaQuery("(max-width: 1024px)");
+  const isMobile = useMediaQuery('(max-width: 640px)');
+  const isTablet = useMediaQuery('(max-width: 1024px)');
 
   useEffect(() => {
     setIsMounted(true);
@@ -131,21 +131,21 @@ export function MetricsOverview() {
         <YAxis />
         <Tooltip
           contentStyle={{
-            backgroundColor: "var(--background)",
-            borderColor: "var(--border)",
-            borderWidth: "1px",
-            borderRadius: "0.375rem",
+            backgroundColor: 'var(--background)',
+            borderColor: 'var(--border)',
+            borderWidth: '1px',
+            borderRadius: '0.375rem',
             boxShadow:
-              "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-            color: "var(--foreground)",
-            padding: "8px 12px",
+              '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+            color: 'var(--foreground)',
+            padding: '8px 12px',
           }}
-          itemStyle={{ padding: "2px 0" }}
-          labelStyle={{ fontWeight: "bold", marginBottom: "4px" }}
+          itemStyle={{ padding: '2px 0' }}
+          labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
         />
         <Legend />
         <Bar dataKey="citas" fill="#8884d8" name="Citas" />
-        <Bar dataKey="clientes" fill="#82ca9d" name="Clientes" />
+        <Bar dataKey="clientes" fill="#82ca9d" name="Alumnos" />
         <Bar dataKey="ingresos" fill="#ffc658" name="Ingresos ($)" />
       </BarChart>
     </ResponsiveContainer>
