@@ -20,6 +20,7 @@ import {
   User,
   Users,
   X,
+  CreditCard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -90,6 +91,11 @@ export function DashboardLayout({
       title: 'Clases',
       href: '/session/admin/services',
       icon: Dumbbell,
+    },
+    {
+      title: 'Paquetes',
+      href: '/session/admin/packages',
+      icon: CreditCard,
     },
     {
       title: 'Inventario',
