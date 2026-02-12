@@ -15,26 +15,32 @@ import type { AppointmentFormValues } from "@/schemas/appointmentSchemas/appoint
 interface DateTimeSelectorProps {
   control: Control<AppointmentFormValues>;
   disabled?: boolean;
+  name: "start_datetime" | "end_datetime" | "recurring_end_date";
+  label: string;
 }
 
 export function DateTimeSelector({
   control,
   disabled = false,
+  name,
+  label,
 }: DateTimeSelectorProps) {
   return (
     <FormField
       control={control}
-      name="start_datetime"
+      name={name}
       render={({ field }) => {
         const currentValue = field.value;
+        // Si el valor es null/undefined, mostramos cadena vacía
+        // Si es válido, formateamos.
         const value =
-          currentValue && isValid(new Date(currentValue))
+          currentValue && typeof currentValue === 'string' && isValid(new Date(currentValue))
             ? format(new Date(currentValue), "yyyy-MM-dd'T'HH:mm")
             : "";
 
         return (
           <FormItem>
-            <FormLabel>Fecha y hora de inicio</FormLabel>
+            <FormLabel>{label}</FormLabel>
             <FormControl>
               <Input
                 type="datetime-local"

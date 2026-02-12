@@ -61,9 +61,7 @@ export function CalendarClient({
           {isCreating || isEditing ? (
             <AppointmentForm
               appointment={isEditing ? selectedAppointment : undefined}
-              clients={clients}
               services={services}
-              promotions={promotions}
               onSubmit={onAppointmentSubmit}
               onCancel={onCancelEdit}
             />
@@ -75,7 +73,6 @@ export function CalendarClient({
               onClose={onCancelEdit}
               clients={clients}
               services={services}
-              promotions={promotions}
             />
           )}
         </div>

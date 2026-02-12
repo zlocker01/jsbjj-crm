@@ -16,7 +16,7 @@ export function CalendarSkeleton() {
           <p className="text-muted-foreground">
             Administra tus clases en tiempo real desde aquí
           </p>
-          <p className="text-goldAccent font-bold">
+          <p className="text-goldAccent font-bold" suppressHydrationWarning>
             {format(new Date(), "EEEE d 'de' MMMM 'de' yyyy, hh:mm a", {
               locale: es,
             })}

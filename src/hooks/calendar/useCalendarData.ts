@@ -1,7 +1,6 @@
 import useSWR from "swr";
 import type { Appointment } from "@/interfaces/appointments/Appointment";
 import type { Client } from "@/interfaces/client/Client";
-import type { Promotion } from "@/interfaces/promotions/Promotion";
 import type { Service } from "@/interfaces/services/Service";
 
 interface CalendarData {

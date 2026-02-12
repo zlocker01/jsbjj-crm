@@ -23,7 +23,6 @@ interface AppointmentDetailsProps {
   appointment: Appointment | null;
   clients: Client[];
   services: Service[];
-  promotions: Promotion[];
   onEdit: (appointment: Appointment) => void;
   onCreateNew: () => void;
   onClose: () => void;
@@ -34,7 +33,6 @@ export function AppointmentDetails({
   appointment,
   clients,
   services,
-  promotions,
   onEdit,
   onCreateNew,
   onClose,
@@ -102,29 +100,29 @@ export function AppointmentDetails({
       </div>
 
       <div className="space-y-4">
-        <div className="flex items-center space-x-2">
-          <User className="h-5 w-5 text-muted-foreground" />
-          <div>
-            <p className="font-medium">
-              {
-                clients.find((client) => client.id === appointment?.client_id)
-                  ?.name
-              }
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {
-                clients.find((client) => client.id === appointment?.client_id)
-                  ?.email
-              }
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {
-                clients.find((client) => client.id === appointment?.client_id)
-                  ?.phone
-              }
-            </p>
+        {appointment?.client_id && (
+          <div className="flex items-center space-x-2">
+            <User className="h-5 w-5 text-muted-foreground" />
+            <div>
+              <p className="font-medium">
+                {clients.find((client) => client.id === appointment?.client_id)
+                  ?.name || 'Cliente no encontrado'}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {
+                  clients.find((client) => client.id === appointment?.client_id)
+                    ?.email
+                }
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {
+                  clients.find((client) => client.id === appointment?.client_id)
+                    ?.phone
+                }
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="flex items-center space-x-2">
           <Calendar className="h-5 w-5 text-muted-foreground" />
@@ -144,46 +142,23 @@ export function AppointmentDetails({
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">Servicio o Promoción</p>
-          {appointment.promotion_id
-            ? (() => {
-                const promo = promotions.find(
-                  (p) => p.id === appointment.promotion_id,
-                );
-                return promo ? (
-                  <>
-                    <p>{promo.title}</p>
-                    <p>
-                      Precio:{' '}
-                      <span className="line-through">${promo.price}</span>{' '}
-                      <span className="font-bold">${promo.discount_price}</span>
-                    </p>
-                    <p>Duración aproximada: {promo.duration_minutes} minutos</p>
-                    <p className="text-xs text-muted-foreground">
-                      {promo.description}
-                    </p>
-                  </>
-                ) : (
-                  <p>Sin promoción</p>
-                );
-              })()
-            : (() => {
-                const service = services.find(
-                  (s) => s.id === appointment.service_id,
-                );
-                return service ? (
-                  <>
-                    <p>{service.title}</p>
-                    <p>Precio: ${service.price}</p>
-                    <p>
-                      Duración aproximada: {service.duration_minutes || 0}{' '}
-                      minutos
-                    </p>
-                  </>
-                ) : (
-                  <p>Sin servicio</p>
-                );
-              })()}
+          <p className="text-sm font-medium">Servicio</p>
+          {(() => {
+            const service = services.find(
+              (s) => s.id === appointment.service_id,
+            );
+            return service ? (
+              <>
+                <p>{service.title}</p>
+                <p>Precio: ${service.price}</p>
+                <p>
+                  Duración aproximada: {service.duration_minutes || 0} minutos
+                </p>
+              </>
+            ) : (
+              <p>Sin servicio</p>
+            );
+          })()}
         </div>
 
         <div className="space-y-2">
@@ -205,12 +180,7 @@ export function AppointmentDetails({
           </Badge>
         </div>
 
-        {appointment.notes && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Notas</p>
-            <p className="text-sm text-muted-foreground">{appointment.notes}</p>
-          </div>
-        )}
+        {/* Notas eliminadas */}
       </div>
 
       <div className="flex justify-end space-x-2 pt-4">

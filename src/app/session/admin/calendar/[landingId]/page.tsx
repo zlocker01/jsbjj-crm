@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useCalendarData } from '@/hooks/calendar/useCalendarData';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, addDays, isBefore, getDay, addYears } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { AppointmentCalendar } from '@/components/calendar/AppointmentCalendar';
 import { AppointmentDetails } from '@/components/calendar/AppointmentDetails';
@@ -42,7 +42,6 @@ export default function CalendarPage() {
     appointments = [],
     clients = [],
     services = [],
-    promotions = [],
     isLoading,
     error,
     mutate,
@@ -73,39 +72,49 @@ export default function CalendarPage() {
 
   const handleFormSubmit = async (data: any) => {
     try {
-      // Hacer la petición a la API para guardar la clase
-      const response = await fetch(`/api/appointments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-        }),
+      const isEditing = !!selectedAppointment;
+
+      if (isEditing && selectedAppointment) {
+        // Actualizar cita existente
+        // Para edición, por ahora no soportamos "editar serie", solo la cita individual.
+        // Limpiamos campos de recurrencia para evitar confusión en el backend si la API de PUT no lo maneja
+        const {
+          is_recurring,
+          recurring_days,
+          recurring_end_date,
+          ...updateData
+        } = data;
+
+        const res = await fetch(`/api/appointments/${selectedAppointment.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updateData),
+        });
+
+        if (!res.ok) throw new Error('Error al actualizar la cita');
+      } else {
+        // Crear nueva cita (única o recurrente)
+        // Enviamos todo el payload al backend, que manejará la recurrencia
+        const res = await fetch(`/api/appointments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Error al crear la cita');
+        }
+      }
+
+      toast({
+        title: isEditing ? 'Clase actualizada' : 'Clase(s) creada(s)',
+        description: `Se han procesado correctamente.`,
+        variant: 'success',
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.details || 'Error al guardar la clase');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        toast({
-          title: 'Clase guardada',
-          description: 'La clase se ha guardado correctamente.',
-          variant: 'success',
-        });
-        setIsFormOpen(false);
-
-        // Recargar los datos para mostrar la nueva clase
-        mutate();
-      } else {
-        throw new Error(
-          result.error || 'Error desconocido al guardar la clase',
-        );
-      }
+      setIsFormOpen(false);
+      mutate();
     } catch (error) {
       console.error('Error saving appointment:', error);
       toast({
@@ -142,20 +151,13 @@ export default function CalendarPage() {
           <p className="text-muted-foreground">
             Administra tus clases en tiempo real desde aquí
           </p>
-          <p className="text-goldAccent font-bold">
+          <p className="text-goldAccent font-bold" suppressHydrationWarning>
             {format(new Date(), "EEEE d 'de' MMMM 'de' yyyy, hh:mm a", {
               locale: es,
             })}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto self-end md:self-auto">
-          <Button
-            onClick={() => setIsNewClientDialogOpen(true)}
-            variant="outline"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Nuevo Alumno
-          </Button>
           <Button
             onClick={() => {
               setSelectedAppointment(null);
@@ -186,7 +188,6 @@ export default function CalendarPage() {
             appointment={selectedAppointment}
             clients={clients}
             services={services}
-            promotions={promotions}
             onEdit={() => {
               if (selectedAppointment) {
                 setIsFormOpen(true);
@@ -208,9 +209,7 @@ export default function CalendarPage() {
         onOpenChange={setIsFormOpen}
         onSubmit={handleFormSubmit}
         appointment={selectedAppointment}
-        clients={clients}
         services={services}
-        promotions={promotions}
       />
 
       {/* Diálogo para crear nuevo cliente */}

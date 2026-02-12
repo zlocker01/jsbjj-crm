@@ -13,6 +13,7 @@ import { es } from 'date-fns/locale';
 import { AppointmentCalendar } from '@/components/calendar/AppointmentCalendar';
 import { AppointmentDetails } from '@/components/calendar/AppointmentDetails';
 import { AppointmentForm } from '@/components/calendar/AppointmentForm';
+import { CalendarSkeleton } from '@/components/skeletons/calendar/calendar-skeleton';
 import type { Appointment } from '@/interfaces/appointments/Appointment';
 import {
   Dialog,
@@ -44,7 +45,6 @@ export default function CalendarPage() {
     appointments = [],
     clients = [],
     services = [],
-    promotions = [],
     isLoading,
     error,
     mutate,
@@ -121,7 +121,7 @@ export default function CalendarPage() {
           <p className="text-muted-foreground">
             Administra tus clases en tiempo real desde aquí
           </p>
-          <p className="text-goldAccent font-bold">
+          <p className="text-goldAccent font-bold" suppressHydrationWarning>
             {format(new Date(), "EEEE d 'de' MMMM 'de' yyyy, hh:mm a", {
               locale: es,
             })}
@@ -154,7 +154,6 @@ export default function CalendarPage() {
             appointment={selectedAppointment}
             clients={clients}
             services={services}
-            promotions={promotions}
             onEdit={() => {
               if (selectedAppointment) {
                 setIsFormOpen(true);
@@ -186,9 +185,7 @@ export default function CalendarPage() {
           <div className="py-4">
             <AppointmentForm
               appointment={selectedAppointment || undefined}
-              clients={clients}
               services={services}
-              promotions={promotions}
               onSubmit={handleFormSubmit}
               onCancel={() => setIsFormOpen(false)}
             />
