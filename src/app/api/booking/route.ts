@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
           phone,
           notes: notes ? `Nota de reserva: ${notes}` : undefined,
           client_source: 'web',
-          is_active: true,
+          status: 'trial', // Default to trial for web bookings if they are new? Or active? User said trial = Alumno nuevo.
           // user_id se deja nulo o se asigna a un admin por defecto si fuera necesario
         })
         .select('id')

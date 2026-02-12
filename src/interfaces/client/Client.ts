@@ -8,7 +8,15 @@ export interface Client {
   notes?: string;
   registration_date: string; // ISO string para timestamp
   user_id: string; // UUID
-  is_active: boolean;
+  status:
+    | 'active'
+    | 'pending_payment'
+    | 'suspended'
+    | 'paused'
+    | 'trial'
+    | 'injured'
+    | 'inactive';
+  package_id?: string; // UUID del paquete contratado
   last_visit_date?: string; // ISO string para timestamp
   client_source?: string; // Rol del usuario que creó el alumno
   appointments?: number;

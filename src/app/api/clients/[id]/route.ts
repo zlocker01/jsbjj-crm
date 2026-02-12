@@ -18,6 +18,7 @@ export async function GET(_: NextRequest, props: { params: Promise<{ id: string 
 export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const body = await req.json();
+  console.log("PUT request body:", body);
   const error = await updateClient(params.id, body);
   if (error) {
     return NextResponse.json({ error }, { status: 500 });

@@ -19,6 +19,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import useSWR from 'swr';
 import type { Client } from '@/interfaces/client/Client';
 import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { ClientsTableRowSkeleton } from '../skeletons/clients/table-row-skeleton';
 
 interface ClientsTableProps {
@@ -41,6 +42,18 @@ export function ClientsTable({
   });
 
   const clients = data || [];
+
+  const { data: packagesData } = useSWR('/api/packages', async (url) => {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.packages || [];
+  });
+
+  const getPackageName = (packageId?: string) => {
+    if (!packageId || !packagesData) return '-';
+    const pkg = packagesData.find((p: any) => p.id === packageId);
+    return pkg ? pkg.name : '-';
+  };
 
   const filteredClients = clients.filter((client: Client) => {
     const query = searchQuery.toLowerCase();
@@ -75,6 +88,9 @@ export function ClientsTable({
               <TableHead>Nombre</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Teléfono</TableHead>
+              <TableHead>Estatus</TableHead>
+              <TableHead>Plan</TableHead>
+              <TableHead>Fecha de inscripción</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -92,12 +108,35 @@ export function ClientsTable({
                   <TableCell className="font-medium">{client.name}</TableCell>
                   <TableCell className="table-cell">{client.email}</TableCell>
                   <TableCell className="table-cell">{client.phone}</TableCell>
+                  <TableCell>
+                    {(() => {
+                      const statusConfig = {
+                        active: { label: 'Activo', className: 'bg-green-500 hover:bg-green-600' },
+                        pending_payment: { label: 'Pago pendiente', className: 'bg-yellow-500 hover:bg-yellow-600' },
+                        suspended: { label: 'Suspendido', className: 'bg-red-500 hover:bg-red-600' },
+                        paused: { label: 'En pausa', className: 'bg-blue-500 hover:bg-blue-600' },
+                        trial: { label: 'Prueba', className: 'bg-purple-500 hover:bg-purple-600' },
+                        injured: { label: 'Lesionado', className: 'bg-orange-500 hover:bg-orange-600' },
+                        inactive: { label: 'Baja', className: 'bg-slate-500 hover:bg-slate-600' },
+                      };
+                      
+                      const config = statusConfig[client.status as keyof typeof statusConfig] || statusConfig.active;
+                      
+                      return (
+                        <Badge className={config.className}>
+                          {config.label}
+                        </Badge>
+                      );
+                    })()}
+                  </TableCell>
+                  <TableCell>{getPackageName(client.package_id)}</TableCell>
+                  <TableCell>{formatDate(client.registration_date)}</TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={3}
+                  colSpan={6}
                   className="text-center py-4 text-muted-foreground"
                 >
                   No se encontraron alumnos

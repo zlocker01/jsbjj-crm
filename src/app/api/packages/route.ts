@@ -1,6 +1,30 @@
 import { NextResponse } from 'next/server';
 import { createPackage } from '@/data/packages/createPackage';
 import { createClient } from '@/utils/supabase/server';
+import { getLandingId } from '@/data/getLandingId';
+import { getPackages } from '@/data/packages/getPackages';
+
+export async function GET() {
+  try {
+    const landingId = await getLandingId();
+    if (!landingId) {
+      return NextResponse.json(
+        { error: 'No se encontró la landing page asociada.' },
+        { status: 404 },
+      );
+    }
+
+    const packages = await getPackages(landingId);
+
+    return NextResponse.json({ packages: packages || [] });
+  } catch (error) {
+    console.error('Error in GET /api/packages:', error);
+    return NextResponse.json(
+      { error: 'Error interno del servidor.' },
+      { status: 500 },
+    );
+  }
+}
 
 export async function POST(req: Request) {
   try {
